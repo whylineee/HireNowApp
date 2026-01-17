@@ -1,50 +1,47 @@
-# Welcome to your Expo app 👋
+# HireNow
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Додаток для пошуку роботи. Expo + React Native + TypeScript.
 
-## Get started
+## Структура проекту
 
-1. Install dependencies
+```
+app/                    # Екрани (Expo Router, file-based)
+  _layout.tsx           # Кореневий layout, Stack-навігація
+  index.tsx             # Головна — пошук і список вакансій
+  job/
+    [id].tsx            # Деталі вакансії
 
-   ```bash
-   npm install
-   ```
+components/             # React-компоненти
+  ui/                   # Базові UI: Button, Card, Input
+  layout/               # Screen, Header
+  job/                  # JobCard
+  SearchBar.tsx
 
-2. Start the app
+hooks/                  # Кастомні хуки
+  useJobs.ts            # Пошук вакансій, стан
+  useDebounce.ts
 
-   ```bash
-   npx expo start
-   ```
+services/               # API та бізнес-логіка
+  jobs.ts               # searchJobs, getJobById (зараз мок)
 
-In the output, you'll find options to open the app in a
+constants/              # Константи, тема
+  theme.ts              # colors, spacing, typography
+  job.ts                # лейбли типів зайнятості
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+types/                  # TypeScript
+  job.ts                # Job, JobType, JobSearchParams
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Запуск
 
-## Learn more
+```bash
+npm install
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Можливості
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Пошук вакансій за текстом і локацією
+- Список вакансій з картками (посада, компанія, локація, тип, ЗП)
+- Екран деталей вакансії (опис, вимоги)
+- Адаптивна тема (кольори, відступи, типографіка)
