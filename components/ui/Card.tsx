@@ -19,15 +19,13 @@ export function Card({ children, style, padded = true, elevated = true }: CardPr
 const styles = StyleSheet.create({
   base: {
     backgroundColor: colors.surface,
-    borderRadius: borderRadius.lg,
+    borderRadius: borderRadius.md,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
   padded: { padding: spacing.md },
   elevated: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 3,
+    ...colors.shadow.md,
   },
 });

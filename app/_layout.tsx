@@ -12,6 +12,7 @@ export default function Layout() {
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="favorites" options={{ title: 'Збережені' }} />
     </Stack>
   );
 }

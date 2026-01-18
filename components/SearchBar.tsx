@@ -61,13 +61,11 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: colors.surface,
     borderRadius: borderRadius.lg,
-    padding: spacing.sm,
+    padding: spacing.md,
     marginBottom: spacing.md,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    ...colors.shadow.md,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
   searchRow: {
     flexDirection: 'row',

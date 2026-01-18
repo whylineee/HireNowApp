@@ -1,23 +1,42 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { router } from 'expo-router';
 import { Card } from '@/components/ui/Card';
-import { JOB_TYPE_LABELS, JOB_TYPE_COLORS } from '@/constants/job';
-import type { Job } from '@/types/job';
+import { JOB_TYPE_COLORS, JOB_TYPE_LABELS } from '@/constants/job';
 import { colors, spacing, typography } from '@/constants/theme';
+import type { Job } from '@/types/job';
+import { router } from 'expo-router';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FavoriteButton } from './FavoriteButton';
 
 interface JobCardProps {
   job: Job;
+  isFavorite?: boolean;
+  onFavoritePress?: () => void;
+  showFavorite?: boolean;
 }
 
-export function JobCard({ job }: JobCardProps) {
+export function JobCard({ job, isFavorite = false, onFavoritePress, showFavorite = true }: JobCardProps) {
+  const handleCardPress = () => {
+    router.push(`/job/${job.id}`);
+  };
+
+  const handleFavoritePress = () => {
+    onFavoritePress?.();
+  };
+
   return (
-    <TouchableOpacity activeOpacity={0.85} onPress={() => router.push(`/job/${job.id}`)}>
-      <Card style={styles.card}>
+    <TouchableOpacity activeOpacity={0.85} onPress={handleCardPress}>
+      <Card style={styles.card} elevated>
         <View style={styles.header}>
           <View style={styles.headerText}>
             <Text style={styles.title} numberOfLines={2}>{job.title}</Text>
             <Text style={styles.company}>{job.company}</Text>
           </View>
+          {showFavorite && (
+            <FavoriteButton
+              isFavorite={isFavorite}
+              onPress={handleFavoritePress}
+              size={22}
+            />
+          )}
         </View>
 
         <View style={styles.meta}>
@@ -42,8 +61,8 @@ export function JobCard({ job }: JobCardProps) {
 
 const styles = StyleSheet.create({
   card: { marginBottom: spacing.md },
-  header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  headerText: { flex: 1 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
+  headerText: { flex: 1, marginRight: spacing.sm },
   title: { fontSize: typography.lg, fontWeight: typography.semibold, color: colors.text },
   company: { fontSize: typography.sm, color: colors.primary, marginTop: 2, fontWeight: typography.medium },
   meta: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },

@@ -1,19 +1,51 @@
 import { useEffect, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, StyleSheet, Share, Alert } from 'react-native';
 import { useLocalSearchParams, router, Stack } from 'expo-router';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { FavoriteButton } from '@/components/job/FavoriteButton';
 import { getJobById } from '@/services/jobs';
+import { useFavorites } from '@/hooks/useFavorites';
 import { JOB_TYPE_LABELS, JOB_TYPE_COLORS } from '@/constants/job';
 import type { Job } from '@/types/job';
 import { colors, spacing, typography } from '@/constants/theme';
 
 export default function JobDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const handleShare = async () => {
+    if (!job) return;
+    try {
+      await Share.share({
+        message: `${job.title} в ${job.company}\n${job.location}\n\n${job.description}`,
+        title: job.title,
+      });
+    } catch (error) {
+      console.error('Помилка поділу:', error);
+    }
+  };
+
+  const handleApply = () => {
+    Alert.alert(
+      'Відгукнутися',
+      `Ви хочете відгукнутися на вакансію "${job?.title}" в ${job?.company}?`,
+      [
+        { text: 'Скасувати', style: 'cancel' },
+        {
+          text: 'Відгукнутися',
+          onPress: () => {
+            // Тут можна додати логіку відгуку
+            Alert.alert('Успіх', 'Ваш відгук відправлено!');
+          },
+        },
+      ]
+    );
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -70,12 +102,25 @@ export default function JobDetailScreen() {
         options={{
           title: job.title,
           headerBackTitle: 'Назад',
+          headerRight: () => (
+            <View style={styles.headerActions}>
+              <FavoriteButton
+                isFavorite={isFavorite(job.id)}
+                onPress={() => toggleFavorite(job.id)}
+                size={24}
+              />
+            </View>
+          ),
         }}
       />
 
       <Card style={styles.headerCard}>
-        <Text style={styles.title}>{job.title}</Text>
-        <Text style={styles.company}>{job.company}</Text>
+        <View style={styles.titleRow}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>{job.title}</Text>
+            <Text style={styles.company}>{job.company}</Text>
+          </View>
+        </View>
 
         <View style={styles.metaRow}>
           <Text style={styles.location}>📍 {job.location}</Text>
@@ -109,7 +154,15 @@ export default function JobDetailScreen() {
       </Card>
 
       <View style={styles.actions}>
-        <Button title="Відгукнутися" onPress={() => {}} fullWidth />
+        <Button title="Відгукнутися" onPress={handleApply} fullWidth />
+        <View style={styles.shareButton}>
+          <Button
+            title="Поділитися"
+            onPress={handleShare}
+            fullWidth
+            variant="outline"
+          />
+        </View>
       </View>
     </Screen>
   );
@@ -117,6 +170,8 @@ export default function JobDetailScreen() {
 
 const styles = StyleSheet.create({
   headerCard: { marginBottom: spacing.md },
+  titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  titleContainer: { flex: 1 },
   title: { fontSize: typography.xl, fontWeight: typography.bold, color: colors.text },
   company: { fontSize: typography.lg, color: colors.primary, marginTop: 4, fontWeight: typography.medium },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: spacing.sm },
@@ -132,6 +187,8 @@ const styles = StyleSheet.create({
   bullet: { marginRight: 8, color: colors.primary, fontSize: typography.base },
   requirement: { flex: 1, fontSize: typography.base, color: colors.textSecondary, lineHeight: 22 },
   actions: { marginTop: spacing.sm },
+  shareButton: { marginTop: spacing.sm },
+  headerActions: { marginRight: spacing.sm },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: spacing.xxl },
   loadingText: { marginTop: spacing.sm, fontSize: typography.sm, color: colors.textSecondary },
   errorText: { fontSize: typography.base, color: colors.error, marginBottom: spacing.md },
