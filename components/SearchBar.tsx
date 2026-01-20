@@ -59,13 +59,13 @@ export function SearchBar({
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.lg,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: borderRadius.xl,
     padding: spacing.md,
     marginBottom: spacing.md,
-    ...colors.shadow.md,
+    ...colors.shadow.lg,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
   },
   searchRow: {
     flexDirection: 'row',
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
     paddingTop: spacing.sm,
     borderTopWidth: 1,
-    borderTopColor: colors.borderLight,
+    borderTopColor: colors.border,
   },
   locationInput: {
     flex: 1,

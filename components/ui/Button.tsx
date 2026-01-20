@@ -55,9 +55,9 @@ const styles = StyleSheet.create({
   fullWidth: { width: '100%' },
   disabled: { opacity: 0.5 },
 
-  primary: { backgroundColor: colors.primary },
+  primary: { backgroundColor: colors.primary, ...colors.shadow.md },
   secondary: { backgroundColor: colors.primaryDark },
-  outline: { backgroundColor: 'transparent', borderWidth: 2, borderColor: colors.primary },
+  outline: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colors.primary },
   ghost: { backgroundColor: 'transparent' },
 
   text: { fontSize: typography.base, fontWeight: typography.semibold },

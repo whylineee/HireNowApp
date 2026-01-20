@@ -67,8 +67,8 @@ export function FilterChips({ selectedType, onTypeChange }: FilterChipsProps) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: 0,
     gap: spacing.sm,
   },
   chip: {
@@ -77,9 +77,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm + 2,
     borderRadius: borderRadius.full,
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderColor: colors.border,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceElevated,
     marginRight: spacing.sm,
     ...colors.shadow.sm,
   },

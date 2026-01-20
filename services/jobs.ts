@@ -73,6 +73,9 @@ const MOCK_JOBS: Job[] = [
   },
 ];
 
+// Вакансії, створені роботодавцем під час роботи додатку (зберігаються в памʼяті)
+let employerJobs: Job[] = [];
+
 /**
  * Імітація затримки мережі
  */
@@ -86,12 +89,12 @@ function normalize(str: string): string {
 }
 
 /**
- * Пошук вакансій за параметрами
+ * Пошук вакансій за параметрами серед мок-даних та вакансій роботодавця
  */
 export async function searchJobs(params: JobSearchParams): Promise<Job[]> {
   await delay(400); // імітація API
 
-  let results = [...MOCK_JOBS];
+  let results = [...MOCK_JOBS, ...employerJobs];
 
   if (params.query) {
     const q = normalize(params.query);
@@ -116,9 +119,32 @@ export async function searchJobs(params: JobSearchParams): Promise<Job[]> {
 }
 
 /**
- * Отримання вакансії за ID
+ * Отримання вакансії за ID з урахуванням вакансій роботодавця
  */
 export async function getJobById(id: string): Promise<Job | null> {
   await delay(200);
-  return MOCK_JOBS.find((j) => j.id === id) ?? null;
+  return [...MOCK_JOBS, ...employerJobs].find((j) => j.id === id) ?? null;
 }
+
+/**
+ * Створення нової вакансії роботодавцем
+ */
+export async function createEmployerJob(input: Omit<Job, 'id' | 'postedAt'> & { postedAt?: string }): Promise<Job> {
+  await delay(200);
+  const job: Job = {
+    ...input,
+    id: String(Date.now()),
+    postedAt: input.postedAt ?? 'щойно',
+  };
+  employerJobs = [job, ...employerJobs];
+  return job;
+}
+
+/**
+ * Всі вакансії, створені роботодавцем у поточній сесії
+ */
+export async function getEmployerJobs(): Promise<Job[]> {
+  await delay(100);
+  return employerJobs;
+}
+

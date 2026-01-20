@@ -5,13 +5,16 @@ import { EmptyState } from '@/components/EmptyState';
 import { JobCard } from '@/components/job/JobCard';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
+import { BottomNav } from '@/components/layout/BottomNav';
+import { useApplications } from '@/hooks/useApplications';
 import { useFavorites } from '@/hooks/useFavorites';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
 import { colors, spacing, typography } from '@/constants/theme';
 
 export default function FavoritesScreen() {
-  const { favorites, isFavorite } = useFavorites();
+  const { favorites, toggleFavorite } = useFavorites();
+  const { isApplied } = useApplications();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,39 +44,43 @@ export default function FavoritesScreen() {
 
   return (
     <Screen scroll={false}>
-      <Stack.Screen
-        options={{
-          title: 'Збережені',
-          headerBackTitle: 'Назад',
-        }}
-      />
-      <Header title="Збережені вакансії" subtitle={`${favorites.length} збережено`} />
+      <View style={{ flex: 1 }}>
+        <Stack.Screen
+          options={{
+            title: 'Збережені',
+            headerBackTitle: 'Назад',
+          }}
+        />
+        <Header title="Збережені вакансії" subtitle={`${favorites.length} збережено`} showSettingsButton />
 
-      {loading ? (
-        <View style={styles.centered}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Завантаження...</Text>
-        </View>
-      ) : jobs.length === 0 ? (
-        <EmptyState
-          title="Немає збережених вакансій"
-          subtitle="Додавайте вакансії до збережених, натискаючи на іконку серця на картці вакансії"
-          icon="heart-outline"
-        />
-      ) : (
-        <FlatList
-          data={jobs}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <JobCard
-              job={item}
-              isFavorite={true}
-              onFavoritePress={() => {}}
-            />
-          )}
-          contentContainerStyle={styles.listContent}
-        />
-      )}
+        {loading ? (
+          <View style={styles.centered}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={styles.loadingText}>Завантаження...</Text>
+          </View>
+        ) : jobs.length === 0 ? (
+          <EmptyState
+            title="Немає збережених вакансій"
+            subtitle="Додавайте вакансії до збережених, натискаючи на іконку серця на картці вакансії"
+            icon="heart-outline"
+          />
+        ) : (
+          <FlatList
+            data={jobs}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <JobCard
+                job={item}
+                isApplied={isApplied(item.id)}
+                isFavorite={true}
+                onFavoritePress={() => toggleFavorite(item.id)}
+              />
+            )}
+            contentContainerStyle={styles.listContent}
+          />
+        )}
+      </View>
+      <BottomNav />
     </Screen>
   );
 }

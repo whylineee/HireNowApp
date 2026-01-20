@@ -5,9 +5,10 @@ export default function Layout() {
   return (
     <Stack
       screenOptions={{
-        headerTintColor: colors.primary,
-        headerTitleStyle: { fontWeight: '600', fontSize: 17 },
+        headerTintColor: colors.primaryLight,
+        headerTitleStyle: { fontWeight: '600', fontSize: 17, color: colors.text },
         headerShadowVisible: false,
+        headerStyle: { backgroundColor: colors.surface },
         contentStyle: { backgroundColor: colors.background },
       }}
     >

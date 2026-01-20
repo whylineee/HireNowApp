@@ -7,9 +7,10 @@ interface HeaderProps {
   title: string;
   subtitle?: string;
   showFavoritesButton?: boolean;
+  showSettingsButton?: boolean;
 }
 
-export function Header({ title, subtitle, showFavoritesButton }: HeaderProps) {
+export function Header({ title, subtitle, showFavoritesButton, showSettingsButton }: HeaderProps) {
   return (
     <View style={styles.wrapper}>
       <View style={styles.titleRow}>
@@ -17,15 +18,26 @@ export function Header({ title, subtitle, showFavoritesButton }: HeaderProps) {
           <Text style={styles.title}>{title}</Text>
           {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
         </View>
-        {showFavoritesButton && (
-          <TouchableOpacity
-            onPress={() => router.push('/favorites')}
-            style={styles.favoritesButton}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-          >
-            <Ionicons name="heart" size={24} color={colors.primary} />
-          </TouchableOpacity>
-        )}
+        <View style={styles.actions}>
+          {showFavoritesButton && (
+            <TouchableOpacity
+              onPress={() => router.push('/favorites')}
+              style={styles.iconButton}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+              <Ionicons name="heart" size={20} color={colors.primary} />
+            </TouchableOpacity>
+          )}
+          {showSettingsButton && (
+            <TouchableOpacity
+              onPress={() => router.push('/profile')}
+              style={styles.iconButton}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
+              <Ionicons name="settings-outline" size={20} color={colors.textSecondary} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -52,8 +64,17 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginTop: 4,
   },
-  favoritesButton: {
-    padding: spacing.xs,
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconButton: {
+    padding: spacing.sm,
+    borderRadius: 999,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
     marginLeft: spacing.sm,
+    ...colors.shadow.sm,
   },
 });

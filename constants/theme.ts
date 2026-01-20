@@ -4,22 +4,24 @@
  */
 
 export const colors = {
-  // Основні
-  primary: '#0F766E',      // Teal 700 — головний акцент
-  primaryLight: '#14B8A6', // Teal 500
-  primaryDark: '#0D9488',  // Teal 600
-  primaryGradient: ['#0F766E', '#14B8A6'],
+  // Основні (оновлена сучасна палітра)
+  primary: '#4C6FFF',       // яскравий індиго
+  primaryLight: '#7C8CFF',
+  primaryDark: '#3246D3',
+  accent: '#F97316',
+  primaryGradient: ['#4C6FFF', '#7C8CFF'],
 
   // Нейтральні
-  background: '#F8FAFC',
-  surface: '#FFFFFF',
-  surfaceElevated: '#FFFFFF',
-  surfaceHover: '#F8FAFC',
+  background: '#050816',    // темний фон у стилі неоморфізму
+  surface: '#0B1220',
+  surfaceElevated: '#111827',
+  surfaceHover: '#1F2937',
+  surfaceMuted: '#020617',
 
   // Текст
-  text: '#0F172A',
-  textSecondary: '#64748B',
-  textMuted: '#94A3B8',
+  text: '#E5E7EB',
+  textSecondary: '#9CA3AF',
+  textMuted: '#6B7280',
 
   // Статуси
   success: '#059669',
@@ -28,8 +30,8 @@ export const colors = {
   info: '#0EA5E9',
 
   // Рамки та роздільники
-  border: '#E2E8F0',
-  borderLight: '#F1F5F9',
+  border: '#111827',
+  borderLight: '#1F2937',
   
   // Тіні
   shadow: {
@@ -42,17 +44,17 @@ export const colors = {
     },
     md: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.08,
+      shadowRadius: 12,
+      elevation: 4,
     },
     lg: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 8,
-      elevation: 5,
+      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.12,
+      shadowRadius: 16,
+      elevation: 8,
     },
   },
 } as const;
@@ -69,8 +71,8 @@ export const spacing = {
 export const borderRadius = {
   sm: 6,
   md: 10,
-  lg: 14,
-  xl: 20,
+  lg: 16,
+  xl: 24,
   full: 9999,
 } as const;
 

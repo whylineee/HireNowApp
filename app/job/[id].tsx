@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { FavoriteButton } from '@/components/job/FavoriteButton';
 import { getJobById } from '@/services/jobs';
+import { useApplications } from '@/hooks/useApplications';
 import { useFavorites } from '@/hooks/useFavorites';
 import { JOB_TYPE_LABELS, JOB_TYPE_COLORS } from '@/constants/job';
 import type { Job } from '@/types/job';
@@ -14,6 +15,7 @@ import { colors, spacing, typography } from '@/constants/theme';
 export default function JobDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const { isApplied, applyToJob } = useApplications();
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +33,11 @@ export default function JobDetailScreen() {
   };
 
   const handleApply = () => {
+    if (!job) return;
+    if (isApplied(job.id)) {
+      Alert.alert('Ви вже відгукнулися', 'Статус відгуку збережено у вашому профілі.');
+      return;
+    }
     Alert.alert(
       'Відгукнутися',
       `Ви хочете відгукнутися на вакансію "${job?.title}" в ${job?.company}?`,
@@ -39,7 +46,7 @@ export default function JobDetailScreen() {
         {
           text: 'Відгукнутися',
           onPress: () => {
-            // Тут можна додати логіку відгуку
+            applyToJob(job.id);
             Alert.alert('Успіх', 'Ваш відгук відправлено!');
           },
         },
@@ -129,6 +136,11 @@ export default function JobDetailScreen() {
               {JOB_TYPE_LABELS[job.type]}
             </Text>
           </View>
+          {isApplied(job.id) && (
+            <View style={styles.appliedBadge}>
+              <Text style={styles.appliedText}>Відгукнуто</Text>
+            </View>
+          )}
         </View>
 
         {job.salary && (
@@ -154,7 +166,12 @@ export default function JobDetailScreen() {
       </Card>
 
       <View style={styles.actions}>
-        <Button title="Відгукнутися" onPress={handleApply} fullWidth />
+        <Button
+          title={isApplied(job.id) ? 'Ви вже відгукнулися' : 'Відгукнутися'}
+          onPress={handleApply}
+          fullWidth
+          disabled={isApplied(job.id)}
+        />
         <View style={styles.shareButton}>
           <Button
             title="Поділитися"
@@ -176,8 +193,15 @@ const styles = StyleSheet.create({
   company: { fontSize: typography.lg, color: colors.primary, marginTop: 4, fontWeight: typography.medium },
   metaRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: spacing.sm },
   location: { fontSize: typography.base, color: colors.textSecondary, flex: 1 },
-  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
+  badge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 999 },
   badgeText: { fontSize: typography.sm, fontWeight: typography.medium },
+  appliedBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: colors.success + '20',
+  },
+  appliedText: { fontSize: typography.xs, fontWeight: typography.semibold, color: colors.success },
   salary: { fontSize: typography.base, color: colors.text, marginTop: 6, fontWeight: typography.medium },
   posted: { fontSize: typography.sm, color: colors.textMuted, marginTop: 6 },
   section: { marginBottom: spacing.md },

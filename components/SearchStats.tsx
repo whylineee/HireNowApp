@@ -49,9 +49,8 @@ function getPluralForm(count: number): string {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    marginBottom: spacing.sm,
+    flex: 1,
+    paddingVertical: spacing.xs,
   },
   count: {
     fontSize: typography.sm,

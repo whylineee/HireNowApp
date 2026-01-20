@@ -18,14 +18,14 @@ export function Card({ children, style, padded = true, elevated = true }: CardPr
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.md,
+    backgroundColor: colors.surfaceElevated,
+    borderRadius: borderRadius.lg,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
   },
   padded: { padding: spacing.md },
   elevated: {
-    ...colors.shadow.md,
+    ...colors.shadow.lg,
   },
 });

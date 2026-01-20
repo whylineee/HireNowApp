@@ -12,7 +12,7 @@ export function EmptyState({ title, subtitle, icon = 'search-outline' }: EmptySt
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
-        <Ionicons name={icon} size={64} color={colors.textMuted} />
+        <Ionicons name={icon} size={48} color={colors.primary} />
       </View>
       <Text style={styles.title}>{title}</Text>
       {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
@@ -30,7 +30,12 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     marginBottom: spacing.lg,
-    opacity: 0.5,
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: colors.primary + '12',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontSize: typography.xl,

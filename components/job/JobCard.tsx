@@ -9,11 +9,18 @@ import { FavoriteButton } from './FavoriteButton';
 interface JobCardProps {
   job: Job;
   isFavorite?: boolean;
+  isApplied?: boolean;
   onFavoritePress?: () => void;
   showFavorite?: boolean;
 }
 
-export function JobCard({ job, isFavorite = false, onFavoritePress, showFavorite = true }: JobCardProps) {
+export function JobCard({
+  job,
+  isFavorite = false,
+  isApplied = false,
+  onFavoritePress,
+  showFavorite = true,
+}: JobCardProps) {
   const handleCardPress = () => {
     router.push(`/job/${job.id}`);
   };
@@ -41,10 +48,17 @@ export function JobCard({ job, isFavorite = false, onFavoritePress, showFavorite
 
         <View style={styles.meta}>
           <Text style={styles.location} numberOfLines={1}>📍 {job.location}</Text>
-          <View style={[styles.badge, { backgroundColor: JOB_TYPE_COLORS[job.type] + '20' }]}>
-            <Text style={[styles.badgeText, { color: JOB_TYPE_COLORS[job.type] }]}>
-              {JOB_TYPE_LABELS[job.type]}
-            </Text>
+          <View style={styles.badgeRow}>
+            <View style={[styles.badge, { backgroundColor: JOB_TYPE_COLORS[job.type] + '18' }]}>
+              <Text style={[styles.badgeText, { color: JOB_TYPE_COLORS[job.type] }]}>
+                {JOB_TYPE_LABELS[job.type]}
+              </Text>
+            </View>
+            {isApplied && (
+              <View style={styles.appliedBadge}>
+                <Text style={styles.appliedText}>Відгукнуто</Text>
+              </View>
+            )}
           </View>
         </View>
 
@@ -53,7 +67,7 @@ export function JobCard({ job, isFavorite = false, onFavoritePress, showFavorite
         )}
 
         <Text style={styles.description} numberOfLines={2}>{job.description}</Text>
-        <Text style={styles.posted}>{job.postedAt}</Text>
+        <Text style={styles.posted}>🕒 {job.postedAt}</Text>
       </Card>
     </TouchableOpacity>
   );
@@ -61,15 +75,23 @@ export function JobCard({ job, isFavorite = false, onFavoritePress, showFavorite
 
 const styles = StyleSheet.create({
   card: { marginBottom: spacing.md },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 },
   headerText: { flex: 1, marginRight: spacing.sm },
   title: { fontSize: typography.lg, fontWeight: typography.semibold, color: colors.text },
   company: { fontSize: typography.sm, color: colors.primary, marginTop: 2, fontWeight: typography.medium },
-  meta: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
-  location: { fontSize: typography.sm, color: colors.textSecondary, flex: 1 },
-  badge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: 6 },
+  meta: { marginBottom: 6 },
+  location: { fontSize: typography.sm, color: colors.textSecondary, marginBottom: 6 },
+  badgeRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
   badgeText: { fontSize: typography.xs, fontWeight: typography.medium },
+  appliedBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: colors.success + '15',
+  },
+  appliedText: { fontSize: typography.xs, fontWeight: typography.semibold, color: colors.success },
   salary: { fontSize: typography.sm, color: colors.textSecondary, marginBottom: 6 },
-  description: { fontSize: typography.sm, color: colors.textMuted, lineHeight: 20 },
-  posted: { fontSize: typography.xs, color: colors.textMuted, marginTop: 8 },
+  description: { fontSize: typography.sm, color: colors.textSecondary, lineHeight: 20 },
+  posted: { fontSize: typography.xs, color: colors.textMuted, marginTop: 10 },
 });
