@@ -1,20 +1,23 @@
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { borderRadius, colors, spacing, typography } from '@/constants/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import { router, usePathname } from 'expo-router';
-import { colors, spacing, borderRadius, typography } from '@/constants/theme';
-
-const TABS = [
-  { key: 'home', label: 'Головна', icon: 'home-outline' as const, href: '/' },
-  { key: 'favorites', label: 'Збережені', icon: 'heart-outline' as const, href: '/favorites' },
-  { key: 'profile', label: 'Мій кабінет', icon: 'person-circle-outline' as const, href: '/profile' },
-] as const;
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { t } = useTranslation();
+
+  const tabs = [
+    { key: 'home', label: t('navigation.home'), icon: 'home-outline' as const, href: '/' },
+    { key: 'favorites', label: t('navigation.favorites'), icon: 'heart-outline' as const, href: '/favorites' },
+    { key: 'messages', label: t('navigation.messages'), icon: 'chatbubble-outline' as const, href: '/messages' },
+    { key: 'settings', label: t('navigation.settings'), icon: 'settings-outline' as const, href: '/settings' },
+  ] as const;
 
   return (
     <View style={styles.container}>
-      {TABS.map((tab) => {
+      {tabs.map((tab) => {
         const isActive = tab.href === '/' ? pathname === '/' : pathname.startsWith(tab.href);
         return (
           <TouchableOpacity
@@ -22,7 +25,10 @@ export function BottomNav() {
             style={styles.tab}
             activeOpacity={0.8}
             onPress={() => {
-              if (!isActive) router.push(tab.href);
+              if (!isActive) {
+                const href = tab.href as any;
+                router.push(href);
+              }
             }}
           >
             <View style={[styles.iconWrapper, isActive && styles.iconWrapperActive]}>

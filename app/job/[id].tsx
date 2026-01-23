@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, StyleSheet, Share, Alert } from 'react-native';
-import { useLocalSearchParams, router, Stack } from 'expo-router';
-import { Screen } from '@/components/layout/Screen';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { FavoriteButton } from '@/components/job/FavoriteButton';
-import { getJobById } from '@/services/jobs';
+import { Screen } from '@/components/layout/Screen';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { JOB_TYPE_COLORS, JOB_TYPE_LABELS } from '@/constants/job';
+import { colors, spacing, typography } from '@/constants/theme';
 import { useApplications } from '@/hooks/useApplications';
 import { useFavorites } from '@/hooks/useFavorites';
-import { JOB_TYPE_LABELS, JOB_TYPE_COLORS } from '@/constants/job';
+import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
-import { colors, spacing, typography } from '@/constants/theme';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Share, StyleSheet, Text, View } from 'react-native';
 
 export default function JobDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

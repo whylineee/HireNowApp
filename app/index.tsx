@@ -1,11 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { EmptyState } from '@/components/EmptyState';
 import { FilterChips } from '@/components/FilterChips';
 import { JobCard } from '@/components/job/JobCard';
+import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
-import { BottomNav } from '@/components/layout/BottomNav';
 import { QuickFilters } from '@/components/QuickFilters';
 import { RecentSearches } from '@/components/RecentSearches';
 import { SearchBar } from '@/components/SearchBar';
@@ -19,10 +17,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useJobs } from '@/hooks/useJobs';
 import { useRecentSearches } from '@/hooks/useRecentSearches';
+import { useTranslation } from '@/hooks/useTranslation';
+import { createEmployerJob, getEmployerJobs } from '@/services/jobs';
 import type { Job, JobType } from '@/types/job';
 import type { UserRole } from '@/types/user';
 import { extractSalary } from '@/utils/salary';
-import { getEmployerJobs, createEmployerJob } from '@/services/jobs';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type WorkerTab = 'search' | 'profile';
 
@@ -45,13 +46,14 @@ interface RegistrationProps {
 }
 
 function RegistrationScreen({ onRegister }: RegistrationProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [role, setRole] = useState<UserRole>('worker');
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = () => {
     if (!name.trim()) {
-      setError('Вкажіть, будь ласка, ваше імʼя');
+      setError(t('auth.nameRequired'));
       return;
     }
     onRegister({ name: name.trim(), role });
@@ -112,6 +114,7 @@ interface WorkerHomeProps {
 }
 
 function WorkerHome({ userName, onUpdateProfile }: WorkerHomeProps) {
+  const { t } = useTranslation();
   const { jobs, loading, error, search, refetch } = useJobs();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isApplied } = useApplications();

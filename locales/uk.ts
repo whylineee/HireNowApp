@@ -1,0 +1,105 @@
+export const ukTranslations = {
+  common: {
+    search: "Пошук",
+    save: "Зберегти",
+    cancel: "Скасувати",
+    delete: "Видалити",
+    edit: "Редагувати",
+    loading: "Завантаження...",
+    error: "Помилка",
+    retry: "Спробувати ще",
+    back: "Назад",
+    next: "Далі",
+    done: "Готово",
+    yes: "Так",
+    no: "Ні"
+  },
+  auth: {
+    register: "Створити акаунт",
+    login: "Увійти",
+    logout: "Вийти",
+    whoAreYou: "Хто ви?",
+    iAmJobSeeker: "Я шукаю роботу",
+    iAmEmployer: "Я роботодавець",
+    yourName: "Ваше ім'я",
+    namePlaceholder: "Як до вас звертатися?",
+    startJobSearch: "Почати пошук роботи",
+    goToEmployerPanel: "Перейти до кабінету роботодавця",
+    nameRequired: "Вкажіть, будь ласка, ваше ім'я"
+  },
+  navigation: {
+    home: "Головна",
+    favorites: "Збережені",
+    messages: "Повідомлення",
+    profile: "Профіль",
+    settings: "Налаштування"
+  },
+  jobs: {
+    searchJobs: "Пошук роботи",
+    myResume: "Моє резюме",
+    position: "Позиція / роль",
+    positionPlaceholder: "Наприклад: Junior React Native Developer",
+    aboutYourself: "Про себе",
+    aboutPlaceholder: "Коротко опишіть свій досвід та цілі",
+    skills: "Навички",
+    skillsPlaceholder: "React, TypeScript, Node.js...",
+    experience: "Досвід",
+    experiencePlaceholder: "Опишіть попередній досвід, проєкти, досягнення",
+    saveResume: "Зберегти резюме",
+    nothingFound: "Нічого не знайдено",
+    nothingFoundSubtitle: "Спробуйте змінити пошуковий запит, локацію або використайте швидкі фільтри",
+    loadingJobs: "Завантаження вакансій...",
+    newVacancy: "Нова вакансія",
+    employerPanel: "Кабінет роботодавця",
+    employerSubtitle: "Створюйте та керуйте своїми вакансіями",
+    noVacanciesYet: "Ще немає вакансій",
+    noVacanciesSubtitle: "Створіть свою першу вакансію, щоб кандидати могли відгукнутися"
+  },
+  jobForm: {
+    title: "Посада",
+    titlePlaceholder: "Наприклад: Middle React Native Developer",
+    company: "Компанія",
+    companyPlaceholder: "Назва компанії",
+    location: "Локація",
+    locationPlaceholder: "Місто / Віддалено",
+    salary: "Зарплата (необов'язково)",
+    salaryPlaceholder: "₴60 000 – ₴90 000",
+    employmentType: "Тип зайнятості",
+    employmentTypePlaceholder: "full-time, remote тощо",
+    description: "Опис",
+    descriptionPlaceholder: "Опишіть роль, команду та стек",
+    requirements: "Вимоги",
+    requirementsPlaceholder: "Кожна вимога з нового рядка\nReact Native\nTypeScript\nREST API",
+    createVacancy: "Створити вакансію"
+  },
+  settings: {
+    title: "Налаштування",
+    language: "Мова",
+    theme: "Тема",
+    notifications: "Сповіщення",
+    about: "Про додаток",
+    version: "Версія",
+    ukrainian: "Українська",
+    english: "English",
+    lightTheme: "Світла",
+    darkTheme: "Темна",
+    systemTheme: "Системна"
+  },
+  messages: {
+    title: "Повідомлення",
+    noMessages: "Немає повідомлень",
+    typeMessage: "Напишіть повідомлення...",
+    sendMessage: "Надіслати"
+  },
+  applications: {
+    title: "Мої заявки",
+    status: {
+      pending: "На розгляді",
+      viewed: "Переглянуто",
+      accepted: "Прийнято",
+      rejected: "Відмовлено"
+    },
+    noApplications: "Немає заявок",
+    appliedOn: "Подано"
+  }
+} as const;

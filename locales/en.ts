@@ -1,0 +1,105 @@
+export const enTranslations = {
+  common: {
+    search: "Search",
+    save: "Save",
+    cancel: "Cancel",
+    delete: "Delete",
+    edit: "Edit",
+    loading: "Loading...",
+    error: "Error",
+    retry: "Retry",
+    back: "Back",
+    next: "Next",
+    done: "Done",
+    yes: "Yes",
+    no: "No"
+  },
+  auth: {
+    register: "Create account",
+    login: "Login",
+    logout: "Logout",
+    whoAreYou: "Who are you?",
+    iAmJobSeeker: "I'm looking for a job",
+    iAmEmployer: "I'm an employer",
+    yourName: "Your name",
+    namePlaceholder: "What should we call you?",
+    startJobSearch: "Start job search",
+    goToEmployerPanel: "Go to employer panel",
+    nameRequired: "Please enter your name"
+  },
+  navigation: {
+    home: "Home",
+    favorites: "Favorites",
+    messages: "Messages",
+    profile: "Profile",
+    settings: "Settings"
+  },
+  jobs: {
+    searchJobs: "Search jobs",
+    myResume: "My resume",
+    position: "Position / role",
+    positionPlaceholder: "e.g. Junior React Native Developer",
+    aboutYourself: "About yourself",
+    aboutPlaceholder: "Briefly describe your experience and goals",
+    skills: "Skills",
+    skillsPlaceholder: "React, TypeScript, Node.js...",
+    experience: "Experience",
+    experiencePlaceholder: "Describe previous experience, projects, achievements",
+    saveResume: "Save resume",
+    nothingFound: "Nothing found",
+    nothingFoundSubtitle: "Try changing your search query, location, or use quick filters",
+    loadingJobs: "Loading jobs...",
+    newVacancy: "New vacancy",
+    employerPanel: "Employer panel",
+    employerSubtitle: "Create and manage your vacancies",
+    noVacanciesYet: "No vacancies yet",
+    noVacanciesSubtitle: "Create your first vacancy so candidates can apply"
+  },
+  jobForm: {
+    title: "Position",
+    titlePlaceholder: "e.g. Middle React Native Developer",
+    company: "Company",
+    companyPlaceholder: "Company name",
+    location: "Location",
+    locationPlaceholder: "City / Remote",
+    salary: "Salary (optional)",
+    salaryPlaceholder: "$3000 - $5000",
+    employmentType: "Employment type",
+    employmentTypePlaceholder: "full-time, remote, etc.",
+    description: "Description",
+    descriptionPlaceholder: "Describe the role, team, and tech stack",
+    requirements: "Requirements",
+    requirementsPlaceholder: "Each requirement on a new line\nReact Native\nTypeScript\nREST API",
+    createVacancy: "Create vacancy"
+  },
+  settings: {
+    title: "Settings",
+    language: "Language",
+    theme: "Theme",
+    notifications: "Notifications",
+    about: "About",
+    version: "Version",
+    ukrainian: "Ukrainian",
+    english: "English",
+    lightTheme: "Light",
+    darkTheme: "Dark",
+    systemTheme: "System"
+  },
+  messages: {
+    title: "Messages",
+    noMessages: "No messages",
+    typeMessage: "Type a message...",
+    sendMessage: "Send"
+  },
+  applications: {
+    title: "My applications",
+    status: {
+      pending: "Pending",
+      viewed: "Viewed",
+      accepted: "Accepted",
+      rejected: "Rejected"
+    },
+    noApplications: "No applications",
+    appliedOn: "Applied on"
+  }
+} as const;
