@@ -1,7 +1,7 @@
-import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
 import { colors, spacing, typography } from '@/constants/theme';
+import { useAuth } from '@/hooks/useAuth';
 import type { ThemeMode } from '@/hooks/useTheme';
 import { useTheme } from '@/hooks/useTheme';
 import type { Language } from '@/hooks/useTranslation';
@@ -9,8 +9,19 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function SettingsScreen() {
+  const { user } = useAuth();
   const { language, setLanguage, t } = useTranslation();
   const { themeMode, setThemeMode } = useTheme();
+  
+  if (!user) {
+    return (
+      <Screen>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 18, color: colors.text, marginBottom: 16 }}>Будь ласка, зареєструйтесь для доступу</Text>
+        </View>
+      </Screen>
+    );
+  }
 
   const handleLanguageChange = (lang: Language) => {
     setLanguage(lang);
@@ -90,7 +101,6 @@ export default function SettingsScreen() {
           </View>
         </View>
       </View>
-      <BottomNav />
     </Screen>
   );
 }

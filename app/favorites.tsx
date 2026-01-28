@@ -1,26 +1,33 @@
-import { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { Stack } from 'expo-router';
 import { EmptyState } from '@/components/EmptyState';
 import { JobCard } from '@/components/job/JobCard';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
-import { BottomNav } from '@/components/layout/BottomNav';
+import { colors, spacing, typography } from '@/constants/theme';
 import { useApplications } from '@/hooks/useApplications';
+import { useAuth } from '@/hooks/useAuth';
 import { useFavorites } from '@/hooks/useFavorites';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
-import { colors, spacing, typography } from '@/constants/theme';
+import { Stack } from 'expo-router';
+import { useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
 export default function FavoritesScreen() {
+  const { user } = useAuth();
   const { favorites, toggleFavorite } = useFavorites();
   const { isApplied } = useApplications();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadFavoriteJobs();
-  }, [favorites]);
+  if (!user) {
+    return (
+      <Screen>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 18, color: colors.text, marginBottom: 16 }}>Будь ласка, зареєструйтесь для доступу</Text>
+        </View>
+      </Screen>
+    );
+  }
 
   const loadFavoriteJobs = async () => {
     if (favorites.length === 0) {
@@ -80,7 +87,6 @@ export default function FavoritesScreen() {
           />
         )}
       </View>
-      <BottomNav />
     </Screen>
   );
 }

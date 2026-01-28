@@ -1,7 +1,7 @@
-import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
 import { colors, spacing, typography } from '@/constants/theme';
+import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
@@ -26,9 +26,24 @@ interface Conversation {
 
 export default function MessagesScreen() {
   const { t } = useTranslation();
+  const { user } = useAuth();
+
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  
-  const [conversations, setConversations] = useState<Conversation[]>([
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState('');
+
+  if (!user) {
+    return (
+      <Screen>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 18, color: colors.text, marginBottom: 16 }}>Будь ласка, зареєструйтесь для доступу</Text>
+        </View>
+      </Screen>
+    );
+  }
+
+  setConversations([
     {
       id: '1',
       participantName: 'IT Company',
@@ -47,7 +62,7 @@ export default function MessagesScreen() {
     }
   ]);
 
-  const [messages, setMessages] = useState<Message[]>([
+  setMessages([
     {
       id: '1',
       text: 'Доброго дня! Зацікавила ваша вакансія React Native розробника.',
@@ -77,8 +92,6 @@ export default function MessagesScreen() {
       senderName: 'IT Company'
     }
   ]);
-
-  const [newMessage, setNewMessage] = useState('');
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
@@ -158,7 +171,6 @@ export default function MessagesScreen() {
             </TouchableOpacity>
           </View>
         </View>
-        <BottomNav />
       </Screen>
     );
   }
@@ -201,7 +213,6 @@ export default function MessagesScreen() {
           />
         )}
       </View>
-      <BottomNav />
     </Screen>
   );
 }
