@@ -1,6 +1,6 @@
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { borderRadius, colors, spacing, typography } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, borderRadius, typography } from '@/constants/theme';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface SearchBarProps {
   value: string;
@@ -59,11 +59,11 @@ export function SearchBar({
 
 const styles = StyleSheet.create({
   wrapper: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: colors.surface,
     borderRadius: borderRadius.xl,
     padding: spacing.md,
     marginBottom: spacing.md,
-    ...colors.shadow.lg,
+    ...colors.shadow.md,
     borderWidth: 1,
     borderColor: colors.border,
   },
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
     paddingTop: spacing.sm,
     borderTopWidth: 1,
-    borderTopColor: colors.border,
+    borderTopColor: colors.borderLight,
   },
   locationInput: {
     flex: 1,

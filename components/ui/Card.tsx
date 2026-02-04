@@ -1,5 +1,5 @@
-import { View, StyleSheet, ViewStyle } from 'react-native';
-import { colors, spacing, borderRadius } from '@/constants/theme';
+import { borderRadius, colors, spacing } from '@/constants/theme';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 
 interface CardProps {
   children: React.ReactNode;
@@ -18,14 +18,14 @@ export function Card({ children, style, padded = true, elevated = true }: CardPr
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: borderRadius.lg,
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.xl,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.border,
   },
   padded: { padding: spacing.md },
   elevated: {
-    ...colors.shadow.lg,
+    ...colors.shadow.md,
   },
 });

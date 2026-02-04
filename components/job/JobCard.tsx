@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 999,
-    backgroundColor: colors.success + '15',
+    backgroundColor: colors.success + '12',
   },
   appliedText: { fontSize: typography.xs, fontWeight: typography.semibold, color: colors.success },
   salary: { fontSize: typography.sm, color: colors.textSecondary, marginBottom: 6 },

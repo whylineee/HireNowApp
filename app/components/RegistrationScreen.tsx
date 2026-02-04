@@ -5,7 +5,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import type { UserRole } from '@/types/user';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface RegistrationScreenProps {
   onRegister: (params: { name: string; role: UserRole }) => void;
@@ -13,16 +13,25 @@ interface RegistrationScreenProps {
 
 export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
   const { t } = useTranslation();
-  const [name, setName] = useState('');
-  const [role, setRole] = useState<UserRole>('worker');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = () => {
-    if (!name.trim()) {
-      setError(t('auth.nameRequired'));
+    if (!email.trim() || !phone.trim() || !password.trim()) {
+      setError('Заповніть всі поля');
       return;
     }
-    onRegister({ name: name.trim(), role });
+    if (!agreeToTerms) {
+      setError('Погодьтеся з умовами використання');
+      return;
+    }
+    // Extract name from email for now
+    const name = email.split('@')[0];
+    onRegister({ name: name.trim(), role: 'worker' });
   };
 
   const handleGoogleAuth = () => {
@@ -42,228 +51,298 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.welcomeSection}>
-        <View style={styles.logoContainer}>
-          <Text style={styles.logo}>HireNow</Text>
-          <Text style={styles.tagline}>Ваша кар&apos;єра починається тут</Text>
-        </View>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton}>
+          <Ionicons name="chevron-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Sign up</Text>
       </View>
 
-      <View style={styles.registrationCard}>
-        <Text style={styles.title}>Створити акаунт</Text>
-        <Text style={styles.subtitle}>Оберіть вашу роль та почніть шлях до успіху</Text>
-        
-        <View style={styles.roleSelection}>
-          <Text style={styles.roleLabel}>Я ви?</Text>
-          <View style={styles.roleCards}>
-            <TouchableOpacity
-              style={[styles.roleCard, role === 'worker' && styles.roleCardActive]}
-              onPress={() => setRole('worker')}
-              activeOpacity={0.8}
-            >
-              <View style={styles.roleIcon}>
-                <Ionicons name="person-outline" size={32} color={role === 'worker' ? colors.primary : colors.textSecondary} />
+      <View style={styles.content}>
+        <View style={styles.welcomeSection}>
+          <Text style={styles.welcomeTitle}>Welcome to us,</Text>
+          <Text style={styles.welcomeSubtitle}>Hello there, create New account</Text>
+        </View>
+
+        <View style={styles.illustrationContainer}>
+          <View style={styles.phoneIllustration}>
+            <View style={styles.phoneFrame}>
+              <View style={styles.phoneScreen}>
+                <View style={styles.userCircle}>
+                  <Ionicons name="person" size={40} color={colors.primary} />
+                </View>
               </View>
-              <Text style={[styles.roleTitle, role === 'worker' && styles.roleTitleActive]}>Шукач роботи</Text>
-              <Text style={styles.roleDescription}>Знайдіть ідеальну роботу</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={[styles.roleCard, role === 'employer' && styles.roleCardActive]}
-              onPress={() => setRole('employer')}
-              activeOpacity={0.8}
-            >
-              <View style={styles.roleIcon}>
-                <Ionicons name="business-outline" size={32} color={role === 'employer' ? colors.primary : colors.textSecondary} />
-              </View>
-              <Text style={[styles.roleTitle, role === 'employer' && styles.roleTitleActive]}>Роботодавець</Text>
-              <Text style={styles.roleDescription}>Знайдіть талановитих людей</Text>
-            </TouchableOpacity>
+            </View>
+            <View style={[styles.circle, styles.circle1]} />
+            <View style={[styles.circle, styles.circle2]} />
+            <View style={[styles.circle, styles.circle3]} />
+            <View style={[styles.circle, styles.circle4]} />
           </View>
         </View>
 
-        <View style={styles.inputSection}>
+        <View style={styles.formSection}>
           <Input
-            label="Ваше ім'я"
-            placeholder="Іван Петренко"
-            value={name}
+            placeholder="capicreativedesign"
+            value={email}
             onChangeText={(text) => {
-              setName(text);
+              setEmail(text);
               if (error) setError(null);
             }}
-            error={error ?? undefined}
-            autoCapitalize="words"
+            containerStyle={styles.inputContainer}
           />
-        </View>
-
-        <View style={styles.socialAuthSection}>
-          <Text style={styles.dividerText}>Або увійдіть через</Text>
-          <View style={styles.socialButtons}>
+          
+          <Input
+            placeholder="(+84) 332249402"
+            value={phone}
+            onChangeText={(text) => {
+              setPhone(text);
+              if (error) setError(null);
+            }}
+            containerStyle={styles.inputContainer}
+          />
+          
+          <View style={styles.passwordContainer}>
+            <Input
+              placeholder="Password"
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                if (error) setError(null);
+              }}
+              secureTextEntry={!showPassword}
+              containerStyle={styles.passwordInput}
+            />
             <TouchableOpacity
-              style={styles.socialButton}
-              onPress={handleGoogleAuth}
-              activeOpacity={0.8}
+              style={styles.eyeIcon}
+              onPress={() => setShowPassword(!showPassword)}
             >
-              <Ionicons name="logo-google" size={20} color={colors.text} />
-              <Text style={styles.socialButtonText}>Google</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={styles.socialButton}
-              onPress={handlePhoneAuth}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="phone-portrait-outline" size={20} color={colors.text} />
-              <Text style={styles.socialButtonText}>Телефон</Text>
+              <Ionicons 
+                name={showPassword ? "eye-off" : "eye"} 
+                size={20} 
+                color={colors.textSecondary} 
+              />
             </TouchableOpacity>
           </View>
-        </View>
 
-        <View style={styles.actionSection}>
+          {error && (
+            <Text style={styles.errorText}>{error}</Text>
+          )}
+
+          <View style={styles.termsContainer}>
+            <TouchableOpacity
+              style={styles.checkbox}
+              onPress={() => setAgreeToTerms(!agreeToTerms)}
+            >
+              <View style={[styles.checkboxInner, agreeToTerms && styles.checkboxChecked]}>
+                {agreeToTerms && (
+                  <Ionicons name="checkmark" size={12} color="#fff" />
+                )}
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.termsText}>
+              By creating an account your aggree to our{' '}
+              <Text style={styles.termsLink}>Term and Condtions</Text>
+            </Text>
+          </View>
+
           <Button
-            title={role === 'worker' ? 'Почати пошук роботи' : 'Перейти до кабінету'}
+            title="Sign up"
             onPress={handleSubmit}
             fullWidth
           />
-          <Text style={styles.termsText}>Реєструючись, ви погоджуєтесь з умовами використання</Text>
+
+          <View style={styles.signInContainer}>
+            <Text style={styles.signInText}>Have an account? </Text>
+            <TouchableOpacity>
+              <Text style={styles.signInLink}>Sign In</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.background,
   },
-  welcomeSection: {
-    flex: 1,
-    justifyContent: 'center',
+  header: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-    paddingBottom: spacing.xl,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing.lg,
   },
-  logoContainer: {
-    alignItems: 'center',
+  backButton: {
+    marginRight: spacing.lg,
   },
-  logo: {
-    fontSize: 48,
-    fontWeight: typography.bold,
-    color: colors.primary,
-    marginBottom: spacing.sm,
-  },
-  tagline: {
-    fontSize: typography.base,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  registrationCard: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    padding: spacing.xl,
-    paddingTop: 48,
-    ...colors.shadow.lg,
-  },
-  title: {
+  headerTitle: {
     fontSize: typography.xl,
     fontWeight: typography.bold,
     color: colors.text,
-    marginBottom: spacing.xs,
-    textAlign: 'center',
   },
-  subtitle: {
-    fontSize: typography.base,
+  content: {
+    flex: 1,
+    paddingHorizontal: spacing.xl,
+  },
+  welcomeSection: {
+    alignItems: 'center',
+    marginBottom: spacing.xl,
+  },
+  welcomeTitle: {
+    fontSize: typography['3xl'],
+    fontWeight: typography.bold,
+    color: colors.text,
+    marginBottom: spacing.xs,
+  },
+  welcomeSubtitle: {
+    fontSize: typography.lg,
     color: colors.textSecondary,
     textAlign: 'center',
+  },
+  illustrationContainer: {
+    alignItems: 'center',
     marginBottom: spacing.xl,
   },
-  roleSelection: {
-    marginBottom: spacing.xl,
+  phoneIllustration: {
+    position: 'relative',
+    width: 120,
+    height: 200,
   },
-  roleLabel: {
-    fontSize: typography.lg,
-    fontWeight: typography.semibold,
-    color: colors.text,
-    marginBottom: spacing.md,
-  },
-  roleCards: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  roleCard: {
-    flex: 1,
-    backgroundColor: colors.background,
+  phoneFrame: {
+    position: 'absolute',
+    width: 80,
+    height: 160,
+    backgroundColor: colors.surface,
+    borderRadius: 12,
     borderWidth: 2,
     borderColor: colors.borderLight,
-    borderRadius: 16,
-    padding: spacing.md,
+    left: 20,
+    top: 20,
+  },
+  phoneScreen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    margin: 4,
+  },
+  userCircle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: colors.primary + '20',
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  roleCardActive: {
-    borderColor: colors.primary,
-    backgroundColor: colors.primary + '10',
+  circle: {
+    position: 'absolute',
+    borderRadius: 20,
   },
-  roleIcon: {
-    marginBottom: spacing.sm,
+  circle1: {
+    width: 20,
+    height: 20,
+    backgroundColor: '#FF6B6B',
+    top: 10,
+    left: 10,
   },
-  roleTitle: {
-    fontSize: typography.base,
-    fontWeight: typography.semibold,
-    color: colors.text,
-    marginBottom: spacing.xs,
-    textAlign: 'center',
+  circle2: {
+    width: 15,
+    height: 15,
+    backgroundColor: '#4ECDC4',
+    top: 30,
+    right: 15,
   },
-  roleTitleActive: {
-    color: colors.primary,
+  circle3: {
+    width: 25,
+    height: 25,
+    backgroundColor: '#45B7D1',
+    bottom: 40,
+    left: 5,
   },
-  roleDescription: {
+  circle4: {
+    width: 18,
+    height: 18,
+    backgroundColor: '#96CEB4',
+    bottom: 20,
+    right: 10,
+  },
+  formSection: {
+    gap: spacing.md,
+  },
+  inputContainer: {
+    marginBottom: spacing.md,
+  },
+  passwordContainer: {
+    position: 'relative',
+    marginBottom: spacing.md,
+  },
+  passwordInput: {
+    paddingRight: 50,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 16,
+    top: 16,
+  },
+  errorText: {
     fontSize: typography.sm,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  inputSection: {
-    marginBottom: spacing.xl,
-  },
-  socialAuthSection: {
-    marginBottom: spacing.xl,
-  },
-  dividerText: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
+    color: colors.error,
     textAlign: 'center',
     marginBottom: spacing.md,
   },
-  socialButtons: {
+  termsContainer: {
     flexDirection: 'row',
-    gap: spacing.md,
+    alignItems: 'flex-start',
+    marginBottom: spacing.lg,
+    paddingHorizontal: spacing.xs,
   },
-  socialButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.background,
-    borderWidth: 1,
+  checkbox: {
+    marginRight: spacing.sm,
+    marginTop: 2,
+  },
+  checkboxInner: {
+    width: 18,
+    height: 18,
+    borderRadius: 4,
+    borderWidth: 2,
     borderColor: colors.borderLight,
-    borderRadius: 12,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.sm,
-    gap: spacing.sm,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  socialButtonText: {
-    fontSize: typography.base,
-    color: colors.text,
-    fontWeight: typography.medium,
-  },
-  actionSection: {
-    gap: spacing.md,
+  checkboxChecked: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   termsText: {
-    fontSize: typography.xs,
-    color: colors.textMuted,
-    textAlign: 'center',
+    flex: 1,
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    lineHeight: 18,
+  },
+  termsLink: {
+    color: colors.primary,
+    textDecorationLine: 'underline',
+  },
+  signupButton: {
+    marginBottom: spacing.lg,
+  },
+  signInContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  signInText: {
+    fontSize: typography.base,
+    color: colors.textSecondary,
+  },
+  signInLink: {
+    fontSize: typography.base,
+    color: colors.primary,
+    fontWeight: typography.semibold,
   },
 });
 

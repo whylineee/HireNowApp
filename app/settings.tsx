@@ -124,7 +124,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
+    ...colors.shadow.sm,
   },
   option: {
     padding: spacing.md,
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.borderLight,
   },
   optionActive: {
-    backgroundColor: colors.primary + '10',
+    backgroundColor: colors.primary + '08',
   },
   optionText: {
     fontSize: typography.base,

@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet, Switch, ScrollView } from 'react-native';
-import { Screen } from '@/components/layout/Screen';
-import { Header } from '@/components/layout/Header';
 import { BottomNav } from '@/components/layout/BottomNav';
+import { Header } from '@/components/layout/Header';
+import { Screen } from '@/components/layout/Screen';
+import { borderRadius, colors, spacing, typography } from '@/constants/theme';
 import { useAuth } from '@/hooks/useAuth';
-import { colors, spacing, typography, borderRadius } from '@/constants/theme';
+import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 export default function ProfileScreen() {
   const { user } = useAuth();
@@ -59,13 +59,13 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xxl,
   },
   card: {
-    backgroundColor: colors.surfaceElevated,
-    borderRadius: borderRadius.lg,
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.xl,
     padding: spacing.lg,
     marginBottom: spacing.md,
     borderWidth: 1,
     borderColor: colors.border,
-    ...colors.shadow.lg,
+    ...colors.shadow.md,
   },
   cardTitle: {
     fontSize: typography.lg,

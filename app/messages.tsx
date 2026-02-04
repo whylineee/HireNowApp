@@ -4,7 +4,7 @@ import { colors, spacing, typography } from '@/constants/theme';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface Message {
@@ -33,6 +33,59 @@ export default function MessagesScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
 
+  useEffect(() => {
+    // Ініціалізація даних при першому завантаженні
+    setConversations([
+      {
+        id: '1',
+        participantName: 'IT Company',
+        participantRole: 'Роботодавець',
+        lastMessage: 'Чудово, чекаємо на вас на співбесіду!',
+        timestamp: new Date(Date.now() - 1000 * 60 * 5),
+        unread: 2
+      },
+      {
+        id: '2',
+        participantName: 'John Doe',
+        participantRole: 'Кандидат',
+        lastMessage: 'Дякую за можливість!',
+        timestamp: new Date(Date.now() - 1000 * 60 * 60),
+        unread: 0
+      }
+    ]);
+
+    setMessages([
+      {
+        id: '1',
+        text: 'Доброго дня! Зацікавила ваша вакансія React Native розробника.',
+        sender: 'me',
+        timestamp: new Date(Date.now() - 1000 * 60 * 30),
+        senderName: 'Я'
+      },
+      {
+        id: '2',
+        text: 'Привіт! Раді це чути. Розкажіть, будь ласка, про ваш досвід.',
+        sender: 'other',
+        timestamp: new Date(Date.now() - 1000 * 60 * 25),
+        senderName: 'IT Company'
+      },
+      {
+        id: '3',
+        text: 'Я маю 3 роки досвіду з React Native та 2 роки з React.',
+        sender: 'me',
+        timestamp: new Date(Date.now() - 1000 * 60 * 20),
+        senderName: 'Я'
+      },
+      {
+        id: '4',
+        text: 'Чудово, чекаємо на вас на співбесіду!',
+        sender: 'other',
+        timestamp: new Date(Date.now() - 1000 * 60 * 5),
+        senderName: 'IT Company'
+      }
+    ]);
+  }, []);
+
   if (!user) {
     return (
       <Screen>
@@ -42,56 +95,6 @@ export default function MessagesScreen() {
       </Screen>
     );
   }
-
-  setConversations([
-    {
-      id: '1',
-      participantName: 'IT Company',
-      participantRole: 'Роботодавець',
-      lastMessage: 'Чудово, чекаємо на вас на співбесіду!',
-      timestamp: new Date(Date.now() - 1000 * 60 * 5),
-      unread: 2
-    },
-    {
-      id: '2',
-      participantName: 'John Doe',
-      participantRole: 'Кандидат',
-      lastMessage: 'Дякую за можливість!',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60),
-      unread: 0
-    }
-  ]);
-
-  setMessages([
-    {
-      id: '1',
-      text: 'Доброго дня! Зацікавила ваша вакансія React Native розробника.',
-      sender: 'me',
-      timestamp: new Date(Date.now() - 1000 * 60 * 30),
-      senderName: 'Я'
-    },
-    {
-      id: '2',
-      text: 'Привіт! Раді це чути. Розкажіть, будь ласка, про ваш досвід.',
-      sender: 'other',
-      timestamp: new Date(Date.now() - 1000 * 60 * 25),
-      senderName: 'IT Company'
-    },
-    {
-      id: '3',
-      text: 'Я маю 3 роки досвіду з React Native та 2 роки з React.',
-      sender: 'me',
-      timestamp: new Date(Date.now() - 1000 * 60 * 20),
-      senderName: 'Я'
-    },
-    {
-      id: '4',
-      text: 'Чудово, чекаємо на вас на співбесіду!',
-      sender: 'other',
-      timestamp: new Date(Date.now() - 1000 * 60 * 5),
-      senderName: 'IT Company'
-    }
-  ]);
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
@@ -220,15 +223,17 @@ export default function MessagesScreen() {
 const styles = StyleSheet.create({
   conversationsList: {
     padding: spacing.md,
+    paddingBottom: 120, // Враховуємо плаваючу навігацію
   },
   conversationItem: {
     flexDirection: 'row',
     backgroundColor: colors.surface,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: spacing.md,
     marginBottom: spacing.sm,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
+    ...colors.shadow.sm,
   },
   conversationContent: {
     flex: 1,
@@ -273,6 +278,7 @@ const styles = StyleSheet.create({
   },
   messagesList: {
     padding: spacing.md,
+    paddingBottom: 120, // Враховуємо плаваючу навігацію
   },
   messageContainer: {
     maxWidth: '80%',
@@ -288,7 +294,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
   },
   messageText: {
     fontSize: typography.base,
@@ -315,13 +321,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     padding: spacing.md,
     borderTopWidth: 1,
-    borderTopColor: colors.borderLight,
+    borderTopColor: colors.border,
     backgroundColor: colors.surface,
   },
   textInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
     borderRadius: 20,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
@@ -335,7 +341,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: colors.primary + '20',
+    backgroundColor: colors.primary + '15',
     justifyContent: 'center',
     alignItems: 'center',
   },

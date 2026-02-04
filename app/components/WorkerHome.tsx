@@ -315,12 +315,12 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   errorBox: {
-    backgroundColor: colors.error + '20',
-    borderRadius: 8,
+    backgroundColor: colors.error + '15',
+    borderRadius: 12,
     padding: spacing.md,
     marginBottom: spacing.md,
     borderWidth: 1,
-    borderColor: colors.error + '40',
+    borderColor: colors.error + '30',
   },
   errorText: {
     color: colors.error,

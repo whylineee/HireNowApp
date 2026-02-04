@@ -4,24 +4,24 @@
  */
 
 export const colors = {
-  // Основні (оновлена сучасна палітра)
-  primary: '#4C6FFF',       // яскравий індиго
+  // Основні (світла палітра як на зображенні)
+  primary: '#4C6FFF',       // яскравий синій
   primaryLight: '#7C8CFF',
   primaryDark: '#3246D3',
-  accent: '#F97316',
+  accent: '#F97316',       // помаранчевий акцент
   primaryGradient: ['#4C6FFF', '#7C8CFF'],
 
-  // Нейтральні
-  background: '#050816',    // темний фон у стилі неоморфізму
-  surface: '#0B1220',
-  surfaceElevated: '#111827',
-  surfaceHover: '#1F2937',
-  surfaceMuted: '#020617',
+  // Нейтральні (світла тема)
+  background: '#FFFFFF',    // білий фон
+  surface: '#FFFFFF',      // білі поверхні
+  surfaceElevated: '#F8F9FA', // світло-сірий для карток
+  surfaceHover: '#F1F3F4', // для hover ефектів
+  surfaceMuted: '#F5F5F5', // для фону
 
-  // Текст
-  text: '#E5E7EB',
-  textSecondary: '#9CA3AF',
-  textMuted: '#6B7280',
+  // Текст (світла тема)
+  text: '#1A1A1A',         // основний текст
+  textSecondary: '#6B7280', // вторинний текст
+  textMuted: '#9CA3AF',    // muted текст
 
   // Статуси
   success: '#059669',
@@ -30,31 +30,37 @@ export const colors = {
   info: '#0EA5E9',
 
   // Рамки та роздільники
-  border: '#111827',
-  borderLight: '#1F2937',
+  border: '#E5E7EB',       // світлі рамки
+  borderLight: '#F3F4F6',  // ще світліші
   
-  // Тіні
+  // Додаткові кольори для ілюстрацій
+  coral: '#FF6B6B',        // кораловий
+  teal: '#4ECDC4',         // бірюзовий
+  sky: '#45B7D1',         // небесний
+  mint: '#96CEB4',        // м'ятний
+  
+  // Тіні (світлі, м'які)
   shadow: {
     sm: {
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.05,
+      shadowOpacity: 0.03,
       shadowRadius: 2,
       elevation: 1,
     },
     md: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.08,
-      shadowRadius: 12,
-      elevation: 4,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.06,
+      shadowRadius: 8,
+      elevation: 3,
     },
     lg: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 10 },
-      shadowOpacity: 0.12,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.08,
       shadowRadius: 16,
-      elevation: 8,
+      elevation: 6,
     },
   },
 } as const;

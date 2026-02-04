@@ -51,7 +51,7 @@ export default function HomeScreen() {
 
   return (
     <Screen scroll={false}>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingBottom: 100 }}>
         <Header
           title={currentTab === 'profile' ? 'Моє резюме' : 'HireNow'}
           subtitle={currentTab === 'profile' ? '' : `Привіт, ${user.name}!`}

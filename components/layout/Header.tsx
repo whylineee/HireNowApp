@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
     marginLeft: spacing.sm,
     ...colors.shadow.sm,
   },

@@ -1,6 +1,6 @@
-import { View, StyleSheet, ViewStyle, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing } from '@/constants/theme';
+import { ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface ScreenProps {
   children: React.ReactNode;
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     width: 240,
     height: 240,
     borderRadius: 999,
-    backgroundColor: colors.primary + '14',
+    backgroundColor: colors.primary + '08', // Менш насичений для світлої теми
   },
   glowAccent: {
     position: 'absolute',
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     width: 220,
     height: 220,
     borderRadius: 999,
-    backgroundColor: colors.accent + '12',
+    backgroundColor: colors.accent + '06', // Менш насичений
   },
   content: { flex: 1, padding: spacing.md },
   scroll: { flex: 1 },

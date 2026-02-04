@@ -1,5 +1,5 @@
-import { View, TextInput, Text, StyleSheet, TextInputProps } from 'react-native';
-import { colors, spacing, borderRadius, typography } from '@/constants/theme';
+import { borderRadius, colors, spacing, typography } from '@/constants/theme';
+import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
   label?: string;
@@ -30,15 +30,22 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   input: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: borderRadius.md,
+    borderRadius: borderRadius.lg,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 2,
+    paddingVertical: spacing.md,
     fontSize: typography.base,
     color: colors.text,
   },
-  inputError: { borderColor: colors.error },
-  error: { fontSize: typography.xs, color: colors.error, marginTop: spacing.xs },
+  inputError: { 
+    borderColor: colors.error,
+    borderWidth: 2,
+  },
+  error: { 
+    fontSize: typography.xs, 
+    color: colors.error, 
+    marginTop: spacing.xs 
+  },
 });

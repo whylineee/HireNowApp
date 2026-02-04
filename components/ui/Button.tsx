@@ -1,5 +1,5 @@
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { colors, spacing, borderRadius, typography } from '@/constants/theme';
+import { borderRadius, colors, spacing, typography } from '@/constants/theme';
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type Variant = 'primary' | 'secondary' | 'outline' | 'ghost';
 
@@ -47,22 +47,45 @@ const styles = StyleSheet.create({
   base: {
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
-    borderRadius: borderRadius.md,
+    borderRadius: borderRadius.lg,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 48,
+    minHeight: 52,
   },
   fullWidth: { width: '100%' },
   disabled: { opacity: 0.5 },
 
-  primary: { backgroundColor: colors.primary, ...colors.shadow.md },
-  secondary: { backgroundColor: colors.primaryDark },
-  outline: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colors.primary },
-  ghost: { backgroundColor: 'transparent' },
+  primary: { 
+    backgroundColor: colors.primary, 
+    ...colors.shadow.md,
+  },
+  secondary: { 
+    backgroundColor: colors.primaryDark,
+    ...colors.shadow.sm,
+  },
+  outline: { 
+    backgroundColor: 'transparent', 
+    borderWidth: 2, 
+    borderColor: colors.primary 
+  },
+  ghost: { 
+    backgroundColor: 'transparent' 
+  },
 
-  text: { fontSize: typography.base, fontWeight: typography.semibold },
-  text_primary: { color: '#fff' },
-  text_secondary: { color: '#fff' },
-  text_outline: { color: colors.primary },
-  text_ghost: { color: colors.primary },
+  text: { 
+    fontSize: typography.base, 
+    fontWeight: typography.semibold 
+  },
+  text_primary: { 
+    color: '#fff' 
+  },
+  text_secondary: { 
+    color: '#fff' 
+  },
+  text_outline: { 
+    color: colors.primary 
+  },
+  text_ghost: { 
+    color: colors.primary 
+  },
 });
