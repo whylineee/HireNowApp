@@ -4,24 +4,24 @@
  */
 
 export const colors = {
-  // Основні (світла палітра як на зображенні)
-  primary: '#4C6FFF',       // яскравий синій
-  primaryLight: '#7C8CFF',
-  primaryDark: '#3246D3',
+  // Основні (Teal палітра як в документації)
+  primary: '#0F766E',       // Teal - головний акцент
+  primaryLight: '#14B8A6',  // Світліший Teal
+  primaryDark: '#0D9488',   // Темніший Teal
   accent: '#F97316',       // помаранчевий акцент
-  primaryGradient: ['#4C6FFF', '#7C8CFF'],
+  primaryGradient: ['#0F766E', '#14B8A6'],
 
   // Нейтральні (світла тема)
-  background: '#FFFFFF',    // білий фон
+  background: '#F8FAFC',    // Світлий сірий фон
   surface: '#FFFFFF',      // білі поверхні
   surfaceElevated: '#F8F9FA', // світло-сірий для карток
   surfaceHover: '#F1F3F4', // для hover ефектів
   surfaceMuted: '#F5F5F5', // для фону
 
   // Текст (світла тема)
-  text: '#1A1A1A',         // основний текст
-  textSecondary: '#6B7280', // вторинний текст
-  textMuted: '#9CA3AF',    // muted текст
+  text: '#0F172A',         // Темний сірий (Slate 900)
+  textSecondary: '#64748B', // Slate 500
+  textMuted: '#94A3B8',    // Slate 400
 
   // Статуси
   success: '#059669',
@@ -32,13 +32,13 @@ export const colors = {
   // Рамки та роздільники
   border: '#E5E7EB',       // світлі рамки
   borderLight: '#F3F4F6',  // ще світліші
-  
+
   // Додаткові кольори для ілюстрацій
   coral: '#FF6B6B',        // кораловий
   teal: '#4ECDC4',         // бірюзовий
   sky: '#45B7D1',         // небесний
   mint: '#96CEB4',        // м'ятний
-  
+
   // Тіні (світлі, м'які)
   shadow: {
     sm: {
