@@ -1,6 +1,7 @@
 import { EmptyState } from '@/components/EmptyState';
 import { JobCard } from '@/components/job/JobCard';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { colors, spacing, typography } from '@/constants/theme';
 import { createEmployerJob, getEmployerJobs } from '@/services/jobs';
@@ -66,6 +67,14 @@ function EmployerHome() {
     <View style={styles.container}>
       {!creating ? (
         <>
+          <View style={styles.heroIntro}>
+            <View style={styles.heroBadge}>
+              <Text style={styles.heroBadgeText}>Build your hiring pipeline</Text>
+            </View>
+            <Text style={styles.heroTitle}>Manage all hiring processes in one place</Text>
+            <Text style={styles.heroSubtitle}>Publish roles, review candidates, and move faster with a clear workflow.</Text>
+          </View>
+
           <View style={styles.searchActions}>
             <Button title="Нова вакансія" onPress={() => setCreating(true)} fullWidth />
           </View>
@@ -92,7 +101,7 @@ function EmployerHome() {
           )}
         </>
       ) : (
-        <View style={styles.profileWrapper}>
+        <Card style={styles.profileWrapper}>
           <Text style={styles.sectionTitle}>Нова вакансія</Text>
           <Input
             label="Посада"
@@ -144,7 +153,7 @@ function EmployerHome() {
             <Button title="Створити вакансію" onPress={handleCreate} fullWidth />
           </View>
           <Button title="Скасувати" onPress={() => setCreating(false)} variant="ghost" fullWidth />
-        </View>
+        </Card>
       )}
     </View>
   );
@@ -153,6 +162,37 @@ function EmployerHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  heroIntro: {
+    marginBottom: spacing.md,
+  },
+  heroBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 3,
+    borderRadius: 16,
+    backgroundColor: 'rgba(219,234,254,0.9)',
+    borderWidth: 1,
+    borderColor: 'rgba(59,130,246,0.2)',
+    marginBottom: spacing.sm,
+  },
+  heroBadgeText: {
+    fontSize: typography.xs,
+    fontWeight: typography.semibold,
+    color: colors.primary,
+  },
+  heroTitle: {
+    fontSize: 28,
+    lineHeight: 31,
+    letterSpacing: -0.6,
+    fontWeight: typography.bold,
+    color: colors.text,
+  },
+  heroSubtitle: {
+    marginTop: spacing.xs,
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    lineHeight: 21,
   },
   searchActions: {
     marginBottom: spacing.md,
@@ -172,13 +212,13 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xl,
   },
   profileWrapper: {
-    marginTop: spacing.sm,
+    marginTop: spacing.xs,
   },
   sectionTitle: {
-    fontSize: typography.lg,
-    fontWeight: typography.semibold,
+    fontSize: typography.base,
+    fontWeight: typography.bold,
     color: colors.text,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
   },
 });
 

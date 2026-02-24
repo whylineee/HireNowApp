@@ -74,16 +74,21 @@ export function JobCard({
 }
 
 const styles = StyleSheet.create({
-  card: { marginBottom: spacing.md },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 },
+  card: {
+    marginBottom: spacing.md,
+    borderRadius: 24,
+    borderColor: 'rgba(148,163,184,0.22)',
+    backgroundColor: 'rgba(255,255,255,0.94)',
+  },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
   headerText: { flex: 1, marginRight: spacing.sm },
-  title: { fontSize: typography.lg, fontWeight: typography.semibold, color: colors.text },
-  company: { fontSize: typography.sm, color: colors.primary, marginTop: 2, fontWeight: typography.medium },
-  meta: { marginBottom: 6 },
-  location: { fontSize: typography.sm, color: colors.textSecondary, marginBottom: 6 },
+  title: { fontSize: typography.base, fontWeight: typography.bold, color: colors.text, lineHeight: 21 },
+  company: { fontSize: typography.sm, color: colors.textSecondary, marginTop: 3, fontWeight: typography.medium },
+  meta: { marginBottom: spacing.xs + 2 },
+  location: { fontSize: typography.sm, color: colors.textSecondary, marginBottom: 7 },
   badgeRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999 },
-  badgeText: { fontSize: typography.xs, fontWeight: typography.medium },
+  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, borderWidth: 1, borderColor: 'rgba(148,163,184,0.15)' },
+  badgeText: { fontSize: typography.xs, fontWeight: typography.semibold },
   appliedBadge: {
     paddingHorizontal: 8,
     paddingVertical: 4,
@@ -91,7 +96,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.success + '12',
   },
   appliedText: { fontSize: typography.xs, fontWeight: typography.semibold, color: colors.success },
-  salary: { fontSize: typography.sm, color: colors.textSecondary, marginBottom: 6 },
+  salary: { fontSize: typography.sm, color: colors.primaryDark, fontWeight: typography.semibold, marginBottom: 6 },
   description: { fontSize: typography.sm, color: colors.textSecondary, lineHeight: 20 },
-  posted: { fontSize: typography.xs, color: colors.textMuted, marginTop: 10 },
+  posted: { fontSize: typography.xs, color: colors.textMuted, marginTop: spacing.sm },
 });

@@ -1,5 +1,6 @@
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
+import { Card } from '@/components/ui/Card';
 import { colors, spacing, typography } from '@/constants/theme';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -89,9 +90,9 @@ export default function MessagesScreen() {
   if (!user) {
     return (
       <Screen>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 18, color: colors.text, marginBottom: 16 }}>Будь ласка, зареєструйтесь для доступу</Text>
-        </View>
+        <Card style={styles.authCard}>
+          <Text style={styles.authText}>Будь ласка, зареєструйтесь для доступу</Text>
+        </Card>
       </Screen>
     );
   }
@@ -227,8 +228,8 @@ const styles = StyleSheet.create({
   },
   conversationItem: {
     flexDirection: 'row',
-    backgroundColor: colors.surface,
-    borderRadius: 16,
+    backgroundColor: 'rgba(255,255,255,0.94)',
+    borderRadius: 24,
     padding: spacing.md,
     marginBottom: spacing.sm,
     borderWidth: 1,
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
   },
   participantName: {
     fontSize: typography.base,
-    fontWeight: typography.semibold,
+    fontWeight: typography.bold,
     color: colors.text,
   },
   participantRole: {
@@ -264,7 +265,7 @@ const styles = StyleSheet.create({
   },
   unreadBadge: {
     backgroundColor: colors.primary,
-    borderRadius: 12,
+    borderRadius: 999,
     minWidth: 24,
     height: 24,
     justifyContent: 'center',
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
   messageContainer: {
     maxWidth: '80%',
     marginBottom: spacing.md,
-    borderRadius: 16,
+    borderRadius: 18,
     padding: spacing.md,
   },
   myMessage: {
@@ -292,7 +293,7 @@ const styles = StyleSheet.create({
   },
   otherMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255,255,255,0.95)',
     borderWidth: 1,
     borderColor: colors.border,
   },
@@ -319,29 +320,33 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    padding: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.md + 4,
     borderTopWidth: 1,
-    borderTopColor: colors.border,
-    backgroundColor: colors.surface,
+    borderTopColor: colors.borderLight,
+    backgroundColor: 'rgba(255,255,255,0.78)',
   },
   textInput: {
     flex: 1,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 20,
+    borderRadius: 999,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     marginRight: spacing.sm,
     maxHeight: 100,
     fontSize: typography.base,
     color: colors.text,
-    backgroundColor: colors.background,
+    backgroundColor: 'rgba(255,255,255,0.96)',
   },
   sendButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: colors.primary + '15',
+    borderWidth: 1,
+    borderColor: 'rgba(37,99,235,0.22)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -358,6 +363,17 @@ const styles = StyleSheet.create({
     fontSize: typography.base,
     color: colors.textSecondary,
     marginTop: spacing.md,
+    textAlign: 'center',
+  },
+  authCard: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  authText: {
+    fontSize: typography.base,
+    color: colors.textSecondary,
+    fontWeight: typography.medium,
     textAlign: 'center',
   },
 });

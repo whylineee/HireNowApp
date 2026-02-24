@@ -1,4 +1,5 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { getStoredValue, setStoredValue } from '@/utils/storage';
 import { enTranslations } from '../locales/en';
 import { ukTranslations } from '../locales/uk';
 
@@ -12,6 +13,8 @@ interface TranslationContextType {
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
 
+type TranslationNode = string | { [key: string]: TranslationNode };
+
 const translations = {
   uk: ukTranslations,
   en: enTranslations,
@@ -22,34 +25,27 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    // Save to localStorage
-    try {
-      localStorage.setItem('language', lang);
-    } catch (e) {
-      // Ignore localStorage errors
-    }
+    setStoredValue('language', lang);
   };
 
   const t = (key: string): string => {
     const keys = key.split('.');
-    let value: any = translations[language];
-    
+    let value: TranslationNode | undefined = translations[language] as TranslationNode;
+
     for (const k of keys) {
-      value = value?.[k];
+      if (!value || typeof value === 'string') {
+        return key;
+      }
+      value = value[k];
     }
-    
-    return value || key;
+
+    return typeof value === 'string' ? value : key;
   };
 
   useEffect(() => {
-    // Load saved language from localStorage
-    try {
-      const saved = localStorage.getItem('language') as Language;
-      if (saved && (saved === 'uk' || saved === 'en')) {
-        setLanguageState(saved);
-      }
-    } catch (e) {
-      // Ignore localStorage errors
+    const saved = getStoredValue('language');
+    if (saved && (saved === 'uk' || saved === 'en')) {
+      setLanguageState(saved);
     }
   }, []);
 

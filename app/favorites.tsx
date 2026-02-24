@@ -2,6 +2,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { JobCard } from '@/components/job/JobCard';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
+import { Card } from '@/components/ui/Card';
 import { colors, spacing, typography } from '@/constants/theme';
 import { useApplications } from '@/hooks/useApplications';
 import { useAuth } from '@/hooks/useAuth';
@@ -9,7 +10,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
 import { Stack } from 'expo-router';
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
 export default function FavoritesScreen() {
@@ -19,17 +20,9 @@ export default function FavoritesScreen() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
-  if (!user) {
-    return (
-      <Screen>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 18, color: colors.text, marginBottom: 16 }}>Будь ласка, зареєструйтесь для доступу</Text>
-        </View>
-      </Screen>
-    );
-  }
+  const favoritesKey = useMemo(() => favorites.join(','), [favorites]);
 
-  const loadFavoriteJobs = async () => {
+  const loadFavoriteJobs = useCallback(async () => {
     if (favorites.length === 0) {
       setJobs([]);
       setLoading(false);
@@ -47,7 +40,21 @@ export default function FavoritesScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [favorites]);
+
+  useEffect(() => {
+    loadFavoriteJobs();
+  }, [loadFavoriteJobs, favoritesKey]);
+
+  if (!user) {
+    return (
+      <Screen>
+        <Card style={styles.authCard}>
+          <Text style={styles.authText}>Будь ласка, зареєструйтесь для доступу</Text>
+        </Card>
+      </Screen>
+    );
+  }
 
   return (
     <Screen scroll={false}>
@@ -105,5 +112,16 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: spacing.xxl,
+  },
+  authCard: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  authText: {
+    fontSize: typography.base,
+    color: colors.textSecondary,
+    fontWeight: typography.medium,
+    textAlign: 'center',
   },
 });

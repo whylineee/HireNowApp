@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, typography } from '@/constants/theme';
 
@@ -31,16 +31,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.xs,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.sm + 1,
     borderRadius: borderRadius.full,
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255,255,255,0.94)',
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
     ...colors.shadow.sm,
   },
   text: {
     fontSize: typography.sm,
-    color: colors.primary,
+    color: colors.textSecondary,
     fontWeight: typography.medium,
   },
 });

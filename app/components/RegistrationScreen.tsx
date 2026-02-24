@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { colors, spacing, typography } from '@/constants/theme';
-import { useTranslation } from '@/hooks/useTranslation';
 import type { UserRole } from '@/types/user';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
@@ -12,7 +12,6 @@ interface RegistrationScreenProps {
 }
 
 export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
-  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -29,137 +28,93 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
       setError('Погодьтеся з умовами використання');
       return;
     }
-    // Extract name from email for now
+
     const name = email.split('@')[0];
     onRegister({ name: name.trim(), role: 'worker' });
   };
 
   const handleGoogleAuth = () => {
-    Alert.alert(
-      'Реєстрація через Google',
-      'Ця функція буде доступна скоро!\nПоки що використайте звичайну реєстрацію.',
-      [{ text: 'OK' }]
-    );
-  };
-
-  const handlePhoneAuth = () => {
-    Alert.alert(
-      'Реєстрація через телефон',
-      'Ця функція буде доступна скоро!\nПоки що використайте звичайну реєстрацію.',
-      [{ text: 'OK' }]
-    );
+    Alert.alert('Google Sign In', 'Функція буде доступна у наступному оновленні.', [{ text: 'OK' }]);
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color={colors.text} />
+    <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <View style={styles.hero}>
+        <View style={styles.badge}>
+          <Ionicons name="sparkles-outline" size={14} color={colors.primary} />
+          <Text style={styles.badgeText}>All hiring processes in one place</Text>
+        </View>
+
+        <Text style={styles.title}>Find your next dream role in IT</Text>
+        <Text style={styles.subtitle}>Create your profile and apply with one tap.</Text>
+      </View>
+
+      <Card style={styles.formCard}>
+        <Input
+          label="Email"
+          placeholder="you@email.com"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={(text) => {
+            setEmail(text);
+            if (error) setError(null);
+          }}
+        />
+
+        <Input
+          label="Phone"
+          placeholder="+380..."
+          keyboardType="phone-pad"
+          value={phone}
+          onChangeText={(text) => {
+            setPhone(text);
+            if (error) setError(null);
+          }}
+        />
+
+        <View style={styles.passwordWrapper}>
+          <Input
+            label="Password"
+            placeholder="Minimum 8 symbols"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              if (error) setError(null);
+            }}
+            containerStyle={styles.passwordInputContainer}
+          />
+          <TouchableOpacity
+            style={styles.eyeIcon}
+            onPress={() => setShowPassword((prev) => !prev)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          >
+            <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={colors.textSecondary} />
+          </TouchableOpacity>
+        </View>
+
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+        <TouchableOpacity style={styles.termsRow} onPress={() => setAgreeToTerms((prev) => !prev)} activeOpacity={0.8}>
+          <View style={[styles.checkbox, agreeToTerms && styles.checkboxActive]}>
+            {agreeToTerms ? <Ionicons name="checkmark" size={12} color="#fff" /> : null}
+          </View>
+          <Text style={styles.termsText}>
+            Погоджуюся з <Text style={styles.termsLink}>умовами використання</Text>
+          </Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Sign up</Text>
-      </View>
 
-      <View style={styles.content}>
-        <View style={styles.welcomeSection}>
-          <Text style={styles.welcomeTitle}>Welcome to us,</Text>
-          <Text style={styles.welcomeSubtitle}>Hello there, create New account</Text>
+        <Button title="Create account" onPress={handleSubmit} fullWidth />
+
+        <View style={styles.dividerRow}>
+          <View style={styles.divider} />
+          <Text style={styles.dividerText}>або</Text>
+          <View style={styles.divider} />
         </View>
 
-        <View style={styles.illustrationContainer}>
-          <View style={styles.phoneIllustration}>
-            <View style={styles.phoneFrame}>
-              <View style={styles.phoneScreen}>
-                <View style={styles.userCircle}>
-                  <Ionicons name="person" size={40} color={colors.primary} />
-                </View>
-              </View>
-            </View>
-            <View style={[styles.circle, styles.circle1]} />
-            <View style={[styles.circle, styles.circle2]} />
-            <View style={[styles.circle, styles.circle3]} />
-            <View style={[styles.circle, styles.circle4]} />
-          </View>
-        </View>
-
-        <View style={styles.formSection}>
-          <Input
-            placeholder="capicreativedesign"
-            value={email}
-            onChangeText={(text) => {
-              setEmail(text);
-              if (error) setError(null);
-            }}
-            containerStyle={styles.inputContainer}
-          />
-          
-          <Input
-            placeholder="(+84) 332249402"
-            value={phone}
-            onChangeText={(text) => {
-              setPhone(text);
-              if (error) setError(null);
-            }}
-            containerStyle={styles.inputContainer}
-          />
-          
-          <View style={styles.passwordContainer}>
-            <Input
-              placeholder="Password"
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                if (error) setError(null);
-              }}
-              secureTextEntry={!showPassword}
-              containerStyle={styles.passwordInput}
-            />
-            <TouchableOpacity
-              style={styles.eyeIcon}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Ionicons 
-                name={showPassword ? "eye-off" : "eye"} 
-                size={20} 
-                color={colors.textSecondary} 
-              />
-            </TouchableOpacity>
-          </View>
-
-          {error && (
-            <Text style={styles.errorText}>{error}</Text>
-          )}
-
-          <View style={styles.termsContainer}>
-            <TouchableOpacity
-              style={styles.checkbox}
-              onPress={() => setAgreeToTerms(!agreeToTerms)}
-            >
-              <View style={[styles.checkboxInner, agreeToTerms && styles.checkboxChecked]}>
-                {agreeToTerms && (
-                  <Ionicons name="checkmark" size={12} color="#fff" />
-                )}
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.termsText}>
-              By creating an account your aggree to our{' '}
-              <Text style={styles.termsLink}>Term and Condtions</Text>
-            </Text>
-          </View>
-
-          <Button
-            title="Sign up"
-            onPress={handleSubmit}
-            fullWidth
-          />
-
-          <View style={styles.signInContainer}>
-            <Text style={styles.signInText}>Have an account? </Text>
-            <TouchableOpacity>
-              <Text style={styles.signInLink}>Sign In</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+        <Button title="Continue with Google" onPress={handleGoogleAuth} variant="outline" fullWidth />
+      </Card>
     </ScrollView>
   );
 }
@@ -167,153 +122,84 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.lg,
-  },
-  backButton: {
-    marginRight: spacing.lg,
-  },
-  headerTitle: {
-    fontSize: typography.xl,
-    fontWeight: typography.bold,
-    color: colors.text,
   },
   content: {
-    flex: 1,
-    paddingHorizontal: spacing.xl,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.xxl,
   },
-  welcomeSection: {
+  hero: {
     alignItems: 'center',
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
   },
-  welcomeTitle: {
-    fontSize: typography['3xl'],
+  badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 3,
+    borderRadius: 16,
+    backgroundColor: 'rgba(219,234,254,0.9)',
+    borderWidth: 1,
+    borderColor: 'rgba(59,130,246,0.2)',
+    marginBottom: spacing.md,
+  },
+  badgeText: {
+    fontSize: typography.xs,
+    color: colors.primary,
+    fontWeight: typography.semibold,
+  },
+  title: {
+    fontSize: 36,
+    lineHeight: 40,
+    letterSpacing: -1,
     fontWeight: typography.bold,
     color: colors.text,
+    textAlign: 'center',
     marginBottom: spacing.xs,
   },
-  welcomeSubtitle: {
-    fontSize: typography.lg,
+  subtitle: {
+    fontSize: typography.sm,
     color: colors.textSecondary,
     textAlign: 'center',
   },
-  illustrationContainer: {
-    alignItems: 'center',
-    marginBottom: spacing.xl,
+  formCard: {
+    borderRadius: 28,
+    padding: spacing.md,
   },
-  phoneIllustration: {
+  passwordWrapper: {
     position: 'relative',
-    width: 120,
-    height: 200,
   },
-  phoneFrame: {
-    position: 'absolute',
-    width: 80,
-    height: 160,
-    backgroundColor: colors.surface,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: colors.borderLight,
-    left: 20,
-    top: 20,
-  },
-  phoneScreen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    margin: 4,
-  },
-  userCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: colors.primary + '20',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  circle: {
-    position: 'absolute',
-    borderRadius: 20,
-  },
-  circle1: {
-    width: 20,
-    height: 20,
-    backgroundColor: '#FF6B6B',
-    top: 10,
-    left: 10,
-  },
-  circle2: {
-    width: 15,
-    height: 15,
-    backgroundColor: '#4ECDC4',
-    top: 30,
-    right: 15,
-  },
-  circle3: {
-    width: 25,
-    height: 25,
-    backgroundColor: '#45B7D1',
-    bottom: 40,
-    left: 5,
-  },
-  circle4: {
-    width: 18,
-    height: 18,
-    backgroundColor: '#96CEB4',
-    bottom: 20,
-    right: 10,
-  },
-  formSection: {
-    gap: spacing.md,
-  },
-  inputContainer: {
+  passwordInputContainer: {
     marginBottom: spacing.md,
-  },
-  passwordContainer: {
-    position: 'relative',
-    marginBottom: spacing.md,
-  },
-  passwordInput: {
-    paddingRight: 50,
   },
   eyeIcon: {
     position: 'absolute',
-    right: 16,
-    top: 16,
+    right: spacing.md,
+    top: 36,
   },
   errorText: {
     fontSize: typography.sm,
     color: colors.error,
-    textAlign: 'center',
+    marginBottom: spacing.sm,
+  },
+  termsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: spacing.md,
   },
-  termsContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: spacing.lg,
-    paddingHorizontal: spacing.xs,
-  },
   checkbox: {
-    marginRight: spacing.sm,
-    marginTop: 2,
-  },
-  checkboxInner: {
     width: 18,
     height: 18,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: colors.borderLight,
-    justifyContent: 'center',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.border,
     alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.sm,
+    backgroundColor: 'rgba(255,255,255,0.95)',
   },
-  checkboxChecked: {
+  checkboxActive: {
     backgroundColor: colors.primary,
     borderColor: colors.primary,
   },
@@ -321,28 +207,26 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: typography.sm,
     color: colors.textSecondary,
-    lineHeight: 18,
   },
   termsLink: {
     color: colors.primary,
-    textDecorationLine: 'underline',
-  },
-  signupButton: {
-    marginBottom: spacing.lg,
-  },
-  signInContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  signInText: {
-    fontSize: typography.base,
-    color: colors.textSecondary,
-  },
-  signInLink: {
-    fontSize: typography.base,
-    color: colors.primary,
     fontWeight: typography.semibold,
+  },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: spacing.md,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.border,
+  },
+  dividerText: {
+    marginHorizontal: spacing.sm,
+    fontSize: typography.xs,
+    color: colors.textMuted,
+    fontWeight: typography.medium,
   },
 });
 

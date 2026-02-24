@@ -61,23 +61,24 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   title: {
-    fontSize: typography.base,
+    fontSize: typography.sm,
     fontWeight: typography.semibold,
-    color: colors.text,
+    color: colors.textSecondary,
+    letterSpacing: 0.4,
   },
   scrollContent: {
     paddingHorizontal: spacing.md,
     gap: spacing.sm,
   },
   filter: {
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255,255,255,0.92)',
     borderRadius: borderRadius.full,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.sm + 1,
     marginRight: spacing.sm,
     ...colors.shadow.sm,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
   },
   filterContent: {
     flexDirection: 'row',
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
   },
   filterText: {
     fontSize: typography.sm,
-    color: colors.text,
+    color: colors.textSecondary,
     fontWeight: typography.medium,
   },
 });

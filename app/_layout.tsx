@@ -9,10 +9,10 @@ export default function Layout() {
       <TranslationProvider>
         <Stack
           screenOptions={{
-            headerTintColor: colors.primaryLight,
-            headerTitleStyle: { fontWeight: '600', fontSize: 17, color: colors.text },
+            headerTintColor: colors.primary,
+            headerTitleStyle: { fontWeight: '700', fontSize: 16, color: colors.text },
             headerShadowVisible: false,
-            headerStyle: { backgroundColor: colors.surface },
+            headerStyle: { backgroundColor: colors.background },
             contentStyle: { backgroundColor: colors.background },
           }}
         >

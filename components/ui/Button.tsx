@@ -45,47 +45,55 @@ export function Button({
 
 const styles = StyleSheet.create({
   base: {
-    paddingVertical: spacing.md,
+    paddingVertical: spacing.sm + 3,
     paddingHorizontal: spacing.lg,
-    borderRadius: borderRadius.lg,
+    borderRadius: borderRadius.full,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 52,
+    minHeight: 46,
   },
   fullWidth: { width: '100%' },
   disabled: { opacity: 0.5 },
 
   primary: { 
-    backgroundColor: colors.primary, 
-    ...colors.shadow.md,
+    backgroundColor: colors.primary,
+    borderWidth: 1,
+    borderColor: 'rgba(37,99,235,0.85)',
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 5,
   },
   secondary: { 
     backgroundColor: colors.primaryDark,
-    ...colors.shadow.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(79,70,229,0.75)',
   },
   outline: { 
-    backgroundColor: 'transparent', 
-    borderWidth: 2, 
-    borderColor: colors.primary 
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: 'rgba(148,163,184,0.35)',
   },
   ghost: { 
-    backgroundColor: 'transparent' 
+    backgroundColor: 'transparent',
   },
 
   text: { 
-    fontSize: typography.base, 
-    fontWeight: typography.semibold 
+    fontSize: typography.sm,
+    fontWeight: typography.bold,
+    letterSpacing: 0.1,
   },
   text_primary: { 
-    color: '#fff' 
+    color: '#fff',
   },
   text_secondary: { 
-    color: '#fff' 
+    color: '#fff',
   },
   text_outline: { 
-    color: colors.primary 
+    color: colors.textSecondary,
   },
   text_ghost: { 
-    color: colors.primary 
+    color: colors.primary,
   },
 });

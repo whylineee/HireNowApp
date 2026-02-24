@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { JOB_TYPE_LABELS, JOB_TYPE_COLORS } from '@/constants/job';
 import type { JobType } from '@/types/job';
@@ -41,7 +41,7 @@ export function FilterChips({ selectedType, onTypeChange }: FilterChipsProps) {
             style={[
               styles.chip,
               isSelected && styles.chipSelected,
-              isSelected && { backgroundColor: color + '15', borderColor: color },
+              isSelected && { backgroundColor: color + '12', borderColor: color + '80' },
             ]}
           >
             <Ionicons
@@ -75,17 +75,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 2,
+    paddingVertical: spacing.sm + 1,
     borderRadius: borderRadius.full,
     borderWidth: 1,
     borderColor: colors.border,
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: 'rgba(255,255,255,0.94)',
     marginRight: spacing.sm,
     ...colors.shadow.sm,
   },
   chipSelected: {
-    borderWidth: 2,
-    ...colors.shadow.md,
+    borderWidth: 1,
   },
   icon: {
     marginRight: spacing.xs,

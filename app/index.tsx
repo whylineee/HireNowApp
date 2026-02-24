@@ -2,6 +2,7 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
 import { useAuth } from '@/hooks/useAuth';
+import type { User, UserRole } from '@/types/user';
 import { useState } from 'react';
 import { View } from 'react-native';
 import EmployerHome from './components/EmployerHome';
@@ -9,19 +10,26 @@ import OnboardingScreen from './components/OnboardingScreen';
 import RegistrationScreen from './components/RegistrationScreen';
 import WorkerHome from './components/WorkerHome';
 
+type RegistrationPayload = {
+  name: string;
+  role: UserRole;
+};
+
+type OnboardingPayload = Pick<User, 'headline' | 'about' | 'skills' | 'experience'>;
+
 export default function HomeScreen() {
   const { user, register, updateUser } = useAuth();
   const [currentTab, setCurrentTab] = useState<'search' | 'profile'>('search');
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [newUser, setNewUser] = useState<any>(null);
+  const [newUser, setNewUser] = useState<RegistrationPayload | null>(null);
 
-  const handleRegistration = (userData: any) => {
+  const handleRegistration = (userData: RegistrationPayload) => {
     register(userData);
     setNewUser(userData);
     setShowOnboarding(true);
   };
 
-  const handleOnboardingComplete = (profileData: any) => {
+  const handleOnboardingComplete = (profileData: OnboardingPayload) => {
     updateUser(profileData);
     setShowOnboarding(false);
     setNewUser(null);
@@ -54,7 +62,7 @@ export default function HomeScreen() {
       <View style={{ flex: 1, paddingBottom: 100 }}>
         <Header
           title={currentTab === 'profile' ? 'Моє резюме' : 'HireNow'}
-          subtitle={currentTab === 'profile' ? '' : `Привіт, ${user.name}!`}
+          subtitle={currentTab === 'profile' ? '' : 'All hiring processes in one place'}
           showFavoritesButton={user.role === 'worker' && currentTab !== 'profile'}
           showSettingsButton={currentTab !== 'profile'}
         />

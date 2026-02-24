@@ -55,7 +55,7 @@ export function Header({ title, subtitle, showFavoritesButton, showSettingsButto
 }
 
 const styles = StyleSheet.create({
-  wrapper: { marginBottom: 24 },
+  wrapper: { marginBottom: spacing.lg },
   titleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -68,15 +68,16 @@ const styles = StyleSheet.create({
     marginLeft: spacing.sm,
   },
   title: {
-    fontSize: typography['3xl'],
+    fontSize: 24,
     fontWeight: typography.bold,
     color: colors.text,
-    letterSpacing: -0.5,
+    letterSpacing: -0.4,
+    lineHeight: 28,
   },
   subtitle: {
-    fontSize: typography.base,
+    fontSize: typography.sm,
     color: colors.textSecondary,
-    marginTop: 4,
+    marginTop: spacing.xs,
   },
   actions: {
     flexDirection: 'row',
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: spacing.sm,
     borderRadius: 999,
-    backgroundColor: colors.surface,
+    backgroundColor: 'rgba(255,255,255,0.92)',
     borderWidth: 1,
     borderColor: colors.border,
     marginLeft: spacing.sm,

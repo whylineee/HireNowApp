@@ -18,7 +18,7 @@ export function Card({ children, style, padded = true, elevated = true }: CardPr
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceElevated,
     borderRadius: borderRadius.xl,
     overflow: 'hidden',
     borderWidth: 1,
@@ -26,6 +26,6 @@ const styles = StyleSheet.create({
   },
   padded: { padding: spacing.md },
   elevated: {
-    ...colors.shadow.md,
+    ...colors.shadow.sm,
   },
 });

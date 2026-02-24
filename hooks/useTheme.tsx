@@ -1,4 +1,5 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { getStoredValue, setStoredValue } from '@/utils/storage';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 
@@ -16,23 +17,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const setThemeMode = (mode: ThemeMode) => {
     setThemeModeState(mode);
-    // Save to localStorage
-    try {
-      localStorage.setItem('themeMode', mode);
-    } catch (e) {
-      // Ignore localStorage errors
-    }
+    setStoredValue('themeMode', mode);
   };
 
   useEffect(() => {
-    // Load saved theme from localStorage
-    try {
-      const saved = localStorage.getItem('themeMode') as ThemeMode;
-      if (saved && (saved === 'light' || saved === 'dark' || saved === 'system')) {
-        setThemeModeState(saved);
-      }
-    } catch (e) {
-      // Ignore localStorage errors
+    const saved = getStoredValue('themeMode');
+    if (saved && (saved === 'light' || saved === 'dark' || saved === 'system')) {
+      setThemeModeState(saved);
     }
   }, []);
 

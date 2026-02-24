@@ -2,108 +2,44 @@ import { borderRadius, colors, spacing, typography } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import { router, usePathname } from 'expo-router';
-import { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+type AppPath = '/' | '/favorites' | '/messages' | '/settings';
 
 export function BottomNav() {
   const pathname = usePathname();
   const { t } = useTranslation();
-  const slideAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {
-    // Анімація при першому завантаженні
-    Animated.parallel([
-      Animated.timing(slideAnim, {
-        toValue: 1,
-        duration: 600,
-        delay: 200,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 100,
-        friction: 8,
-        useNativeDriver: true,
-      })
-    ]).start();
-  }, []);
-
-  const tabs = [
+  const tabs: { key: string; label: string; icon: keyof typeof Ionicons.glyphMap; href: AppPath }[] = [
     { key: 'home', label: t('navigation.home'), icon: 'home-outline' as const, href: '/' },
     { key: 'favorites', label: t('navigation.favorites'), icon: 'heart-outline' as const, href: '/favorites' },
     { key: 'messages', label: t('navigation.messages'), icon: 'chatbubble-outline' as const, href: '/messages' },
     { key: 'settings', label: t('navigation.settings'), icon: 'settings-outline' as const, href: '/settings' },
-  ] as const;
+  ];
 
   return (
-    <Animated.View 
-      style={[
-        styles.container,
-        {
-          transform: [
-            { translateY: slideAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: [100, 0]
-            })},
-            { scale: scaleAnim }
-          ]
-        }
-      ]}
-    >
+    <View style={styles.container}>
       <View style={styles.navContent}>
-        {tabs.map((tab, index) => {
+        {tabs.map((tab) => {
           const isActive = tab.href === '/' ? pathname === '/' : pathname.startsWith(tab.href);
-          const tabScaleAnim = useRef(new Animated.Value(1)).current;
-          
-          const handleTabPress = () => {
-            if (!isActive) {
-              // Анімація натискання
-              Animated.sequence([
-                Animated.timing(tabScaleAnim, {
-                  toValue: 0.9,
-                  duration: 100,
-                  useNativeDriver: true,
-                }),
-                Animated.timing(tabScaleAnim, {
-                  toValue: 1.1,
-                  duration: 100,
-                  useNativeDriver: true,
-                }),
-                Animated.timing(tabScaleAnim, {
-                  toValue: 1,
-                  duration: 100,
-                  useNativeDriver: true,
-                })
-              ]).start(() => {
-                const href = tab.href as any;
-                router.push(href);
-              });
-            }
-          };
-
           return (
             <TouchableOpacity
               key={tab.key}
               style={styles.tab}
-              activeOpacity={0.8}
-              onPress={handleTabPress}
+              activeOpacity={0.85}
+              onPress={() => {
+                if (!isActive) {
+                  router.push(tab.href);
+                }
+              }}
             >
-              <Animated.View 
-                style={[
-                  styles.iconWrapper,
-                  isActive && styles.iconWrapperActive,
-                  {
-                    transform: [{ scale: tabScaleAnim }]
-                  }
-                ]}
-              >
+              <View style={[styles.iconWrapper, isActive && styles.iconWrapperActive]}>
                 <Ionicons
                   name={tab.icon}
-                  size={22}
+                  size={20}
                   color={isActive ? colors.primary : colors.textSecondary}
                 />
-              </Animated.View>
+              </View>
               <Text style={[styles.label, isActive && styles.labelActive]}>
                 {tab.label}
               </Text>
@@ -111,33 +47,29 @@ export function BottomNav() {
           );
         })}
       </View>
-    </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)', // Прозорий білий
-    backdropFilter: 'blur(20px)', // Ефект розмиття
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(229, 231, 235, 0.5)', // Прозора рамка
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 12,
+    left: spacing.sm,
+    right: spacing.sm,
+    bottom: spacing.sm,
+    borderRadius: borderRadius.xl,
+    backgroundColor: 'rgba(255,255,255,0.94)',
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...colors.shadow.lg,
   },
   navContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: spacing.sm,
     paddingTop: spacing.sm,
-    paddingBottom: spacing.md,
+    paddingBottom: spacing.sm + 2,
   },
   tab: {
     flex: 1,
@@ -145,21 +77,17 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   iconWrapper: {
-    padding: spacing.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 4,
     borderRadius: borderRadius.full,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 48,
-    height: 48,
     marginBottom: spacing.xs,
   },
   iconWrapperActive: {
-    backgroundColor: colors.primary + '15',
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
+    backgroundColor: 'rgba(37,99,235,0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(37,99,235,0.2)',
   },
   label: {
     fontSize: typography.xs,
@@ -172,4 +100,3 @@ const styles = StyleSheet.create({
     fontWeight: typography.semibold,
   },
 });
-

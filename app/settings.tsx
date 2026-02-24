@@ -1,5 +1,6 @@
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
+import { Card } from '@/components/ui/Card';
 import { colors, spacing, typography } from '@/constants/theme';
 import { useAuth } from '@/hooks/useAuth';
 import type { ThemeMode } from '@/hooks/useTheme';
@@ -16,9 +17,9 @@ export default function SettingsScreen() {
   if (!user) {
     return (
       <Screen>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 18, color: colors.text, marginBottom: 16 }}>Будь ласка, зареєструйтесь для доступу</Text>
-        </View>
+        <Card style={styles.authCard}>
+          <Text style={styles.authText}>Будь ласка, зареєструйтесь для доступу</Text>
+        </Card>
       </Screen>
     );
   }
@@ -114,14 +115,14 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   sectionTitle: {
-    fontSize: typography.lg,
-    fontWeight: typography.semibold,
+    fontSize: typography.base,
+    fontWeight: typography.bold,
     color: colors.text,
     marginBottom: spacing.md,
   },
   optionGroup: {
-    backgroundColor: colors.surface,
-    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.94)',
+    borderRadius: 24,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.border,
@@ -133,10 +134,10 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.borderLight,
   },
   optionActive: {
-    backgroundColor: colors.primary + '08',
+    backgroundColor: 'rgba(37,99,235,0.08)',
   },
   optionText: {
-    fontSize: typography.base,
+    fontSize: typography.sm,
     color: colors.text,
   },
   optionTextActive: {
@@ -150,12 +151,23 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
   },
   infoLabel: {
-    fontSize: typography.base,
+    fontSize: typography.sm,
     color: colors.textSecondary,
   },
   infoValue: {
-    fontSize: typography.base,
+    fontSize: typography.sm,
     color: colors.text,
     fontWeight: typography.medium,
+  },
+  authCard: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  authText: {
+    fontSize: typography.base,
+    color: colors.textSecondary,
+    fontWeight: typography.medium,
+    textAlign: 'center',
   },
 });

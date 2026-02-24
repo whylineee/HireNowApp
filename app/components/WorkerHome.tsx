@@ -7,13 +7,13 @@ import { SearchBar } from '@/components/SearchBar';
 import { SearchStats } from '@/components/SearchStats';
 import { SortButton, type SortOption } from '@/components/SortButton';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { colors, spacing, typography } from '@/constants/theme';
 import { useApplications } from '@/hooks/useApplications';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useJobs } from '@/hooks/useJobs';
 import { useRecentSearches } from '@/hooks/useRecentSearches';
-import { useTranslation } from '@/hooks/useTranslation';
 import type { JobType } from '@/types/job';
 import { extractSalary } from '@/utils/salary';
 import { useCallback, useMemo, useState } from 'react';
@@ -28,7 +28,6 @@ interface WorkerHomeProps {
 }
 
 export function WorkerHome({ userName, onUpdateProfile, onTabChange }: WorkerHomeProps) {
-  const { t } = useTranslation();
   const { jobs, loading, error, search, refetch } = useJobs();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isApplied } = useApplications();
@@ -158,7 +157,7 @@ export function WorkerHome({ userName, onUpdateProfile, onTabChange }: WorkerHom
       </View>
 
       {tab === 'profile' ? (
-        <View style={styles.profileWrapper}>
+        <Card style={styles.profileWrapper}>
           <Text style={styles.sectionTitle}>Заповніть резюме</Text>
           <Input
             label="Позиція / роль"
@@ -189,9 +188,17 @@ export function WorkerHome({ userName, onUpdateProfile, onTabChange }: WorkerHom
             numberOfLines={4}
           />
           <Button title="Зберегти резюме" onPress={handleSaveProfile} fullWidth />
-        </View>
+        </Card>
       ) : (
         <View style={{ flex: 1 }}>
+          <View style={styles.heroIntro}>
+            <View style={styles.heroBadge}>
+              <Text style={styles.heroBadgeText}>All hiring processes in one place</Text>
+            </View>
+            <Text style={styles.heroTitle}>Find your next dream role in IT</Text>
+            <Text style={styles.heroSubtitle}>Connect with top companies and track applications in one workspace.</Text>
+          </View>
+
           <SearchBar
             value={query}
             onChangeText={setQuery}
@@ -265,17 +272,50 @@ export function WorkerHome({ userName, onUpdateProfile, onTabChange }: WorkerHom
 }
 
 const styles = StyleSheet.create({
+  heroIntro: {
+    marginBottom: spacing.md,
+  },
+  heroBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 3,
+    borderRadius: 16,
+    backgroundColor: 'rgba(219,234,254,0.9)',
+    borderWidth: 1,
+    borderColor: 'rgba(59,130,246,0.2)',
+    marginBottom: spacing.sm,
+  },
+  heroBadgeText: {
+    fontSize: typography.xs,
+    fontWeight: typography.semibold,
+    color: colors.primary,
+  },
+  heroTitle: {
+    fontSize: 28,
+    lineHeight: 31,
+    letterSpacing: -0.6,
+    fontWeight: typography.bold,
+    color: colors.text,
+  },
+  heroSubtitle: {
+    marginTop: spacing.xs,
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    lineHeight: 21,
+  },
   modeTabs: {
     flexDirection: 'row',
-    backgroundColor: colors.surfaceMuted,
-    borderRadius: 12,
-    padding: 4,
+    backgroundColor: 'rgba(255,255,255,0.72)',
+    borderRadius: 999,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: colors.border,
     marginBottom: spacing.md,
   },
   modeTab: {
     flex: 1,
-    paddingVertical: spacing.sm,
-    borderRadius: 8,
+    paddingVertical: spacing.sm + 1,
+    borderRadius: 999,
     alignItems: 'center',
   },
   modeTabActive: {
@@ -291,13 +331,13 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   profileWrapper: {
-    marginTop: spacing.sm,
+    marginTop: spacing.xs,
   },
   sectionTitle: {
-    fontSize: typography.lg,
-    fontWeight: typography.semibold,
+    fontSize: typography.base,
+    fontWeight: typography.bold,
     color: colors.text,
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
   },
   searchActions: {
     marginBottom: spacing.md,
@@ -316,7 +356,7 @@ const styles = StyleSheet.create({
   },
   errorBox: {
     backgroundColor: colors.error + '15',
-    borderRadius: 12,
+    borderRadius: 16,
     padding: spacing.md,
     marginBottom: spacing.md,
     borderWidth: 1,

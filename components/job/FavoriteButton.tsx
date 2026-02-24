@@ -26,6 +26,10 @@ export function FavoriteButton({ isFavorite, onPress, size = 24 }: FavoriteButto
 
 const styles = StyleSheet.create({
   button: {
-    padding: 4,
+    padding: 6,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    borderWidth: 1,
+    borderColor: colors.border,
   },
 });

@@ -1,65 +1,53 @@
-/**
- * Тема додатку HireNow
- * Єдине джерело кольорів, відступів та типографіки
- */
-
 export const colors = {
-  // Основні (Teal палітра як в документації)
-  primary: '#0F766E',       // Teal - головний акцент
-  primaryLight: '#14B8A6',  // Світліший Teal
-  primaryDark: '#0D9488',   // Темніший Teal
-  accent: '#F97316',       // помаранчевий акцент
-  primaryGradient: ['#0F766E', '#14B8A6'],
+  primary: '#2563EB',
+  primaryLight: '#3B82F6',
+  primaryDark: '#4F46E5',
+  accent: '#7C3AED',
+  primaryGradient: ['#2563EB', '#4F46E5'],
 
-  // Нейтральні (світла тема)
-  background: '#F8FAFC',    // Світлий сірий фон
-  surface: '#FFFFFF',      // білі поверхні
-  surfaceElevated: '#F8F9FA', // світло-сірий для карток
-  surfaceHover: '#F1F3F4', // для hover ефектів
-  surfaceMuted: '#F5F5F5', // для фону
+  background: '#F7F9FC',
+  surface: '#FFFFFF',
+  surfaceElevated: 'rgba(255,255,255,0.94)',
+  surfaceHover: '#F8FAFC',
+  surfaceMuted: '#EEF2FF',
 
-  // Текст (світла тема)
-  text: '#0F172A',         // Темний сірий (Slate 900)
-  textSecondary: '#64748B', // Slate 500
-  textMuted: '#94A3B8',    // Slate 400
+  text: '#0F172A',
+  textSecondary: '#475569',
+  textMuted: '#94A3B8',
 
-  // Статуси
-  success: '#059669',
+  success: '#10B981',
   error: '#DC2626',
-  warning: '#D97706',
+  warning: '#F59E0B',
   info: '#0EA5E9',
 
-  // Рамки та роздільники
-  border: '#E5E7EB',       // світлі рамки
-  borderLight: '#F3F4F6',  // ще світліші
+  border: 'rgba(148,163,184,0.25)',
+  borderLight: 'rgba(148,163,184,0.2)',
 
-  // Додаткові кольори для ілюстрацій
-  coral: '#FF6B6B',        // кораловий
-  teal: '#4ECDC4',         // бірюзовий
-  sky: '#45B7D1',         // небесний
-  mint: '#96CEB4',        // м'ятний
+  coral: '#FB7185',
+  teal: '#22D3EE',
+  sky: '#60A5FA',
+  mint: '#34D399',
 
-  // Тіні (світлі, м'які)
   shadow: {
     sm: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.03,
-      shadowRadius: 2,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.04,
+      shadowRadius: 10,
       elevation: 1,
     },
     md: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.06,
-      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.08,
+      shadowRadius: 20,
       elevation: 3,
     },
     lg: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.08,
-      shadowRadius: 16,
+      shadowOffset: { width: 0, height: 18 },
+      shadowOpacity: 0.12,
+      shadowRadius: 30,
       elevation: 6,
     },
   },
@@ -75,10 +63,10 @@ export const spacing = {
 } as const;
 
 export const borderRadius = {
-  sm: 6,
-  md: 10,
-  lg: 16,
-  xl: 24,
+  sm: 10,
+  md: 14,
+  lg: 20,
+  xl: 28,
   full: 9999,
 } as const;
 

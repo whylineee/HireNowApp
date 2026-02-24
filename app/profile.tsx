@@ -1,7 +1,8 @@
 import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
-import { borderRadius, colors, spacing, typography } from '@/constants/theme';
+import { Card } from '@/components/ui/Card';
+import { colors, spacing, typography } from '@/constants/theme';
 import { useAuth } from '@/hooks/useAuth';
 import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
@@ -20,14 +21,14 @@ export default function ProfileScreen() {
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.card}>
+          <Card style={styles.card}>
             <Text style={styles.cardTitle}>Профіль</Text>
             <Text style={styles.cardText}>
               Тут зʼявиться детальна інформація про ваш профіль, резюме та компанію, коли ми підʼєднаємо бекенд.
             </Text>
-          </View>
+          </Card>
 
-          <View style={styles.card}>
+          <Card style={styles.card}>
             <Text style={styles.cardTitle}>Налаштування додатку</Text>
             <View style={styles.settingRow}>
               <View style={styles.settingText}>
@@ -43,7 +44,7 @@ export default function ProfileScreen() {
               </View>
               <Switch value disabled />
             </View>
-          </View>
+          </Card>
         </ScrollView>
       </View>
       <BottomNav />
@@ -59,17 +60,12 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xxl,
   },
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.xl,
-    padding: spacing.lg,
+    padding: spacing.md + 2,
     marginBottom: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    ...colors.shadow.md,
   },
   cardTitle: {
-    fontSize: typography.lg,
-    fontWeight: typography.semibold,
+    fontSize: typography.base,
+    fontWeight: typography.bold,
     color: colors.text,
     marginBottom: spacing.sm,
   },
@@ -97,4 +93,3 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 });
-

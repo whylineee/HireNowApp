@@ -54,10 +54,11 @@ const styles = StyleSheet.create({
   },
   count: {
     fontSize: typography.sm,
-    color: colors.textSecondary,
+    color: colors.text,
+    fontWeight: typography.medium,
   },
   countBold: {
-    fontWeight: typography.semibold,
+    fontWeight: typography.bold,
     color: colors.primary,
   },
   filters: {
