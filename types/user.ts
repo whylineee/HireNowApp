@@ -9,5 +9,5 @@ export interface User {
   about?: string;
   skills?: string[]; // масив навичок
   experience?: string;
+  photoUri?: string;
 }
-

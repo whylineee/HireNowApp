@@ -15,7 +15,8 @@ export const enTranslations = {
     yes: "Yes",
     no: "No",
     authRequired: "Please sign in to continue",
-    or: "or"
+    or: "or",
+    hide: "Hide"
   },
   auth: {
     register: "Create account",
@@ -57,7 +58,12 @@ export const enTranslations = {
     employerPanel: "Employer panel",
     employerSubtitle: "Create and manage your vacancies",
     noVacanciesYet: "No vacancies yet",
-    noVacanciesSubtitle: "Create your first vacancy so candidates can apply"
+    noVacanciesSubtitle: "Create your first vacancy so candidates can apply",
+    filtersTitle: "Advanced filters",
+    salaryFrom: "Salary from",
+    salaryTo: "Salary to",
+    onlyFavorites: "Only favorites",
+    hideApplied: "Hide applied"
   },
   jobForm: {
     title: "Position",
@@ -165,6 +171,9 @@ export const enTranslations = {
     passwordPlaceholder: "Minimum 8 symbols",
     termsPrefix: "I agree with the",
     termsLink: "terms of use",
+    roleTitle: "Choose role",
+    fillAllFieldsError: "Fill in all fields",
+    acceptTermsError: "Please accept the terms",
     createAccount: "Create account",
     continueGoogle: "Continue with Google",
     googleSoon: "Feature will be available in the next update."
@@ -187,6 +196,7 @@ export const enTranslations = {
     experiencePlaceholder: "Describe projects and achievements",
     profilePhoto: "Profile photo",
     addPhoto: "Add photo",
+    chooseAvatar: "Choose an avatar",
     back: "Back",
     finish: "Finish",
     skip: "Skip setup",

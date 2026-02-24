@@ -6,7 +6,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import type { UserRole } from '@/types/user';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface RegistrationScreenProps {
   onRegister: (params: { name: string; role: UserRole }) => void;
@@ -17,26 +17,48 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [selectedRole, setSelectedRole] = useState<UserRole>('worker');
   const [showPassword, setShowPassword] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const clearError = () => {
+    if (error) {
+      setError(null);
+    }
+  };
+
+  const validateBeforeAuth = () => {
+    if (!agreeToTerms) {
+      setError(t('registration.acceptTermsError'));
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = () => {
     if (!email.trim() || !phone.trim() || !password.trim()) {
-      setError('Заповніть всі поля');
-      return;
-    }
-    if (!agreeToTerms) {
-      setError('Погодьтеся з умовами використання');
+      setError(t('registration.fillAllFieldsError'));
       return;
     }
 
-    const name = email.split('@')[0];
-    onRegister({ name: name.trim(), role: 'worker' });
+    if (!validateBeforeAuth()) {
+      return;
+    }
+
+    const name = email.split('@')[0] || email;
+    onRegister({ name: name.trim(), role: selectedRole });
   };
 
   const handleGoogleAuth = () => {
-    Alert.alert('Google Sign In', t('registration.googleSoon'), [{ text: 'OK' }]);
+    if (!validateBeforeAuth()) {
+      return;
+    }
+
+    const fallbackName = `google_${String(Date.now()).slice(-4)}`;
+    const baseName = email.includes('@') ? email.split('@')[0] : fallbackName;
+    onRegister({ name: baseName.trim(), role: selectedRole });
   };
 
   return (
@@ -52,6 +74,45 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
       </View>
 
       <Card style={styles.formCard}>
+        <Text style={styles.roleTitle}>{t('registration.roleTitle')}</Text>
+        <View style={styles.rolesRow}>
+          <TouchableOpacity
+            style={[styles.roleChip, selectedRole === 'worker' && styles.roleChipActive]}
+            activeOpacity={0.85}
+            onPress={() => {
+              setSelectedRole('worker');
+              clearError();
+            }}
+          >
+            <Ionicons
+              name="person-outline"
+              size={16}
+              color={selectedRole === 'worker' ? colors.primary : colors.textSecondary}
+            />
+            <Text style={[styles.roleChipText, selectedRole === 'worker' && styles.roleChipTextActive]}>
+              {t('auth.iAmJobSeeker')}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.roleChip, selectedRole === 'employer' && styles.roleChipActive]}
+            activeOpacity={0.85}
+            onPress={() => {
+              setSelectedRole('employer');
+              clearError();
+            }}
+          >
+            <Ionicons
+              name="briefcase-outline"
+              size={16}
+              color={selectedRole === 'employer' ? colors.primary : colors.textSecondary}
+            />
+            <Text style={[styles.roleChipText, selectedRole === 'employer' && styles.roleChipTextActive]}>
+              {t('auth.iAmEmployer')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
         <Input
           label={t('registration.email')}
           placeholder={t('registration.emailPlaceholder')}
@@ -60,7 +121,7 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
           value={email}
           onChangeText={(text) => {
             setEmail(text);
-            if (error) setError(null);
+            clearError();
           }}
         />
 
@@ -71,7 +132,7 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
           value={phone}
           onChangeText={(text) => {
             setPhone(text);
-            if (error) setError(null);
+            clearError();
           }}
         />
 
@@ -83,7 +144,7 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
             value={password}
             onChangeText={(text) => {
               setPassword(text);
-              if (error) setError(null);
+              clearError();
             }}
             containerStyle={styles.passwordInputContainer}
           />
@@ -168,6 +229,42 @@ const styles = StyleSheet.create({
   formCard: {
     borderRadius: 28,
     padding: spacing.md,
+  },
+  roleTitle: {
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+    fontWeight: typography.medium,
+  },
+  rolesRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  roleChip: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.xs,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 14,
+    paddingVertical: spacing.sm,
+    backgroundColor: 'rgba(255,255,255,0.96)',
+  },
+  roleChipActive: {
+    borderColor: 'rgba(37,99,235,0.4)',
+    backgroundColor: 'rgba(37,99,235,0.1)',
+  },
+  roleChipText: {
+    fontSize: typography.sm,
+    color: colors.textSecondary,
+    fontWeight: typography.medium,
+    textAlign: 'center',
+  },
+  roleChipTextActive: {
+    color: colors.primary,
   },
   passwordWrapper: {
     position: 'relative',

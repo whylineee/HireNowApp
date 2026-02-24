@@ -16,7 +16,7 @@ type RegistrationPayload = {
   role: UserRole;
 };
 
-type OnboardingPayload = Pick<User, 'headline' | 'about' | 'skills' | 'experience'>;
+type OnboardingPayload = Pick<User, 'headline' | 'about' | 'skills' | 'experience' | 'photoUri'>;
 
 export default function HomeScreen() {
   const { t } = useTranslation();
@@ -61,7 +61,7 @@ export default function HomeScreen() {
 
   return (
     <Screen scroll={false}>
-      <View style={{ flex: 1, paddingBottom: 100 }}>
+      <View style={{ flex: 1 }}>
         <Header
           title={currentTab === 'profile' ? t('jobs.myResume') : 'HireNow'}
           subtitle={currentTab === 'profile' ? '' : t('home.heroBadge')}
@@ -72,7 +72,18 @@ export default function HomeScreen() {
         {user.role === 'employer' ? (
           <EmployerHome />
         ) : (
-          <WorkerHome userName={user.name} onUpdateProfile={updateUser} onTabChange={setCurrentTab} />
+          <WorkerHome
+            userName={user.name}
+            profile={{
+              headline: user.headline,
+              about: user.about,
+              skills: user.skills,
+              experience: user.experience,
+              photoUri: user.photoUri,
+            }}
+            onUpdateProfile={updateUser}
+            onTabChange={setCurrentTab}
+          />
         )}
       </View>
       <BottomNav />

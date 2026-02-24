@@ -8,7 +8,6 @@ import type { ThemeMode } from '@/hooks/useTheme';
 import { useTheme } from '@/hooks/useTheme';
 import type { Language } from '@/hooks/useTranslation';
 import { useTranslation } from '@/hooks/useTranslation';
-import { router } from 'expo-router';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function SettingsScreen() {
@@ -40,7 +39,6 @@ export default function SettingsScreen() {
         <Header
           title={t('settings.title')}
           showBackButton
-          onBackPress={() => router.replace('/')}
           showSettingsButton={false}
         />
 

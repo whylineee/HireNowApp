@@ -11,7 +11,6 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
-import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
@@ -66,7 +65,6 @@ export default function FavoritesScreen() {
           title={t('favorites.title')}
           subtitle={t('favorites.subtitleSaved', { count: favorites.length })}
           showBackButton
-          onBackPress={() => router.replace('/')}
         />
 
         {loading ? (

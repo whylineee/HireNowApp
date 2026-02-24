@@ -22,6 +22,13 @@ export default function JobDetailScreen() {
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const goBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+    router.replace('/');
+  };
 
   const handleShare = async () => {
     if (!job) return;
@@ -79,7 +86,7 @@ export default function JobDetailScreen() {
     return (
       <Screen>
         <Text style={styles.errorText}>{t('jobDetails.missingId')}</Text>
-        <Button title={t('jobDetails.backHome')} onPress={() => router.back()} />
+        <Button title={t('jobDetails.backHome')} onPress={goBack} />
       </Screen>
     );
   }
@@ -87,7 +94,7 @@ export default function JobDetailScreen() {
   if (loading) {
     return (
       <Screen>
-        <Header title={t('jobs.searchJobs')} showBackButton onBackPress={() => router.back()} />
+        <Header title={t('jobs.searchJobs')} showBackButton />
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors.primary} />
           <Text style={styles.loadingText}>{t('jobDetails.loading')}</Text>
@@ -99,9 +106,9 @@ export default function JobDetailScreen() {
   if (error || !job) {
     return (
       <Screen>
-        <Header title={t('common.error')} showBackButton onBackPress={() => router.back()} />
+        <Header title={t('common.error')} showBackButton />
         <Text style={styles.errorText}>{error || 'Вакансію не знайдено'}</Text>
-        <Button title={t('jobDetails.back')} onPress={() => router.back()} />
+        <Button title={t('jobDetails.back')} onPress={goBack} />
       </Screen>
     );
   }
@@ -112,7 +119,6 @@ export default function JobDetailScreen() {
         title={job.title}
         subtitle={job.company}
         showBackButton
-        onBackPress={() => router.back()}
       />
 
       <View style={styles.actionRowTop}>

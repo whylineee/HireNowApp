@@ -15,7 +15,8 @@ export const ukTranslations = {
     yes: "Так",
     no: "Ні",
     authRequired: "Будь ласка, зареєструйтесь для доступу",
-    or: "або"
+    or: "або",
+    hide: "Сховати"
   },
   auth: {
     register: "Створити акаунт",
@@ -57,7 +58,12 @@ export const ukTranslations = {
     employerPanel: "Кабінет роботодавця",
     employerSubtitle: "Створюйте та керуйте своїми вакансіями",
     noVacanciesYet: "Ще немає вакансій",
-    noVacanciesSubtitle: "Створіть свою першу вакансію, щоб кандидати могли відгукнутися"
+    noVacanciesSubtitle: "Створіть свою першу вакансію, щоб кандидати могли відгукнутися",
+    filtersTitle: "Розширені фільтри",
+    salaryFrom: "Зарплата від",
+    salaryTo: "Зарплата до",
+    onlyFavorites: "Тільки збережені",
+    hideApplied: "Сховати відгукнуті"
   },
   jobForm: {
     title: "Посада",
@@ -165,6 +171,9 @@ export const ukTranslations = {
     passwordPlaceholder: "Мінімум 8 символів",
     termsPrefix: "Я погоджуюся з",
     termsLink: "умовами використання",
+    roleTitle: "Оберіть роль",
+    fillAllFieldsError: "Заповніть всі поля",
+    acceptTermsError: "Погодьтеся з умовами використання",
     createAccount: "Створити акаунт",
     continueGoogle: "Продовжити з Google",
     googleSoon: "Функція буде доступна у наступному оновленні."
@@ -187,6 +196,7 @@ export const ukTranslations = {
     experiencePlaceholder: "Опишіть проєкти та досягнення",
     profilePhoto: "Фото профілю",
     addPhoto: "Додати фото",
+    chooseAvatar: "Оберіть аватар для профілю",
     back: "Назад",
     finish: "Завершити",
     skip: "Пропустити налаштування",

@@ -6,7 +6,6 @@ import { colors, spacing, typography } from '@/constants/theme';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -184,7 +183,7 @@ export default function MessagesScreen() {
   return (
     <Screen scroll={false}>
       <View style={{ flex: 1 }}>
-        <Header title={t('messages.title')} showBackButton onBackPress={() => router.replace('/')} showSettingsButton />
+        <Header title={t('messages.title')} showBackButton showSettingsButton />
         
         {conversations.length === 0 ? (
           <View style={styles.emptyContainer}>
