@@ -63,7 +63,8 @@ export const enTranslations = {
     salaryFrom: "Salary from",
     salaryTo: "Salary to",
     onlyFavorites: "Only favorites",
-    hideApplied: "Hide applied"
+    hideApplied: "Hide applied",
+    remoteOnly: "Remote only"
   },
   jobForm: {
     title: "Position",
@@ -100,7 +101,15 @@ export const enTranslations = {
     chat: "Chat",
     noMessages: "No messages",
     typeMessage: "Type a message...",
-    sendMessage: "Send"
+    sendMessage: "Send",
+    unread: "unread",
+    searchPlaceholder: "Search conversations...",
+    tabAll: "All",
+    tabUnread: "Unread",
+    tabPinned: "Pinned",
+    pin: "Pin",
+    unpin: "Unpin",
+    markUnread: "Mark unread"
   },
   applications: {
     title: "My applications",
@@ -157,7 +166,17 @@ export const enTranslations = {
     darkThemeTitle: "Dark mode",
     darkThemeSubtitle: "Enabled by default",
     notificationsTitle: "Notifications",
-    notificationsSubtitle: "Get updates about new opportunities"
+    notificationsSubtitle: "Get updates about new opportunities",
+    profileCompletion: "Profile completion",
+    remoteOnlySearchTitle: "Remote-only search",
+    hideAppliedJobsTitle: "Hide applied jobs",
+    pinImportantChatsTitle: "Pin important chats",
+    manageDataTitle: "Data management",
+    clearFavorites: "Clear favorites",
+    clearApplications: "Clear applications",
+    clearSearches: "Clear searches",
+    clearDataConfirm: "This action cannot be undone. Continue?",
+    clearDataDone: "Data was cleared successfully."
   },
   registration: {
     badge: "All hiring processes in one place",

@@ -19,9 +19,9 @@ import { Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } f
 
 export default function ProfileScreen() {
   const { user, updateUser, logout } = useAuth();
-  const { favorites } = useFavorites();
-  const { applications } = useApplications();
-  const { recentSearches } = useRecentSearches();
+  const { favorites, clearFavorites } = useFavorites();
+  const { applications, clearApplications } = useApplications();
+  const { recentSearches, clearSearches } = useRecentSearches();
   const { preferences, setPreference } = useUserPreferences();
   const { t } = useTranslation();
   const { colors, isDark } = useTheme();
@@ -39,6 +39,12 @@ export default function ProfileScreen() {
     setSkills(user.skills?.join(', ') ?? '');
     setExperience(user.experience ?? '');
   }, [user]);
+
+  const completion = useMemo(() => {
+    const fields = [headline.trim(), about.trim(), skills.trim(), experience.trim(), user?.photoUri ?? ''];
+    const filled = fields.filter(Boolean).length;
+    return Math.round((filled / fields.length) * 100);
+  }, [about, experience, headline, skills, user?.photoUri]);
 
   const stats = useMemo(
     () => [
@@ -80,6 +86,20 @@ export default function ProfileScreen() {
     ]);
   };
 
+  const confirmClear = (title: string, action: () => void) => {
+    Alert.alert(title, t('profilePage.clearDataConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('common.clear'),
+        style: 'destructive',
+        onPress: () => {
+          action();
+          Alert.alert(t('common.done'), t('profilePage.clearDataDone'));
+        },
+      },
+    ]);
+  };
+
   if (!user) {
     return (
       <Screen>
@@ -110,6 +130,16 @@ export default function ProfileScreen() {
               <View style={styles.profileTopText}>
                 <Text style={styles.profileName}>{user.name}</Text>
                 <Text style={styles.profileRole}>{user.role === 'worker' ? t('profilePage.roleWorker') : t('profilePage.roleEmployer')}</Text>
+              </View>
+            </View>
+
+            <View style={styles.progressWrap}>
+              <View style={styles.progressRow}>
+                <Text style={styles.progressLabel}>{t('profilePage.profileCompletion')}</Text>
+                <Text style={styles.progressValue}>{completion}%</Text>
+              </View>
+              <View style={styles.progressTrack}>
+                <View style={[styles.progressFill, { width: `${completion}%` }]} />
               </View>
             </View>
           </Card>
@@ -212,6 +242,56 @@ export default function ProfileScreen() {
                 thumbColor={preferences.compactMode ? colors.primary : colors.surface}
               />
             </View>
+
+            <View style={styles.settingRow}>
+              <View style={styles.settingText}>
+                <Text style={styles.settingTitle}>{t('profilePage.remoteOnlySearchTitle')}</Text>
+              </View>
+              <Switch
+                value={preferences.remoteOnlySearch}
+                onValueChange={(value) => setPreference('remoteOnlySearch', value)}
+                trackColor={{ false: colors.border, true: colors.primaryLight }}
+                thumbColor={preferences.remoteOnlySearch ? colors.primary : colors.surface}
+              />
+            </View>
+
+            <View style={styles.settingRow}>
+              <View style={styles.settingText}>
+                <Text style={styles.settingTitle}>{t('profilePage.hideAppliedJobsTitle')}</Text>
+              </View>
+              <Switch
+                value={preferences.hideAppliedJobs}
+                onValueChange={(value) => setPreference('hideAppliedJobs', value)}
+                trackColor={{ false: colors.border, true: colors.primaryLight }}
+                thumbColor={preferences.hideAppliedJobs ? colors.primary : colors.surface}
+              />
+            </View>
+
+            <View style={styles.settingRow}>
+              <View style={styles.settingText}>
+                <Text style={styles.settingTitle}>{t('profilePage.pinImportantChatsTitle')}</Text>
+              </View>
+              <Switch
+                value={preferences.pinImportantChats}
+                onValueChange={(value) => setPreference('pinImportantChats', value)}
+                trackColor={{ false: colors.border, true: colors.primaryLight }}
+                thumbColor={preferences.pinImportantChats ? colors.primary : colors.surface}
+              />
+            </View>
+          </Card>
+
+          <Card style={styles.card}>
+            <Text style={styles.cardTitle}>{t('profilePage.manageDataTitle')}</Text>
+            <View style={styles.quickActionsRow}>
+              <Button title={t('profilePage.clearFavorites')} variant="outline" onPress={() => confirmClear(t('profilePage.clearFavorites'), clearFavorites)} fullWidth />
+              <Button
+                title={t('profilePage.clearApplications')}
+                variant="outline"
+                onPress={() => confirmClear(t('profilePage.clearApplications'), clearApplications)}
+                fullWidth
+              />
+              <Button title={t('profilePage.clearSearches')} variant="outline" onPress={() => confirmClear(t('profilePage.clearSearches'), clearSearches)} fullWidth />
+            </View>
           </Card>
 
           <View style={styles.logoutWrap}>
@@ -246,6 +326,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
     },
     profileTopText: {
       marginLeft: spacing.sm,
+      flex: 1,
     },
     avatar: {
       width: 52,
@@ -266,6 +347,36 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
       fontSize: typography.sm,
       color: colors.textSecondary,
       marginTop: spacing.xs / 2,
+    },
+    progressWrap: {
+      marginTop: spacing.md,
+    },
+    progressRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: spacing.xs,
+    },
+    progressLabel: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      fontWeight: typography.medium,
+    },
+    progressValue: {
+      fontSize: typography.sm,
+      color: colors.primary,
+      fontWeight: typography.semibold,
+    },
+    progressTrack: {
+      height: 8,
+      borderRadius: 999,
+      backgroundColor: isDark ? 'rgba(148,163,184,0.28)' : 'rgba(148,163,184,0.2)',
+      overflow: 'hidden',
+    },
+    progressFill: {
+      height: 8,
+      borderRadius: 999,
+      backgroundColor: colors.primary,
     },
     cardTitle: {
       fontSize: typography.base,

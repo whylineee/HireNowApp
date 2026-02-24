@@ -5,6 +5,9 @@ export interface UserPreferences {
   notificationsEnabled: boolean;
   compactMode: boolean;
   openToWork: boolean;
+  remoteOnlySearch: boolean;
+  hideAppliedJobs: boolean;
+  pinImportantChats: boolean;
 }
 
 const USER_PREFERENCES_STORAGE_KEY = 'userPreferences';
@@ -13,11 +16,18 @@ const defaultPreferences: UserPreferences = {
   notificationsEnabled: true,
   compactMode: false,
   openToWork: true,
+  remoteOnlySearch: false,
+  hideAppliedJobs: false,
+  pinImportantChats: true,
 };
 
 type PreferencesListener = (preferences: UserPreferences) => void;
 
-let preferencesStore = getStoredJson<UserPreferences>(USER_PREFERENCES_STORAGE_KEY, defaultPreferences);
+const storedPreferences = getStoredJson<Partial<UserPreferences>>(USER_PREFERENCES_STORAGE_KEY, {});
+let preferencesStore: UserPreferences = {
+  ...defaultPreferences,
+  ...storedPreferences,
+};
 const listeners = new Set<PreferencesListener>();
 
 function emitPreferences() {

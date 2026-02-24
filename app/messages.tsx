@@ -4,28 +4,15 @@ import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { spacing, typography } from '@/constants/theme';
 import { useAuth } from '@/hooks/useAuth';
+import { useConversations } from '@/hooks/useConversations';
 import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
-import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-interface Message {
-  id: string;
-  text: string;
-  sender: 'me' | 'other';
-  timestamp: Date;
-  senderName: string;
-}
+type ConversationTab = 'all' | 'unread' | 'pinned';
 
-interface Conversation {
-  id: string;
-  participantName: string;
-  participantRole: string;
-  lastMessage: string;
-  timestamp: Date;
-  unread: number;
-}
+const QUICK_REPLIES = ['Дякую, перегляну.', 'Можемо обговорити деталі?', 'Чи є можливість remote?'];
 
 export default function MessagesScreen() {
   const { t } = useTranslation();
@@ -33,62 +20,46 @@ export default function MessagesScreen() {
   const { colors, isDark } = useTheme();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const { conversations, messagesFor, openConversation, sendMessage, togglePinConversation, markConversationUnread, unreadCount } =
+    useConversations();
 
-  useEffect(() => {
-    setConversations([
-      {
-        id: '1',
-        participantName: 'IT Company',
-        participantRole: 'Роботодавець',
-        lastMessage: 'Чудово, чекаємо на вас на співбесіду!',
-        timestamp: new Date(Date.now() - 1000 * 60 * 5),
-        unread: 2,
-      },
-      {
-        id: '2',
-        participantName: 'John Doe',
-        participantRole: 'Кандидат',
-        lastMessage: 'Дякую за можливість!',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60),
-        unread: 0,
-      },
-    ]);
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
+  const [draft, setDraft] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [tab, setTab] = useState<ConversationTab>('all');
 
-    setMessages([
-      {
-        id: '1',
-        text: 'Доброго дня! Зацікавила ваша вакансія React Native розробника.',
-        sender: 'me',
-        timestamp: new Date(Date.now() - 1000 * 60 * 30),
-        senderName: 'Я',
-      },
-      {
-        id: '2',
-        text: 'Привіт! Раді це чути. Розкажіть, будь ласка, про ваш досвід.',
-        sender: 'other',
-        timestamp: new Date(Date.now() - 1000 * 60 * 25),
-        senderName: 'IT Company',
-      },
-      {
-        id: '3',
-        text: 'Я маю 3 роки досвіду з React Native та 2 роки з React.',
-        sender: 'me',
-        timestamp: new Date(Date.now() - 1000 * 60 * 20),
-        senderName: 'Я',
-      },
-      {
-        id: '4',
-        text: 'Чудово, чекаємо на вас на співбесіду!',
-        sender: 'other',
-        timestamp: new Date(Date.now() - 1000 * 60 * 5),
-        senderName: 'IT Company',
-      },
-    ]);
-  }, []);
+  const selectedConversation = useMemo(
+    () => conversations.find((conversation) => conversation.id === selectedConversationId),
+    [conversations, selectedConversationId]
+  );
+
+  const messages = useMemo(
+    () => (selectedConversationId ? messagesFor(selectedConversationId) : []),
+    [messagesFor, selectedConversationId]
+  );
+
+  const filteredConversations = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    return conversations.filter((conversation) => {
+      if (tab === 'unread' && conversation.unread === 0) {
+        return false;
+      }
+
+      if (tab === 'pinned' && !conversation.pinned) {
+        return false;
+      }
+
+      if (!normalizedQuery) {
+        return true;
+      }
+
+      return (
+        conversation.participantName.toLowerCase().includes(normalizedQuery) ||
+        conversation.lastMessage.toLowerCase().includes(normalizedQuery)
+      );
+    });
+  }, [conversations, searchQuery, tab]);
 
   if (!user) {
     return (
@@ -100,31 +71,34 @@ export default function MessagesScreen() {
     );
   }
 
+  const formatTime = (timestamp: number) => {
+    return new Date(timestamp).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const handleOpenConversation = (conversationId: string) => {
+    openConversation(conversationId);
+    setSelectedConversationId(conversationId);
+  };
+
   const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      const message: Message = {
-        id: Date.now().toString(),
-        text: newMessage.trim(),
-        sender: 'me',
-        timestamp: new Date(),
-        senderName: 'Я',
-      };
-      setMessages([...messages, message]);
-      setNewMessage('');
+    if (!selectedConversationId || !draft.trim()) {
+      return;
     }
+
+    sendMessage(selectedConversationId, draft);
+    setDraft('');
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
-  };
-
-  if (selectedConversation) {
-    const conversation = conversations.find((c) => c.id === selectedConversation);
-
+  if (selectedConversationId && selectedConversation) {
     return (
       <Screen scroll={false}>
         <View style={{ flex: 1 }}>
-          <Header title={conversation?.participantName || t('messages.chat')} subtitle={conversation?.participantRole} showBackButton onBackPress={() => setSelectedConversation(null)} />
+          <Header
+            title={selectedConversation.participantName}
+            subtitle={selectedConversation.participantRole}
+            showBackButton
+            onBackPress={() => setSelectedConversationId(null)}
+          />
 
           <FlatList
             data={messages}
@@ -140,18 +114,26 @@ export default function MessagesScreen() {
             contentContainerStyle={styles.messagesList}
           />
 
+          <View style={styles.quickRepliesRow}>
+            {QUICK_REPLIES.map((reply) => (
+              <TouchableOpacity key={reply} style={styles.quickReplyChip} onPress={() => setDraft(reply)}>
+                <Text style={styles.quickReplyText}>{reply}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
-              value={newMessage}
-              onChangeText={setNewMessage}
+              value={draft}
+              onChangeText={setDraft}
               placeholder={t('messages.typeMessage')}
               placeholderTextColor={colors.textMuted}
               multiline
               maxLength={500}
             />
-            <TouchableOpacity style={[styles.sendButton, !newMessage.trim() && styles.sendButtonDisabled]} onPress={handleSendMessage} disabled={!newMessage.trim()}>
-              <Ionicons name="send" size={20} color={newMessage.trim() ? colors.primary : colors.textSecondary} />
+            <TouchableOpacity style={[styles.sendButton, !draft.trim() && styles.sendButtonDisabled]} onPress={handleSendMessage} disabled={!draft.trim()}>
+              <Text style={[styles.sendButtonText, !draft.trim() && styles.sendButtonTextDisabled]}>{t('messages.sendMessage')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -162,19 +144,40 @@ export default function MessagesScreen() {
   return (
     <Screen scroll={false}>
       <View style={{ flex: 1 }}>
-        <Header title={t('messages.title')} showBackButton showSettingsButton />
+        <Header title={t('messages.title')} subtitle={`${unreadCount} ${t('messages.unread')}`} showBackButton showSettingsButton />
 
-        {conversations.length === 0 ? (
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder={t('messages.searchPlaceholder')}
+            placeholderTextColor={colors.textMuted}
+          />
+        </View>
+
+        <View style={styles.tabsRow}>
+          <TouchableOpacity style={[styles.tabButton, tab === 'all' && styles.tabButtonActive]} onPress={() => setTab('all')}>
+            <Text style={[styles.tabButtonText, tab === 'all' && styles.tabButtonTextActive]}>{t('messages.tabAll')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.tabButton, tab === 'unread' && styles.tabButtonActive]} onPress={() => setTab('unread')}>
+            <Text style={[styles.tabButtonText, tab === 'unread' && styles.tabButtonTextActive]}>{t('messages.tabUnread')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.tabButton, tab === 'pinned' && styles.tabButtonActive]} onPress={() => setTab('pinned')}>
+            <Text style={[styles.tabButtonText, tab === 'pinned' && styles.tabButtonTextActive]}>{t('messages.tabPinned')}</Text>
+          </TouchableOpacity>
+        </View>
+
+        {filteredConversations.length === 0 ? (
           <View style={styles.emptyContainer}>
-            <Ionicons name="chatbubble-outline" size={64} color={colors.textSecondary} />
             <Text style={styles.emptyText}>{t('messages.noMessages')}</Text>
           </View>
         ) : (
           <FlatList
-            data={conversations}
+            data={filteredConversations}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <TouchableOpacity style={styles.conversationItem} onPress={() => setSelectedConversation(item.id)}>
+              <TouchableOpacity style={styles.conversationItem} onPress={() => handleOpenConversation(item.id)}>
                 <View style={styles.conversationContent}>
                   <View style={styles.conversationHeader}>
                     <Text style={styles.participantName}>{item.participantName}</Text>
@@ -184,6 +187,15 @@ export default function MessagesScreen() {
                   <Text style={styles.lastMessage} numberOfLines={2}>
                     {item.lastMessage}
                   </Text>
+
+                  <View style={styles.conversationActionsRow}>
+                    <TouchableOpacity style={styles.actionChip} onPress={() => togglePinConversation(item.id)}>
+                      <Text style={styles.actionChipText}>{item.pinned ? t('messages.unpin') : t('messages.pin')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.actionChip} onPress={() => markConversationUnread(item.id)}>
+                      <Text style={styles.actionChipText}>{t('messages.markUnread')}</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 {item.unread > 0 && (
                   <View style={styles.unreadBadge}>
@@ -339,17 +351,26 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
       fontSize: typography.sm,
     },
     sendButton: {
-      width: 42,
-      height: 42,
-      borderRadius: 21,
+      minHeight: 42,
+      borderRadius: 16,
       borderWidth: 1,
-      borderColor: colors.border,
-      backgroundColor: colors.surface,
+      borderColor: colors.primary,
+      backgroundColor: colors.primary,
       alignItems: 'center',
       justifyContent: 'center',
+      paddingHorizontal: spacing.md,
     },
     sendButtonDisabled: {
-      opacity: 0.6,
+      backgroundColor: colors.surface,
+      borderColor: colors.border,
+    },
+    sendButtonText: {
+      fontSize: typography.sm,
+      fontWeight: typography.semibold,
+      color: '#fff',
+    },
+    sendButtonTextDisabled: {
+      color: colors.textMuted,
     },
     authCard: {
       flex: 1,
@@ -361,5 +382,84 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
       color: colors.textSecondary,
       fontWeight: typography.medium,
       textAlign: 'center',
+    },
+    searchContainer: {
+      paddingHorizontal: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    searchInput: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 14,
+      backgroundColor: colors.surface,
+      color: colors.text,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm,
+      fontSize: typography.sm,
+    },
+    tabsRow: {
+      flexDirection: 'row',
+      paddingHorizontal: spacing.md,
+      marginBottom: spacing.sm,
+      gap: spacing.sm,
+    },
+    tabButton: {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 999,
+      paddingVertical: spacing.sm,
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+    },
+    tabButtonActive: {
+      backgroundColor: isDark ? 'rgba(96,165,250,0.2)' : 'rgba(37,99,235,0.1)',
+      borderColor: colors.primary,
+    },
+    tabButtonText: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      fontWeight: typography.medium,
+    },
+    tabButtonTextActive: {
+      color: colors.primary,
+      fontWeight: typography.semibold,
+    },
+    conversationActionsRow: {
+      flexDirection: 'row',
+      marginTop: spacing.sm,
+      gap: spacing.sm,
+    },
+    actionChip: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 999,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: spacing.xs,
+      backgroundColor: colors.surface,
+    },
+    actionChipText: {
+      fontSize: typography.xs,
+      color: colors.textSecondary,
+      fontWeight: typography.medium,
+    },
+    quickRepliesRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.xs,
+      paddingHorizontal: spacing.md,
+      paddingBottom: spacing.sm,
+    },
+    quickReplyChip: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 999,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: spacing.xs,
+      backgroundColor: colors.surface,
+    },
+    quickReplyText: {
+      fontSize: typography.xs,
+      color: colors.textSecondary,
     },
   });

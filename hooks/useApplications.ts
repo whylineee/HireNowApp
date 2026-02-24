@@ -42,6 +42,11 @@ export function useApplications() {
     emitApplications();
   }, []);
 
+  const clearApplications = useCallback(() => {
+    applicationsStore = [];
+    emitApplications();
+  }, []);
+
   const isApplied = useCallback(
     (jobId: string) => applications.some((item) => item.jobId === jobId),
     [applications]
@@ -52,5 +57,5 @@ export function useApplications() {
     [applications]
   );
 
-  return { applications, applyToJob, removeApplication, isApplied, appliedAt };
+  return { applications, applyToJob, removeApplication, clearApplications, isApplied, appliedAt };
 }

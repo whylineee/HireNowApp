@@ -63,7 +63,8 @@ export const ukTranslations = {
     salaryFrom: "Зарплата від",
     salaryTo: "Зарплата до",
     onlyFavorites: "Тільки збережені",
-    hideApplied: "Сховати відгукнуті"
+    hideApplied: "Сховати відгукнуті",
+    remoteOnly: "Лише remote"
   },
   jobForm: {
     title: "Посада",
@@ -100,7 +101,15 @@ export const ukTranslations = {
     chat: "Чат",
     noMessages: "Немає повідомлень",
     typeMessage: "Напишіть повідомлення...",
-    sendMessage: "Надіслати"
+    sendMessage: "Надіслати",
+    unread: "непрочитаних",
+    searchPlaceholder: "Пошук діалогів...",
+    tabAll: "Усі",
+    tabUnread: "Непрочитані",
+    tabPinned: "Закріплені",
+    pin: "Закріпити",
+    unpin: "Відкріпити",
+    markUnread: "Позначити непрочитаним"
   },
   applications: {
     title: "Мої заявки",
@@ -157,7 +166,17 @@ export const ukTranslations = {
     darkThemeTitle: "Темна тема",
     darkThemeSubtitle: "Увімкнено за замовчуванням",
     notificationsTitle: "Сповіщення",
-    notificationsSubtitle: "Отримувати оновлення про нові вакансії"
+    notificationsSubtitle: "Отримувати оновлення про нові вакансії",
+    profileCompletion: "Заповнення профілю",
+    remoteOnlySearchTitle: "Пошук тільки remote",
+    hideAppliedJobsTitle: "Ховати відгукнуті вакансії",
+    pinImportantChatsTitle: "Закріплювати важливі чати",
+    manageDataTitle: "Керування даними",
+    clearFavorites: "Очистити збережені",
+    clearApplications: "Очистити відгуки",
+    clearSearches: "Очистити пошуки",
+    clearDataConfirm: "Цю дію неможливо скасувати. Продовжити?",
+    clearDataDone: "Дані успішно очищені."
   },
   registration: {
     badge: "Усі процеси найму в одному місці",

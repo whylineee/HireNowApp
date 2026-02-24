@@ -16,6 +16,7 @@ import { useJobs } from '@/hooks/useJobs';
 import { useRecentSearches } from '@/hooks/useRecentSearches';
 import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useUserPreferences } from '@/hooks/useUserPreferences';
 import type { JobType } from '@/types/job';
 import type { User } from '@/types/user';
 import { extractSalary } from '@/utils/salary';
@@ -49,6 +50,7 @@ export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: 
   const { jobs, loading, error, search, refetch } = useJobs();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isApplied } = useApplications();
+  const { preferences } = useUserPreferences();
   const { recentSearches, addSearch, clearSearches } = useRecentSearches();
 
   const [query, setQuery] = useState('');
@@ -67,7 +69,8 @@ export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: 
   const [minSalaryText, setMinSalaryText] = useState('');
   const [maxSalaryText, setMaxSalaryText] = useState('');
   const [onlyFavorites, setOnlyFavorites] = useState(false);
-  const [excludeApplied, setExcludeApplied] = useState(false);
+  const [excludeApplied, setExcludeApplied] = useState(preferences.hideAppliedJobs);
+  const [remoteOnly, setRemoteOnly] = useState(preferences.remoteOnlySearch);
 
   useEffect(() => {
     setHeadline(profile?.headline ?? '');
@@ -75,6 +78,11 @@ export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: 
     setSkillsText(profile?.skills?.join(', ') ?? '');
     setExperience(profile?.experience ?? '');
   }, [profile?.about, profile?.experience, profile?.headline, profile?.skills]);
+
+  useEffect(() => {
+    setExcludeApplied(preferences.hideAppliedJobs);
+    setRemoteOnly(preferences.remoteOnlySearch);
+  }, [preferences.hideAppliedJobs, preferences.remoteOnlySearch]);
 
   const handleTabChange = useCallback(
     (newTab: WorkerTab) => {
@@ -180,9 +188,17 @@ export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: 
         return false;
       }
 
+      if (remoteOnly) {
+        const normalizedLocation = job.location.toLowerCase();
+        const isRemoteLocation = normalizedLocation.includes('віддал') || normalizedLocation.includes('remote');
+        if (job.type !== 'remote' && !isRemoteLocation) {
+          return false;
+        }
+      }
+
       return true;
     });
-  }, [excludeApplied, isApplied, isFavorite, maxSalaryText, minSalaryText, onlyFavorites, sortedJobs]);
+  }, [excludeApplied, isApplied, isFavorite, maxSalaryText, minSalaryText, onlyFavorites, remoteOnly, sortedJobs]);
 
   const cycleSort = useCallback(() => {
     const options: SortOption[] = ['recent', 'salary-high', 'salary-low', 'title'];
@@ -209,6 +225,7 @@ export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: 
     setMaxSalaryText('');
     setOnlyFavorites(false);
     setExcludeApplied(false);
+    setRemoteOnly(false);
   }, []);
 
   const renderSearchHeader = () => (
@@ -285,6 +302,16 @@ export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: 
                 onValueChange={setExcludeApplied}
                 trackColor={{ false: colors.border, true: colors.primaryLight }}
                 thumbColor={excludeApplied ? colors.primary : colors.surface}
+              />
+            </View>
+
+            <View style={styles.switchRow}>
+              <Text style={styles.switchLabel}>{t('jobs.remoteOnly')}</Text>
+              <Switch
+                value={remoteOnly}
+                onValueChange={setRemoteOnly}
+                trackColor={{ false: colors.border, true: colors.primaryLight }}
+                thumbColor={remoteOnly ? colors.primary : colors.surface}
               />
             </View>
 
