@@ -4,17 +4,19 @@ import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
 import { colors, spacing, typography } from '@/constants/theme';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from '@/hooks/useTranslation';
 import { ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 
 export default function ProfileScreen() {
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <Screen scroll={false}>
       <View style={{ flex: 1 }}>
         <Header
-          title="Мій кабінет"
-          subtitle={user ? `${user.name} • ${user.role === 'worker' ? 'Пошук роботи' : 'Роботодавець'}` : undefined}
+          title={t('profilePage.title')}
+          subtitle={user ? `${user.name} • ${user.role === 'worker' ? t('profilePage.roleWorker') : t('profilePage.roleEmployer')}` : undefined}
         />
         <ScrollView
           style={styles.scroll}
@@ -22,25 +24,25 @@ export default function ProfileScreen() {
           showsVerticalScrollIndicator={false}
         >
           <Card style={styles.card}>
-            <Text style={styles.cardTitle}>Профіль</Text>
+            <Text style={styles.cardTitle}>{t('profilePage.profileTitle')}</Text>
             <Text style={styles.cardText}>
-              Тут зʼявиться детальна інформація про ваш профіль, резюме та компанію, коли ми підʼєднаємо бекенд.
+              {t('profilePage.profileDesc')}
             </Text>
           </Card>
 
           <Card style={styles.card}>
-            <Text style={styles.cardTitle}>Налаштування додатку</Text>
+            <Text style={styles.cardTitle}>{t('profilePage.appSettingsTitle')}</Text>
             <View style={styles.settingRow}>
               <View style={styles.settingText}>
-                <Text style={styles.settingTitle}>Темна тема</Text>
-                <Text style={styles.settingSubtitle}>Увімкнено за замовчуванням</Text>
+                <Text style={styles.settingTitle}>{t('profilePage.darkThemeTitle')}</Text>
+                <Text style={styles.settingSubtitle}>{t('profilePage.darkThemeSubtitle')}</Text>
               </View>
               <Switch value disabled />
             </View>
             <View style={styles.settingRow}>
               <View style={styles.settingText}>
-                <Text style={styles.settingTitle}>Сповіщення</Text>
-                <Text style={styles.settingSubtitle}>Отримувати оновлення про нові вакансії</Text>
+                <Text style={styles.settingTitle}>{t('profilePage.notificationsTitle')}</Text>
+                <Text style={styles.settingSubtitle}>{t('profilePage.notificationsSubtitle')}</Text>
               </View>
               <Switch value disabled />
             </View>

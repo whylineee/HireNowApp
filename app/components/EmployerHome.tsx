@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { colors, spacing, typography } from '@/constants/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 import { createEmployerJob, getEmployerJobs } from '@/services/jobs';
 import type { Job, JobType } from '@/types/job';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
 function EmployerHome() {
+  const { t } = useTranslation();
   const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -69,24 +71,24 @@ function EmployerHome() {
         <>
           <View style={styles.heroIntro}>
             <View style={styles.heroBadge}>
-              <Text style={styles.heroBadgeText}>Build your hiring pipeline</Text>
+              <Text style={styles.heroBadgeText}>{t('home.employerHeroBadge')}</Text>
             </View>
-            <Text style={styles.heroTitle}>Manage all hiring processes in one place</Text>
-            <Text style={styles.heroSubtitle}>Publish roles, review candidates, and move faster with a clear workflow.</Text>
+            <Text style={styles.heroTitle}>{t('home.employerHeroTitle')}</Text>
+            <Text style={styles.heroSubtitle}>{t('home.employerHeroSubtitle')}</Text>
           </View>
 
           <View style={styles.searchActions}>
-            <Button title="Нова вакансія" onPress={() => setCreating(true)} fullWidth />
+            <Button title={t('jobs.newVacancy')} onPress={() => setCreating(true)} fullWidth />
           </View>
           {loading ? (
             <View style={styles.centered}>
               <ActivityIndicator size="large" color={colors.primary} />
-              <Text style={styles.loadingText}>Завантаження вакансій...</Text>
+              <Text style={styles.loadingText}>{t('jobs.loadingJobs')}</Text>
             </View>
           ) : jobs.length === 0 ? (
             <EmptyState
-              title="Ще немає вакансій"
-              subtitle="Створіть свою першу вакансію, щоб кандидати могли відгукнутися"
+              title={t('jobs.noVacanciesYet')}
+              subtitle={t('jobs.noVacanciesSubtitle')}
               icon="briefcase-outline"
             />
           ) : (
@@ -102,57 +104,57 @@ function EmployerHome() {
         </>
       ) : (
         <Card style={styles.profileWrapper}>
-          <Text style={styles.sectionTitle}>Нова вакансія</Text>
+          <Text style={styles.sectionTitle}>{t('jobs.newVacancy')}</Text>
           <Input
-            label="Посада"
-            placeholder="Наприклад: Middle React Native Developer"
+            label={t('jobForm.title')}
+            placeholder={t('jobForm.titlePlaceholder')}
             value={title}
             onChangeText={setTitle}
           />
           <Input
-            label="Компанія"
-            placeholder="Назва компанії"
+            label={t('jobForm.company')}
+            placeholder={t('jobForm.companyPlaceholder')}
             value={company}
             onChangeText={setCompany}
           />
           <Input
-            label="Локація"
-            placeholder="Місто / Віддалено"
+            label={t('jobForm.location')}
+            placeholder={t('jobForm.locationPlaceholder')}
             value={location}
             onChangeText={setLocation}
           />
           <Input
-            label="Зарплата (необовʼязково)"
-            placeholder="₴60 000 – ₴90 000"
+            label={t('jobForm.salary')}
+            placeholder={t('jobForm.salaryPlaceholder')}
             value={salary}
             onChangeText={setSalary}
           />
           <Input
-            label="Тип зайнятості"
-            placeholder="full-time, remote тощо"
+            label={t('jobForm.employmentType')}
+            placeholder={t('jobForm.employmentTypePlaceholder')}
             value={type}
             onChangeText={(text) => setType(text as JobType)}
           />
           <Input
-            label="Опис"
-            placeholder="Опишіть роль, команду та стек"
+            label={t('jobForm.description')}
+            placeholder={t('jobForm.descriptionPlaceholder')}
             value={description}
             onChangeText={setDescription}
             multiline
             numberOfLines={4}
           />
           <Input
-            label="Вимоги"
-            placeholder={'Кожна вимога з нового рядка\\nReact Native\\nTypeScript\\nREST API'}
+            label={t('jobForm.requirements')}
+            placeholder={t('jobForm.requirementsPlaceholder')}
             value={requirements}
             onChangeText={setRequirements}
             multiline
             numberOfLines={4}
           />
           <View style={styles.searchActions}>
-            <Button title="Створити вакансію" onPress={handleCreate} fullWidth />
+            <Button title={t('jobForm.createVacancy')} onPress={handleCreate} fullWidth />
           </View>
-          <Button title="Скасувати" onPress={() => setCreating(false)} variant="ghost" fullWidth />
+          <Button title={t('common.cancel')} onPress={() => setCreating(false)} variant="ghost" fullWidth />
         </Card>
       )}
     </View>

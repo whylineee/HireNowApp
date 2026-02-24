@@ -8,7 +8,7 @@ export type Language = 'uk' | 'en';
 interface TranslationContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
 }
 
 const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
@@ -28,7 +28,7 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
     setStoredValue('language', lang);
   };
 
-  const t = (key: string): string => {
+  const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
     let value: TranslationNode | undefined = translations[language] as TranslationNode;
 
@@ -39,7 +39,17 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
       value = value[k];
     }
 
-    return typeof value === 'string' ? value : key;
+    if (typeof value !== 'string') {
+      return key;
+    }
+
+    if (!params) {
+      return value;
+    }
+
+    return Object.entries(params).reduce((acc, [paramKey, paramValue]) => {
+      return acc.replaceAll(`{{${paramKey}}}`, String(paramValue));
+    }, value);
   };
 
   useEffect(() => {

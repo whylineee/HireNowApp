@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { colors, spacing, typography } from '@/constants/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 import type { UserRole } from '@/types/user';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
@@ -12,6 +13,7 @@ interface RegistrationScreenProps {
 }
 
 export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +36,7 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
   };
 
   const handleGoogleAuth = () => {
-    Alert.alert('Google Sign In', 'Функція буде доступна у наступному оновленні.', [{ text: 'OK' }]);
+    Alert.alert('Google Sign In', t('registration.googleSoon'), [{ text: 'OK' }]);
   };
 
   return (
@@ -42,17 +44,17 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
       <View style={styles.hero}>
         <View style={styles.badge}>
           <Ionicons name="sparkles-outline" size={14} color={colors.primary} />
-          <Text style={styles.badgeText}>All hiring processes in one place</Text>
+          <Text style={styles.badgeText}>{t('registration.badge')}</Text>
         </View>
 
-        <Text style={styles.title}>Find your next dream role in IT</Text>
-        <Text style={styles.subtitle}>Create your profile and apply with one tap.</Text>
+        <Text style={styles.title}>{t('registration.title')}</Text>
+        <Text style={styles.subtitle}>{t('registration.subtitle')}</Text>
       </View>
 
       <Card style={styles.formCard}>
         <Input
-          label="Email"
-          placeholder="you@email.com"
+          label={t('registration.email')}
+          placeholder={t('registration.emailPlaceholder')}
           keyboardType="email-address"
           autoCapitalize="none"
           value={email}
@@ -63,8 +65,8 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
         />
 
         <Input
-          label="Phone"
-          placeholder="+380..."
+          label={t('registration.phone')}
+          placeholder={t('registration.phonePlaceholder')}
           keyboardType="phone-pad"
           value={phone}
           onChangeText={(text) => {
@@ -75,8 +77,8 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
 
         <View style={styles.passwordWrapper}>
           <Input
-            label="Password"
-            placeholder="Minimum 8 symbols"
+            label={t('registration.password')}
+            placeholder={t('registration.passwordPlaceholder')}
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={(text) => {
@@ -101,19 +103,19 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
             {agreeToTerms ? <Ionicons name="checkmark" size={12} color="#fff" /> : null}
           </View>
           <Text style={styles.termsText}>
-            Погоджуюся з <Text style={styles.termsLink}>умовами використання</Text>
+            {t('registration.termsPrefix')} <Text style={styles.termsLink}>{t('registration.termsLink')}</Text>
           </Text>
         </TouchableOpacity>
 
-        <Button title="Create account" onPress={handleSubmit} fullWidth />
+        <Button title={t('registration.createAccount')} onPress={handleSubmit} fullWidth />
 
         <View style={styles.dividerRow}>
           <View style={styles.divider} />
-          <Text style={styles.dividerText}>або</Text>
+          <Text style={styles.dividerText}>{t('common.or')}</Text>
           <View style={styles.divider} />
         </View>
 
-        <Button title="Continue with Google" onPress={handleGoogleAuth} variant="outline" fullWidth />
+        <Button title={t('registration.continueGoogle')} onPress={handleGoogleAuth} variant="outline" fullWidth />
       </Card>
     </ScrollView>
   );

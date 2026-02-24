@@ -2,6 +2,7 @@ export const ukTranslations = {
   common: {
     search: "Пошук",
     save: "Зберегти",
+    clear: "Очистити",
     cancel: "Скасувати",
     delete: "Видалити",
     edit: "Редагувати",
@@ -12,7 +13,9 @@ export const ukTranslations = {
     next: "Далі",
     done: "Готово",
     yes: "Так",
-    no: "Ні"
+    no: "Ні",
+    authRequired: "Будь ласка, зареєструйтесь для доступу",
+    or: "або"
   },
   auth: {
     register: "Створити акаунт",
@@ -36,6 +39,7 @@ export const ukTranslations = {
   },
   jobs: {
     searchJobs: "Пошук роботи",
+    recentSearches: "Останні пошуки",
     myResume: "Моє резюме",
     position: "Позиція / роль",
     positionPlaceholder: "Наприклад: Junior React Native Developer",
@@ -87,6 +91,7 @@ export const ukTranslations = {
   },
   messages: {
     title: "Повідомлення",
+    chat: "Чат",
     noMessages: "Немає повідомлень",
     typeMessage: "Напишіть повідомлення...",
     sendMessage: "Надіслати"
@@ -101,5 +106,89 @@ export const ukTranslations = {
     },
     noApplications: "Немає заявок",
     appliedOn: "Подано"
+  },
+  home: {
+    heroBadge: "Усі процеси найму в одному місці",
+    heroTitle: "Знайди свою наступну роль в IT",
+    heroSubtitle: "Спілкуйся з топ-компаніями та відстежуй відгуки в одному просторі.",
+    employerHeroBadge: "Побудуйте свій hiring pipeline",
+    employerHeroTitle: "Керуйте всіма процесами найму в одному місці",
+    employerHeroSubtitle: "Публікуйте вакансії, переглядайте кандидатів і наймайте швидше."
+  },
+  favorites: {
+    title: "Збережені вакансії",
+    subtitleSaved: "{{count}} збережено",
+    loading: "Завантаження...",
+    emptyTitle: "Немає збережених вакансій",
+    emptySubtitle: "Додавайте вакансії до збережених, натискаючи на іконку серця на картці вакансії."
+  },
+  profilePage: {
+    title: "Мій кабінет",
+    roleWorker: "Пошук роботи",
+    roleEmployer: "Роботодавець",
+    profileTitle: "Профіль",
+    profileDesc: "Детальна інформація про профіль та резюме зʼявиться після підключення бекенду.",
+    appSettingsTitle: "Налаштування додатку",
+    darkThemeTitle: "Темна тема",
+    darkThemeSubtitle: "Увімкнено за замовчуванням",
+    notificationsTitle: "Сповіщення",
+    notificationsSubtitle: "Отримувати оновлення про нові вакансії"
+  },
+  registration: {
+    badge: "Усі процеси найму в одному місці",
+    title: "Знайди свою наступну роль в IT",
+    subtitle: "Створи профіль і відгукуйся в один дотик.",
+    email: "Email",
+    phone: "Телефон",
+    password: "Пароль",
+    emailPlaceholder: "you@email.com",
+    phonePlaceholder: "+380...",
+    passwordPlaceholder: "Мінімум 8 символів",
+    termsPrefix: "Я погоджуюся з",
+    termsLink: "умовами використання",
+    createAccount: "Створити акаунт",
+    continueGoogle: "Продовжити з Google",
+    googleSoon: "Функція буде доступна у наступному оновленні."
+  },
+  onboarding: {
+    welcome: "Вітаємо, {{name}}",
+    title: "Давайте заповнимо ваш профіль",
+    step: "Крок {{step}} з 4",
+    basicInfo: "Основна інформація",
+    desiredRole: "Бажана роль",
+    yourRole: "Ваша роль",
+    desiredRolePlaceholder: "Frontend Engineer",
+    yourRolePlaceholder: "Engineering Manager",
+    about: "Про себе",
+    aboutPlaceholder: "Коротко опишіть ваші цілі та бекграунд",
+    skills: "Навички",
+    skillsPlaceholder: "React, TypeScript, Playwright...",
+    skillsHint: "Вкажіть навички через кому",
+    experience: "Досвід",
+    experiencePlaceholder: "Опишіть проєкти та досягнення",
+    profilePhoto: "Фото профілю",
+    addPhoto: "Додати фото",
+    back: "Назад",
+    finish: "Завершити",
+    skip: "Пропустити налаштування",
+    photoSoon: "Завантаження фото буде доступне в наступному оновленні."
+  },
+  jobDetails: {
+    missingId: "Не вказано ID вакансії",
+    backHome: "На головну",
+    loading: "Завантаження...",
+    back: "Назад",
+    posted: "Опубліковано:",
+    description: "Опис",
+    requirements: "Вимоги",
+    share: "Поділитися",
+    applied: "Відгукнуто",
+    apply: "Відгукнутися",
+    alreadyAppliedTitle: "Ви вже відгукнулися",
+    alreadyAppliedBody: "Статус відгуку збережено у вашому профілі.",
+    applyConfirmTitle: "Відгукнутися",
+    applyConfirmBody: "Ви хочете відгукнутися на вакансію \"{{title}}\" в {{company}}?",
+    applySuccessTitle: "Успіх",
+    applySuccessBody: "Ваш відгук відправлено."
   }
 } as const;

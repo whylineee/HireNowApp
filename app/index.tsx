@@ -2,6 +2,7 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
 import { useAuth } from '@/hooks/useAuth';
+import { useTranslation } from '@/hooks/useTranslation';
 import type { User, UserRole } from '@/types/user';
 import { useState } from 'react';
 import { View } from 'react-native';
@@ -18,6 +19,7 @@ type RegistrationPayload = {
 type OnboardingPayload = Pick<User, 'headline' | 'about' | 'skills' | 'experience'>;
 
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const { user, register, updateUser } = useAuth();
   const [currentTab, setCurrentTab] = useState<'search' | 'profile'>('search');
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -61,8 +63,8 @@ export default function HomeScreen() {
     <Screen scroll={false}>
       <View style={{ flex: 1, paddingBottom: 100 }}>
         <Header
-          title={currentTab === 'profile' ? 'Моє резюме' : 'HireNow'}
-          subtitle={currentTab === 'profile' ? '' : 'All hiring processes in one place'}
+          title={currentTab === 'profile' ? t('jobs.myResume') : 'HireNow'}
+          subtitle={currentTab === 'profile' ? '' : t('home.heroBadge')}
           showFavoritesButton={user.role === 'worker' && currentTab !== 'profile'}
           showSettingsButton={currentTab !== 'profile'}
         />

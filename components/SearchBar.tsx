@@ -1,4 +1,5 @@
 import { borderRadius, colors, spacing, typography } from '@/constants/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -16,11 +17,14 @@ export function SearchBar({
   value,
   onChangeText,
   onSearch,
-  placeholder = 'Посада, компанія, ключові слова...',
+  placeholder,
   showLocation = true,
   locationValue = '',
   onLocationChange,
 }: SearchBarProps) {
+  const { t } = useTranslation();
+  const searchPlaceholder = placeholder ?? `${t('jobs.searchJobs')}...`;
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.searchRow}>
@@ -29,7 +33,7 @@ export function SearchBar({
           style={styles.input}
           value={value}
           onChangeText={onChangeText}
-          placeholder={placeholder}
+          placeholder={searchPlaceholder}
           placeholderTextColor={colors.textMuted}
           returnKeyType="search"
           onSubmitEditing={onSearch}
@@ -48,7 +52,7 @@ export function SearchBar({
             style={styles.locationInput}
             value={locationValue}
             onChangeText={onLocationChange ?? (() => {})}
-            placeholder="Місто або країна"
+            placeholder={t('jobForm.locationPlaceholder')}
             placeholderTextColor={colors.textMuted}
           />
         </View>

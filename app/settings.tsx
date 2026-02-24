@@ -18,7 +18,7 @@ export default function SettingsScreen() {
     return (
       <Screen>
         <Card style={styles.authCard}>
-          <Text style={styles.authText}>Будь ласка, зареєструйтесь для доступу</Text>
+          <Text style={styles.authText}>{t('common.authRequired')}</Text>
         </Card>
       </Screen>
     );

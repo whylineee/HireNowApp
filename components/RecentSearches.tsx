@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, typography } from '@/constants/theme';
 import type { RecentSearch } from '@/hooks/useRecentSearches';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface RecentSearchesProps {
   items: RecentSearch[];
@@ -10,15 +11,17 @@ interface RecentSearchesProps {
 }
 
 export function RecentSearches({ items, onSelect, onClear }: RecentSearchesProps) {
+  const { t } = useTranslation();
+
   if (items.length === 0) return null;
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Останні пошуки</Text>
+        <Text style={styles.title}>{t('jobs.recentSearches')}</Text>
         {onClear && (
           <TouchableOpacity onPress={onClear} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-            <Text style={styles.clear}>Очистити</Text>
+            <Text style={styles.clear}>{t('common.clear')}</Text>
           </TouchableOpacity>
         )}
       </View>

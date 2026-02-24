@@ -6,6 +6,7 @@ import { JOB_TYPE_COLORS, JOB_TYPE_LABELS } from '@/constants/job';
 import { colors, spacing, typography } from '@/constants/theme';
 import { useApplications } from '@/hooks/useApplications';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useTranslation } from '@/hooks/useTranslation';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
@@ -13,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Share, StyleSheet, Text, View } from 'react-native';
 
 export default function JobDetailScreen() {
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isApplied, applyToJob } = useApplications();
@@ -35,19 +37,19 @@ export default function JobDetailScreen() {
   const handleApply = () => {
     if (!job) return;
     if (isApplied(job.id)) {
-      Alert.alert('Ви вже відгукнулися', 'Статус відгуку збережено у вашому профілі.');
+      Alert.alert(t('jobDetails.alreadyAppliedTitle'), t('jobDetails.alreadyAppliedBody'));
       return;
     }
     Alert.alert(
-      'Відгукнутися',
-      `Ви хочете відгукнутися на вакансію "${job?.title}" в ${job?.company}?`,
+      t('jobDetails.applyConfirmTitle'),
+      t('jobDetails.applyConfirmBody', { title: job.title, company: job.company }),
       [
-        { text: 'Скасувати', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Відгукнутися',
+          text: t('jobDetails.apply'),
           onPress: () => {
             applyToJob(job.id);
-            Alert.alert('Успіх', 'Ваш відгук відправлено!');
+            Alert.alert(t('jobDetails.applySuccessTitle'), t('jobDetails.applySuccessBody'));
           },
         },
       ]
@@ -75,8 +77,8 @@ export default function JobDetailScreen() {
   if (!id) {
     return (
       <Screen>
-        <Text style={styles.errorText}>Не вказано ID вакансії</Text>
-        <Button title="На головну" onPress={() => router.back()} />
+        <Text style={styles.errorText}>{t('jobDetails.missingId')}</Text>
+        <Button title={t('jobDetails.backHome')} onPress={() => router.back()} />
       </Screen>
     );
   }
@@ -84,10 +86,10 @@ export default function JobDetailScreen() {
   if (loading) {
     return (
       <Screen>
-        <Stack.Screen options={{ title: 'Вакансія' }} />
+        <Stack.Screen options={{ title: t('jobs.searchJobs') }} />
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Завантаження...</Text>
+          <Text style={styles.loadingText}>{t('jobDetails.loading')}</Text>
         </View>
       </Screen>
     );
@@ -98,7 +100,7 @@ export default function JobDetailScreen() {
       <Screen>
         <Stack.Screen options={{ title: 'Помилка' }} />
         <Text style={styles.errorText}>{error || 'Вакансію не знайдено'}</Text>
-        <Button title="Назад" onPress={() => router.back()} />
+        <Button title={t('jobDetails.back')} onPress={() => router.back()} />
       </Screen>
     );
   }
@@ -138,7 +140,7 @@ export default function JobDetailScreen() {
           </View>
           {isApplied(job.id) && (
             <View style={styles.appliedBadge}>
-              <Text style={styles.appliedText}>Відгукнуто</Text>
+              <Text style={styles.appliedText}>{t('jobDetails.applied')}</Text>
             </View>
           )}
         </View>
@@ -147,16 +149,16 @@ export default function JobDetailScreen() {
           <Text style={styles.salary}>💰 {job.salary}</Text>
         )}
 
-        <Text style={styles.posted}>Опубліковано: {job.postedAt}</Text>
+        <Text style={styles.posted}>{t('jobDetails.posted')} {job.postedAt}</Text>
       </Card>
 
       <Card style={styles.section}>
-        <Text style={styles.sectionTitle}>Опис</Text>
+        <Text style={styles.sectionTitle}>{t('jobDetails.description')}</Text>
         <Text style={styles.description}>{job.description}</Text>
       </Card>
 
       <Card style={styles.section}>
-        <Text style={styles.sectionTitle}>Вимоги</Text>
+        <Text style={styles.sectionTitle}>{t('jobDetails.requirements')}</Text>
         {job.requirements.map((req, i) => (
           <View key={i} style={styles.requirementRow}>
             <Text style={styles.bullet}>•</Text>
@@ -167,14 +169,14 @@ export default function JobDetailScreen() {
 
       <View style={styles.actions}>
         <Button
-          title={isApplied(job.id) ? 'Ви вже відгукнулися' : 'Відгукнутися'}
+          title={isApplied(job.id) ? t('jobDetails.alreadyAppliedTitle') : t('jobDetails.apply')}
           onPress={handleApply}
           fullWidth
           disabled={isApplied(job.id)}
         />
         <View style={styles.shareButton}>
           <Button
-            title="Поділитися"
+            title={t('jobDetails.share')}
             onPress={handleShare}
             fullWidth
             variant="outline"

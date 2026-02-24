@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, borderRadius, typography } from '@/constants/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface QuickFilter {
   id: string;
@@ -24,10 +25,12 @@ interface QuickFiltersProps {
 }
 
 export function QuickFilters({ onFilterPress }: QuickFiltersProps) {
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Швидкий пошук</Text>
+        <Text style={styles.title}>{t('jobs.searchJobs')}</Text>
       </View>
       <ScrollView
         horizontal

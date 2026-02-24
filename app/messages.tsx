@@ -91,7 +91,7 @@ export default function MessagesScreen() {
     return (
       <Screen>
         <Card style={styles.authCard}>
-          <Text style={styles.authText}>Будь ласка, зареєструйтесь для доступу</Text>
+          <Text style={styles.authText}>{t('common.authRequired')}</Text>
         </Card>
       </Screen>
     );
@@ -122,7 +122,7 @@ export default function MessagesScreen() {
       <Screen scroll={false}>
         <View style={{ flex: 1 }}>
           <Header
-            title={conversation?.participantName || 'Чат'}
+            title={conversation?.participantName || t('messages.chat')}
             subtitle={conversation?.participantRole}
             showBackButton
             onBackPress={() => setSelectedConversation(null)}

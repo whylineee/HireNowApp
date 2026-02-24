@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { colors, spacing, typography } from '@/constants/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 import type { UserRole } from '@/types/user';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
@@ -21,6 +22,7 @@ interface OnboardingScreenProps {
 }
 
 export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: OnboardingScreenProps) {
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [headline, setHeadline] = useState('');
   const [about, setAbout] = useState('');
@@ -51,15 +53,15 @@ export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: Onb
   };
 
   const handlePhotoUpload = () => {
-    Alert.alert('Фото профілю', 'Додавання фото буде доступне в наступному оновленні.', [{ text: 'OK' }]);
+    Alert.alert(t('onboarding.profilePhoto'), t('onboarding.photoSoon'), [{ text: 'OK' }]);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.hero}>
-        <Text style={styles.greeting}>Welcome, {userName}</Text>
-        <Text style={styles.title}>Let's complete your profile</Text>
-        <Text style={styles.subtitle}>Step {step} of 4</Text>
+        <Text style={styles.greeting}>{t('onboarding.welcome', { name: userName })}</Text>
+        <Text style={styles.title}>{t('onboarding.title')}</Text>
+        <Text style={styles.subtitle}>{t('onboarding.step', { step })}</Text>
       </View>
 
       <View style={styles.progressTrack}>
@@ -71,18 +73,18 @@ export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: Onb
           <View>
             <View style={styles.stepHeader}>
               <Ionicons name="person-outline" size={24} color={colors.primary} />
-              <Text style={styles.stepTitle}>Basic info</Text>
+              <Text style={styles.stepTitle}>{t('onboarding.basicInfo')}</Text>
             </View>
 
             <Input
-              label={userRole === 'worker' ? 'Desired role' : 'Your role'}
-              placeholder={userRole === 'worker' ? 'Frontend Engineer' : 'Engineering Manager'}
+              label={userRole === 'worker' ? t('onboarding.desiredRole') : t('onboarding.yourRole')}
+              placeholder={userRole === 'worker' ? t('onboarding.desiredRolePlaceholder') : t('onboarding.yourRolePlaceholder')}
               value={headline}
               onChangeText={setHeadline}
             />
             <Input
-              label="About"
-              placeholder="Short summary about your goals and background"
+              label={t('onboarding.about')}
+              placeholder={t('onboarding.aboutPlaceholder')}
               value={about}
               onChangeText={setAbout}
               multiline
@@ -95,15 +97,15 @@ export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: Onb
           <View>
             <View style={styles.stepHeader}>
               <Ionicons name="sparkles-outline" size={24} color={colors.primary} />
-              <Text style={styles.stepTitle}>Skills</Text>
+              <Text style={styles.stepTitle}>{t('onboarding.skills')}</Text>
             </View>
             <Input
-              label="Skills"
-              placeholder="React, TypeScript, Playwright..."
+              label={t('onboarding.skills')}
+              placeholder={t('onboarding.skillsPlaceholder')}
               value={skillsText}
               onChangeText={setSkillsText}
             />
-            <Text style={styles.tipText}>Use comma-separated values</Text>
+            <Text style={styles.tipText}>{t('onboarding.skillsHint')}</Text>
           </View>
         ) : null}
 
@@ -111,11 +113,11 @@ export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: Onb
           <View>
             <View style={styles.stepHeader}>
               <Ionicons name="briefcase-outline" size={24} color={colors.primary} />
-              <Text style={styles.stepTitle}>Experience</Text>
+              <Text style={styles.stepTitle}>{t('onboarding.experience')}</Text>
             </View>
             <Input
-              label="Work experience"
-              placeholder="Describe projects and achievements"
+              label={t('onboarding.experience')}
+              placeholder={t('onboarding.experiencePlaceholder')}
               value={experience}
               onChangeText={setExperience}
               multiline
@@ -128,11 +130,11 @@ export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: Onb
           <View>
             <View style={styles.stepHeader}>
               <Ionicons name="camera-outline" size={24} color={colors.primary} />
-              <Text style={styles.stepTitle}>Profile photo</Text>
+              <Text style={styles.stepTitle}>{t('onboarding.profilePhoto')}</Text>
             </View>
             <TouchableOpacity style={styles.photoUpload} onPress={handlePhotoUpload}>
               <Ionicons name="camera" size={32} color={colors.textSecondary} />
-              <Text style={styles.photoText}>Add photo</Text>
+              <Text style={styles.photoText}>{t('onboarding.addPhoto')}</Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -140,15 +142,15 @@ export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: Onb
 
       <View style={styles.actionsRow}>
         {step > 1 ? (
-          <Button title="Back" onPress={() => setStep((prev) => prev - 1)} variant="outline" />
+          <Button title={t('onboarding.back')} onPress={() => setStep((prev) => prev - 1)} variant="outline" />
         ) : null}
         <View style={styles.nextButtonWrap}>
-          <Button title={step === 4 ? 'Finish' : 'Next'} onPress={handleNext} fullWidth />
+          <Button title={step === 4 ? t('onboarding.finish') : t('common.next')} onPress={handleNext} fullWidth />
         </View>
       </View>
 
       <TouchableOpacity style={styles.skipButton} onPress={onSkip}>
-        <Text style={styles.skipText}>Skip setup</Text>
+        <Text style={styles.skipText}>{t('onboarding.skip')}</Text>
       </TouchableOpacity>
     </View>
   );

@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/Card';
 import { JOB_TYPE_COLORS, JOB_TYPE_LABELS } from '@/constants/job';
 import { colors, spacing, typography } from '@/constants/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 import type { Job } from '@/types/job';
 import { router } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -21,6 +22,8 @@ export function JobCard({
   onFavoritePress,
   showFavorite = true,
 }: JobCardProps) {
+  const { t } = useTranslation();
+
   const handleCardPress = () => {
     router.push(`/job/${job.id}`);
   };
@@ -56,7 +59,7 @@ export function JobCard({
             </View>
             {isApplied && (
               <View style={styles.appliedBadge}>
-                <Text style={styles.appliedText}>Відгукнуто</Text>
+                <Text style={styles.appliedText}>{t('jobDetails.applied')}</Text>
               </View>
             )}
           </View>

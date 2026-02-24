@@ -14,6 +14,7 @@ import { useApplications } from '@/hooks/useApplications';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useJobs } from '@/hooks/useJobs';
 import { useRecentSearches } from '@/hooks/useRecentSearches';
+import { useTranslation } from '@/hooks/useTranslation';
 import type { JobType } from '@/types/job';
 import { extractSalary } from '@/utils/salary';
 import { useCallback, useMemo, useState } from 'react';
@@ -28,6 +29,7 @@ interface WorkerHomeProps {
 }
 
 export function WorkerHome({ userName, onUpdateProfile, onTabChange }: WorkerHomeProps) {
+  const { t } = useTranslation();
   const { jobs, loading, error, search, refetch } = useJobs();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isApplied } = useApplications();
@@ -146,57 +148,57 @@ export function WorkerHome({ userName, onUpdateProfile, onTabChange }: WorkerHom
           onPress={() => handleTabChange('search')}
           style={[styles.modeTab, tab === 'search' && styles.modeTabActive]}
         >
-          <Text style={[styles.modeTabText, tab === 'search' && styles.modeTabTextActive]}>Пошук роботи</Text>
+          <Text style={[styles.modeTabText, tab === 'search' && styles.modeTabTextActive]}>{t('jobs.searchJobs')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => handleTabChange('profile')}
           style={[styles.modeTab, tab === 'profile' && styles.modeTabActive]}
         >
-          <Text style={[styles.modeTabText, tab === 'profile' && styles.modeTabTextActive]}>Моє резюме</Text>
+          <Text style={[styles.modeTabText, tab === 'profile' && styles.modeTabTextActive]}>{t('jobs.myResume')}</Text>
         </TouchableOpacity>
       </View>
 
       {tab === 'profile' ? (
         <Card style={styles.profileWrapper}>
-          <Text style={styles.sectionTitle}>Заповніть резюме</Text>
+          <Text style={styles.sectionTitle}>{t('jobs.myResume')}</Text>
           <Input
-            label="Позиція / роль"
-            placeholder="Наприклад: Junior React Native Developer"
+            label={t('jobs.position')}
+            placeholder={t('jobs.positionPlaceholder')}
             value={headline}
             onChangeText={setHeadline}
           />
           <Input
-            label="Про себе"
-            placeholder="Коротко опишіть свій досвід та цілі"
+            label={t('jobs.aboutYourself')}
+            placeholder={t('jobs.aboutPlaceholder')}
             value={about}
             onChangeText={setAbout}
             multiline
             numberOfLines={4}
           />
           <Input
-            label="Навички"
-            placeholder="React, TypeScript, Node.js..."
+            label={t('jobs.skills')}
+            placeholder={t('jobs.skillsPlaceholder')}
             value={skillsText}
             onChangeText={setSkillsText}
           />
           <Input
-            label="Досвід"
-            placeholder="Опишіть попередній досвід, проєкти, досягнення"
+            label={t('jobs.experience')}
+            placeholder={t('jobs.experiencePlaceholder')}
             value={experience}
             onChangeText={setExperience}
             multiline
             numberOfLines={4}
           />
-          <Button title="Зберегти резюме" onPress={handleSaveProfile} fullWidth />
+          <Button title={t('jobs.saveResume')} onPress={handleSaveProfile} fullWidth />
         </Card>
       ) : (
         <View style={{ flex: 1 }}>
           <View style={styles.heroIntro}>
             <View style={styles.heroBadge}>
-              <Text style={styles.heroBadgeText}>All hiring processes in one place</Text>
+              <Text style={styles.heroBadgeText}>{t('home.heroBadge')}</Text>
             </View>
-            <Text style={styles.heroTitle}>Find your next dream role in IT</Text>
-            <Text style={styles.heroSubtitle}>Connect with top companies and track applications in one workspace.</Text>
+            <Text style={styles.heroTitle}>{t('home.heroTitle')}</Text>
+            <Text style={styles.heroSubtitle}>{t('home.heroSubtitle')}</Text>
           </View>
 
           <SearchBar
@@ -211,7 +213,7 @@ export function WorkerHome({ userName, onUpdateProfile, onTabChange }: WorkerHom
           <RecentSearches items={recentSearches} onSelect={handleRecentSelect} onClear={clearSearches} />
 
           <View style={styles.searchActions}>
-            <Button title="Шукати" onPress={handleSearch} fullWidth />
+            <Button title={t('common.search')} onPress={handleSearch} fullWidth />
           </View>
 
           <QuickFilters onFilterPress={handleQuickFilter} />
@@ -238,7 +240,7 @@ export function WorkerHome({ userName, onUpdateProfile, onTabChange }: WorkerHom
           {loading && !refreshing ? (
             <View style={styles.centered}>
               <ActivityIndicator size="large" color={colors.primary} />
-              <Text style={styles.loadingText}>Завантаження вакансій...</Text>
+              <Text style={styles.loadingText}>{t('jobs.loadingJobs')}</Text>
             </View>
           ) : (
             <FlatList
@@ -258,8 +260,8 @@ export function WorkerHome({ userName, onUpdateProfile, onTabChange }: WorkerHom
               }
               ListEmptyComponent={
                 <EmptyState
-                  title="Нічого не знайдено"
-                  subtitle="Спробуйте змінити пошуковий запит, локацію або використайте швидкі фільтри"
+                  title={t('jobs.nothingFound')}
+                  subtitle={t('jobs.nothingFoundSubtitle')}
                   icon="search-outline"
                 />
               }

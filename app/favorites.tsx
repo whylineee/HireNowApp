@@ -7,6 +7,7 @@ import { colors, spacing, typography } from '@/constants/theme';
 import { useApplications } from '@/hooks/useApplications';
 import { useAuth } from '@/hooks/useAuth';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useTranslation } from '@/hooks/useTranslation';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
 import { Stack } from 'expo-router';
@@ -14,6 +15,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
 export default function FavoritesScreen() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { favorites, toggleFavorite } = useFavorites();
   const { isApplied } = useApplications();
@@ -50,7 +52,7 @@ export default function FavoritesScreen() {
     return (
       <Screen>
         <Card style={styles.authCard}>
-          <Text style={styles.authText}>Будь ласка, зареєструйтесь для доступу</Text>
+          <Text style={styles.authText}>{t('common.authRequired')}</Text>
         </Card>
       </Screen>
     );
@@ -65,17 +67,17 @@ export default function FavoritesScreen() {
             headerBackTitle: 'Назад',
           }}
         />
-        <Header title="Збережені вакансії" subtitle={`${favorites.length} збережено`} showSettingsButton />
+        <Header title={t('favorites.title')} subtitle={t('favorites.subtitleSaved', { count: favorites.length })} showSettingsButton />
 
         {loading ? (
           <View style={styles.centered}>
             <ActivityIndicator size="large" color={colors.primary} />
-            <Text style={styles.loadingText}>Завантаження...</Text>
+            <Text style={styles.loadingText}>{t('favorites.loading')}</Text>
           </View>
         ) : jobs.length === 0 ? (
           <EmptyState
-            title="Немає збережених вакансій"
-            subtitle="Додавайте вакансії до збережених, натискаючи на іконку серця на картці вакансії"
+            title={t('favorites.emptyTitle')}
+            subtitle={t('favorites.emptySubtitle')}
             icon="heart-outline"
           />
         ) : (

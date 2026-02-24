@@ -2,6 +2,7 @@ export const enTranslations = {
   common: {
     search: "Search",
     save: "Save",
+    clear: "Clear",
     cancel: "Cancel",
     delete: "Delete",
     edit: "Edit",
@@ -12,7 +13,9 @@ export const enTranslations = {
     next: "Next",
     done: "Done",
     yes: "Yes",
-    no: "No"
+    no: "No",
+    authRequired: "Please sign in to continue",
+    or: "or"
   },
   auth: {
     register: "Create account",
@@ -36,6 +39,7 @@ export const enTranslations = {
   },
   jobs: {
     searchJobs: "Search jobs",
+    recentSearches: "Recent searches",
     myResume: "My resume",
     position: "Position / role",
     positionPlaceholder: "e.g. Junior React Native Developer",
@@ -87,6 +91,7 @@ export const enTranslations = {
   },
   messages: {
     title: "Messages",
+    chat: "Chat",
     noMessages: "No messages",
     typeMessage: "Type a message...",
     sendMessage: "Send"
@@ -101,5 +106,89 @@ export const enTranslations = {
     },
     noApplications: "No applications",
     appliedOn: "Applied on"
+  },
+  home: {
+    heroBadge: "All hiring processes in one place",
+    heroTitle: "Find your next dream role in IT",
+    heroSubtitle: "Connect with top companies and track applications in one workspace.",
+    employerHeroBadge: "Build your hiring pipeline",
+    employerHeroTitle: "Manage all hiring processes in one place",
+    employerHeroSubtitle: "Publish roles, review candidates, and move faster with a clear workflow."
+  },
+  favorites: {
+    title: "Saved jobs",
+    subtitleSaved: "{{count}} saved",
+    loading: "Loading...",
+    emptyTitle: "No saved jobs yet",
+    emptySubtitle: "Tap the heart icon on job cards to save opportunities."
+  },
+  profilePage: {
+    title: "My workspace",
+    roleWorker: "Job seeker",
+    roleEmployer: "Employer",
+    profileTitle: "Profile",
+    profileDesc: "Detailed profile and resume settings will appear here once backend integration is complete.",
+    appSettingsTitle: "App settings",
+    darkThemeTitle: "Dark mode",
+    darkThemeSubtitle: "Enabled by default",
+    notificationsTitle: "Notifications",
+    notificationsSubtitle: "Get updates about new opportunities"
+  },
+  registration: {
+    badge: "All hiring processes in one place",
+    title: "Find your next dream role in IT",
+    subtitle: "Create your profile and apply with one tap.",
+    email: "Email",
+    phone: "Phone",
+    password: "Password",
+    emailPlaceholder: "you@email.com",
+    phonePlaceholder: "+380...",
+    passwordPlaceholder: "Minimum 8 symbols",
+    termsPrefix: "I agree with the",
+    termsLink: "terms of use",
+    createAccount: "Create account",
+    continueGoogle: "Continue with Google",
+    googleSoon: "Feature will be available in the next update."
+  },
+  onboarding: {
+    welcome: "Welcome, {{name}}",
+    title: "Let's complete your profile",
+    step: "Step {{step}} of 4",
+    basicInfo: "Basic info",
+    desiredRole: "Desired role",
+    yourRole: "Your role",
+    desiredRolePlaceholder: "Frontend Engineer",
+    yourRolePlaceholder: "Engineering Manager",
+    about: "About",
+    aboutPlaceholder: "Short summary about your goals and background",
+    skills: "Skills",
+    skillsPlaceholder: "React, TypeScript, Playwright...",
+    skillsHint: "Use comma-separated values",
+    experience: "Experience",
+    experiencePlaceholder: "Describe projects and achievements",
+    profilePhoto: "Profile photo",
+    addPhoto: "Add photo",
+    back: "Back",
+    finish: "Finish",
+    skip: "Skip setup",
+    photoSoon: "Photo upload will be available in the next update."
+  },
+  jobDetails: {
+    missingId: "Job ID is missing",
+    backHome: "Back to home",
+    loading: "Loading...",
+    back: "Back",
+    posted: "Posted:",
+    description: "Description",
+    requirements: "Requirements",
+    share: "Share",
+    applied: "Applied",
+    apply: "Apply now",
+    alreadyAppliedTitle: "You already applied",
+    alreadyAppliedBody: "Application status is saved in your profile.",
+    applyConfirmTitle: "Apply",
+    applyConfirmBody: "Do you want to apply for \"{{title}}\" at {{company}}?",
+    applySuccessTitle: "Success",
+    applySuccessBody: "Your application has been sent."
   }
 } as const;
