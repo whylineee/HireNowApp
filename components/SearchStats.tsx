@@ -1,5 +1,7 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { colors, spacing, typography } from '@/constants/theme';
+import { spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
+import { useMemo } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 interface SearchStatsProps {
   count: number;
@@ -8,6 +10,9 @@ interface SearchStatsProps {
 }
 
 export function SearchStats({ count, query, location }: SearchStatsProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   if (count === 0) return null;
 
   const hasFilters = query || location;
@@ -47,23 +52,24 @@ function getPluralForm(count: number): string {
   return 'вакансій';
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingVertical: spacing.xs,
-  },
-  count: {
-    fontSize: typography.sm,
-    color: colors.text,
-    fontWeight: typography.medium,
-  },
-  countBold: {
-    fontWeight: typography.bold,
-    color: colors.primary,
-  },
-  filters: {
-    fontSize: typography.xs,
-    color: colors.textMuted,
-    marginTop: spacing.xs / 2,
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingVertical: spacing.xs,
+    },
+    count: {
+      fontSize: typography.sm,
+      color: colors.text,
+      fontWeight: typography.medium,
+    },
+    countBold: {
+      fontWeight: typography.bold,
+      color: colors.primary,
+    },
+    filters: {
+      fontSize: typography.xs,
+      color: colors.textMuted,
+      marginTop: spacing.xs / 2,
+    },
+  });

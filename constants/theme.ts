@@ -1,4 +1,59 @@
-export const colors = {
+export interface ThemeColors {
+  primary: string;
+  primaryLight: string;
+  primaryDark: string;
+  accent: string;
+  primaryGradient: [string, string];
+
+  background: string;
+  surface: string;
+  surfaceElevated: string;
+  surfaceHover: string;
+  surfaceMuted: string;
+
+  text: string;
+  textSecondary: string;
+  textMuted: string;
+
+  success: string;
+  error: string;
+  warning: string;
+  info: string;
+
+  border: string;
+  borderLight: string;
+
+  coral: string;
+  teal: string;
+  sky: string;
+  mint: string;
+
+  shadow: {
+    sm: {
+      shadowColor: string;
+      shadowOffset: { width: number; height: number };
+      shadowOpacity: number;
+      shadowRadius: number;
+      elevation: number;
+    };
+    md: {
+      shadowColor: string;
+      shadowOffset: { width: number; height: number };
+      shadowOpacity: number;
+      shadowRadius: number;
+      elevation: number;
+    };
+    lg: {
+      shadowColor: string;
+      shadowOffset: { width: number; height: number };
+      shadowOpacity: number;
+      shadowRadius: number;
+      elevation: number;
+    };
+  };
+}
+
+export const lightColors: ThemeColors = {
   primary: '#2563EB',
   primaryLight: '#3B82F6',
   primaryDark: '#4F46E5',
@@ -51,7 +106,69 @@ export const colors = {
       elevation: 6,
     },
   },
-} as const;
+};
+
+export const darkColors: ThemeColors = {
+  primary: '#60A5FA',
+  primaryLight: '#93C5FD',
+  primaryDark: '#3B82F6',
+  accent: '#A78BFA',
+  primaryGradient: ['#2563EB', '#1D4ED8'],
+
+  background: '#050B16',
+  surface: '#0C1628',
+  surfaceElevated: 'rgba(15,23,42,0.9)',
+  surfaceHover: '#17243A',
+  surfaceMuted: '#101D33',
+
+  text: '#F1F5F9',
+  textSecondary: '#CBD5E1',
+  textMuted: '#94A3B8',
+
+  success: '#34D399',
+  error: '#F87171',
+  warning: '#FBBF24',
+  info: '#38BDF8',
+
+  border: 'rgba(148,163,184,0.28)',
+  borderLight: 'rgba(148,163,184,0.2)',
+
+  coral: '#FB7185',
+  teal: '#22D3EE',
+  sky: '#60A5FA',
+  mint: '#34D399',
+
+  shadow: {
+    sm: {
+      shadowColor: '#020617',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.28,
+      shadowRadius: 10,
+      elevation: 2,
+    },
+    md: {
+      shadowColor: '#020617',
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.34,
+      shadowRadius: 16,
+      elevation: 4,
+    },
+    lg: {
+      shadowColor: '#020617',
+      shadowOffset: { width: 0, height: 14 },
+      shadowOpacity: 0.42,
+      shadowRadius: 26,
+      elevation: 8,
+    },
+  },
+};
+
+export function getThemeColors(isDark: boolean): ThemeColors {
+  return isDark ? darkColors : lightColors;
+}
+
+// Backward compatibility for modules that still use static tokens.
+export const colors = lightColors;
 
 export const spacing = {
   xs: 4,
@@ -71,7 +188,6 @@ export const borderRadius = {
 } as const;
 
 export const typography = {
-  // Розміри
   xs: 12,
   sm: 14,
   base: 16,
@@ -80,7 +196,6 @@ export const typography = {
   '2xl': 24,
   '3xl': 28,
 
-  // Вага
   normal: '400' as const,
   medium: '500' as const,
   semibold: '600' as const,

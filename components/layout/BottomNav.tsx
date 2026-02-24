@@ -1,8 +1,10 @@
-import { borderRadius, colors, spacing, typography } from '@/constants/theme';
+import { borderRadius, spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import { router, usePathname } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 type AppPath = '/' | '/favorites' | '/messages' | '/settings';
@@ -10,6 +12,8 @@ type AppPath = '/' | '/favorites' | '/messages' | '/settings';
 export function BottomNav() {
   const pathname = usePathname();
   const { t } = useTranslation();
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
   const tabs: { key: string; label: string; icon: keyof typeof Ionicons.glyphMap; href: AppPath }[] = [
     { key: 'home', label: t('navigation.home'), icon: 'home-outline' as const, href: '/' },
@@ -35,15 +39,9 @@ export function BottomNav() {
               }}
             >
               <View style={[styles.iconWrapper, isActive && styles.iconWrapperActive]}>
-                <Ionicons
-                  name={tab.icon}
-                  size={20}
-                  color={isActive ? colors.primary : colors.textSecondary}
-                />
+                <Ionicons name={tab.icon} size={20} color={isActive ? colors.primary : colors.textSecondary} />
               </View>
-              <Text style={[styles.label, isActive && styles.labelActive]}>
-                {tab.label}
-              </Text>
+              <Text style={[styles.label, isActive && styles.labelActive]}>{tab.label}</Text>
             </Pressable>
           );
         })}
@@ -52,55 +50,56 @@ export function BottomNav() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    left: spacing.sm,
-    right: spacing.sm,
-    bottom: spacing.sm,
-    borderRadius: borderRadius.xl,
-    backgroundColor: 'rgba(255,255,255,0.94)',
-    borderWidth: 1,
-    borderColor: colors.border,
-    ...colors.shadow.lg,
-  },
-  navContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingHorizontal: spacing.sm,
-    paddingTop: spacing.sm,
-    paddingBottom: spacing.sm + 2,
-  },
-  tab: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: spacing.xs,
-  },
-  iconWrapper: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 4,
-    borderRadius: borderRadius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: spacing.xs,
-  },
-  iconWrapperActive: {
-    backgroundColor: 'rgba(37,99,235,0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(37,99,235,0.2)',
-  },
-  label: {
-    fontSize: typography.xs,
-    color: colors.textSecondary,
-    fontWeight: typography.medium,
-    textAlign: 'center',
-  },
-  labelActive: {
-    color: colors.primary,
-    fontWeight: typography.semibold,
-  },
-  pressed: {
-    opacity: 0.82,
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    container: {
+      position: 'absolute',
+      left: spacing.sm,
+      right: spacing.sm,
+      bottom: spacing.sm,
+      borderRadius: borderRadius.xl,
+      backgroundColor: colors.surfaceElevated,
+      borderWidth: 1,
+      borderColor: colors.border,
+      ...colors.shadow.lg,
+    },
+    navContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      paddingHorizontal: spacing.sm,
+      paddingTop: spacing.sm,
+      paddingBottom: spacing.sm + 2,
+    },
+    tab: {
+      flex: 1,
+      alignItems: 'center',
+      paddingVertical: spacing.xs,
+    },
+    iconWrapper: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs + 4,
+      borderRadius: borderRadius.full,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: spacing.xs,
+    },
+    iconWrapperActive: {
+      backgroundColor: isDark ? 'rgba(96,165,250,0.2)' : 'rgba(37,99,235,0.12)',
+      borderWidth: 1,
+      borderColor: isDark ? 'rgba(96,165,250,0.45)' : 'rgba(37,99,235,0.2)',
+    },
+    label: {
+      fontSize: typography.xs,
+      color: colors.textSecondary,
+      fontWeight: typography.medium,
+      textAlign: 'center',
+    },
+    labelActive: {
+      color: colors.primary,
+      fontWeight: typography.semibold,
+    },
+    pressed: {
+      opacity: isDark ? 0.9 : 0.82,
+    },
+  });

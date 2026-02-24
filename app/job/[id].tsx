@@ -4,24 +4,29 @@ import { Screen } from '@/components/layout/Screen';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { JOB_TYPE_COLORS, JOB_TYPE_LABELS } from '@/constants/job';
-import { colors, spacing, typography } from '@/constants/theme';
+import { spacing, typography } from '@/constants/theme';
 import { useApplications } from '@/hooks/useApplications';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Share, StyleSheet, Text, View } from 'react-native';
 
 export default function JobDetailScreen() {
   const { t } = useTranslation();
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+
   const { id } = useLocalSearchParams<{ id: string }>();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isApplied, applyToJob } = useApplications();
   const [job, setJob] = useState<Job | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const goBack = () => {
     if (router.canGoBack()) {
       router.back();
@@ -37,8 +42,8 @@ export default function JobDetailScreen() {
         message: `${job.title} в ${job.company}\n${job.location}\n\n${job.description}`,
         title: job.title,
       });
-    } catch (error) {
-      console.error('Помилка поділу:', error);
+    } catch (shareError) {
+      console.error('Помилка поділу:', shareError);
     }
   };
 
@@ -48,20 +53,16 @@ export default function JobDetailScreen() {
       Alert.alert(t('jobDetails.alreadyAppliedTitle'), t('jobDetails.alreadyAppliedBody'));
       return;
     }
-    Alert.alert(
-      t('jobDetails.applyConfirmTitle'),
-      t('jobDetails.applyConfirmBody', { title: job.title, company: job.company }),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('jobDetails.apply'),
-          onPress: () => {
-            applyToJob(job.id);
-            Alert.alert(t('jobDetails.applySuccessTitle'), t('jobDetails.applySuccessBody'));
-          },
+    Alert.alert(t('jobDetails.applyConfirmTitle'), t('jobDetails.applyConfirmBody', { title: job.title, company: job.company }), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('jobDetails.apply'),
+        onPress: () => {
+          applyToJob(job.id);
+          Alert.alert(t('jobDetails.applySuccessTitle'), t('jobDetails.applySuccessBody'));
         },
-      ]
-    );
+      },
+    ]);
   };
 
   useEffect(() => {
@@ -79,7 +80,9 @@ export default function JobDetailScreen() {
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   if (!id) {
@@ -115,18 +118,10 @@ export default function JobDetailScreen() {
 
   return (
     <Screen scroll>
-      <Header
-        title={job.title}
-        subtitle={job.company}
-        showBackButton
-      />
+      <Header title={job.title} subtitle={job.company} showBackButton />
 
       <View style={styles.actionRowTop}>
-        <FavoriteButton
-          isFavorite={isFavorite(job.id)}
-          onPress={() => toggleFavorite(job.id)}
-          size={20}
-        />
+        <FavoriteButton isFavorite={isFavorite(job.id)} onPress={() => toggleFavorite(job.id)} size={20} />
         <Button title={t('jobDetails.share')} onPress={handleShare} variant="outline" />
       </View>
 
@@ -141,9 +136,7 @@ export default function JobDetailScreen() {
         <View style={styles.metaRow}>
           <Text style={styles.location}>📍 {job.location}</Text>
           <View style={[styles.badge, { backgroundColor: JOB_TYPE_COLORS[job.type] + '25' }]}>
-            <Text style={[styles.badgeText, { color: JOB_TYPE_COLORS[job.type] }]}>
-              {JOB_TYPE_LABELS[job.type]}
-            </Text>
+            <Text style={[styles.badgeText, { color: JOB_TYPE_COLORS[job.type] }]}>{JOB_TYPE_LABELS[job.type]}</Text>
           </View>
           {isApplied(job.id) && (
             <View style={styles.appliedBadge}>
@@ -152,11 +145,11 @@ export default function JobDetailScreen() {
           )}
         </View>
 
-        {job.salary && (
-          <Text style={styles.salary}>💰 {job.salary}</Text>
-        )}
+        {job.salary && <Text style={styles.salary}>💰 {job.salary}</Text>}
 
-        <Text style={styles.posted}>{t('jobDetails.posted')} {job.postedAt}</Text>
+        <Text style={styles.posted}>
+          {t('jobDetails.posted')} {job.postedAt}
+        </Text>
       </Card>
 
       <Card style={styles.section}>
@@ -186,39 +179,46 @@ export default function JobDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  headerCard: { marginBottom: spacing.md },
-  titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  titleContainer: { flex: 1 },
-  title: { fontSize: typography.lg, fontWeight: typography.bold, color: colors.text },
-  company: { fontSize: typography.base, color: colors.textSecondary, marginTop: 4, fontWeight: typography.medium },
-  metaRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: spacing.sm },
-  location: { fontSize: typography.sm, color: colors.textSecondary, flex: 1 },
-  badge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 999, borderWidth: 1, borderColor: 'rgba(148,163,184,0.2)' },
-  badgeText: { fontSize: typography.xs, fontWeight: typography.semibold },
-  appliedBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 999,
-    backgroundColor: colors.success + '12',
-  },
-  appliedText: { fontSize: typography.xs, fontWeight: typography.semibold, color: colors.success },
-  salary: { fontSize: typography.sm, color: colors.primaryDark, marginTop: 6, fontWeight: typography.semibold },
-  posted: { fontSize: typography.xs, color: colors.textMuted, marginTop: 8 },
-  section: { marginBottom: spacing.md },
-  sectionTitle: { fontSize: typography.base, fontWeight: typography.bold, color: colors.text, marginBottom: spacing.sm },
-  description: { fontSize: typography.sm, color: colors.textSecondary, lineHeight: 22 },
-  requirementRow: { flexDirection: 'row', marginBottom: 4 },
-  bullet: { marginRight: 8, color: colors.primary, fontSize: typography.sm },
-  requirement: { flex: 1, fontSize: typography.sm, color: colors.textSecondary, lineHeight: 21 },
-  actions: { marginTop: spacing.sm },
-  actionRowTop: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: spacing.xxl },
-  loadingText: { marginTop: spacing.sm, fontSize: typography.sm, color: colors.textSecondary },
-  errorText: { fontSize: typography.base, color: colors.error, marginBottom: spacing.md },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    headerCard: { marginBottom: spacing.md },
+    titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+    titleContainer: { flex: 1 },
+    title: { fontSize: typography.lg, fontWeight: typography.bold, color: colors.text },
+    company: { fontSize: typography.base, color: colors.textSecondary, marginTop: 4, fontWeight: typography.medium },
+    metaRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: spacing.sm },
+    location: { fontSize: typography.sm, color: colors.textSecondary, flex: 1 },
+    badge: {
+      paddingHorizontal: 12,
+      paddingVertical: 4,
+      borderRadius: 999,
+      borderWidth: 1,
+      borderColor: isDark ? 'rgba(148,163,184,0.4)' : 'rgba(148,163,184,0.2)',
+    },
+    badgeText: { fontSize: typography.xs, fontWeight: typography.semibold },
+    appliedBadge: {
+      paddingHorizontal: 10,
+      paddingVertical: 4,
+      borderRadius: 999,
+      backgroundColor: colors.success + '12',
+    },
+    appliedText: { fontSize: typography.xs, fontWeight: typography.semibold, color: colors.success },
+    salary: { fontSize: typography.sm, color: colors.primaryDark, marginTop: 6, fontWeight: typography.semibold },
+    posted: { fontSize: typography.xs, color: colors.textMuted, marginTop: 8 },
+    section: { marginBottom: spacing.md },
+    sectionTitle: { fontSize: typography.base, fontWeight: typography.bold, color: colors.text, marginBottom: spacing.sm },
+    description: { fontSize: typography.sm, color: colors.textSecondary, lineHeight: 22 },
+    requirementRow: { flexDirection: 'row', marginBottom: 4 },
+    bullet: { marginRight: 8, color: colors.primary, fontSize: typography.sm },
+    requirement: { flex: 1, fontSize: typography.sm, color: colors.textSecondary, lineHeight: 21 },
+    actions: { marginTop: spacing.sm },
+    actionRowTop: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: spacing.md,
+    },
+    centered: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: spacing.xxl },
+    loadingText: { marginTop: spacing.sm, fontSize: typography.sm, color: colors.textSecondary },
+    errorText: { fontSize: typography.base, color: colors.error, marginBottom: spacing.md },
+  });

@@ -1,8 +1,10 @@
-import { TouchableOpacity, Text, StyleSheet, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { JOB_TYPE_LABELS, JOB_TYPE_COLORS } from '@/constants/job';
+import { JOB_TYPE_COLORS, JOB_TYPE_LABELS } from '@/constants/job';
+import { borderRadius, spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import type { JobType } from '@/types/job';
-import { colors, spacing, borderRadius, typography } from '@/constants/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useMemo } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 interface FilterChipsProps {
   selectedType?: JobType;
@@ -10,23 +12,21 @@ interface FilterChipsProps {
 }
 
 const TYPE_ICONS: Record<JobType | 'all', keyof typeof Ionicons.glyphMap> = {
-  'all': 'apps-outline',
+  all: 'apps-outline',
   'full-time': 'briefcase-outline',
   'part-time': 'time-outline',
-  'contract': 'document-text-outline',
-  'remote': 'laptop-outline',
-  'hybrid': 'swap-horizontal-outline',
+  contract: 'document-text-outline',
+  remote: 'laptop-outline',
+  hybrid: 'swap-horizontal-outline',
 };
 
 export function FilterChips({ selectedType, onTypeChange }: FilterChipsProps) {
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
   const types: (JobType | 'all')[] = ['all', 'full-time', 'part-time', 'contract', 'remote', 'hybrid'];
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.container}
-    >
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.container}>
       {types.map((type) => {
         const isSelected = type === 'all' ? !selectedType : selectedType === type;
         const label = type === 'all' ? 'Всі' : JOB_TYPE_LABELS[type];
@@ -44,20 +44,8 @@ export function FilterChips({ selectedType, onTypeChange }: FilterChipsProps) {
               isSelected && { backgroundColor: color + '12', borderColor: color + '80' },
             ]}
           >
-            <Ionicons
-              name={icon}
-              size={16}
-              color={isSelected ? color : colors.textMuted}
-              style={styles.icon}
-            />
-            <Text
-              style={[
-                styles.chipText,
-                isSelected && { color, fontWeight: typography.semibold },
-              ]}
-            >
-              {label}
-            </Text>
+            <Ionicons name={icon} size={16} color={isSelected ? color : colors.textMuted} style={styles.icon} />
+            <Text style={[styles.chipText, isSelected && { color, fontWeight: typography.semibold }]}>{label}</Text>
           </TouchableOpacity>
         );
       })}
@@ -65,33 +53,34 @@ export function FilterChips({ selectedType, onTypeChange }: FilterChipsProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: 0,
-    gap: spacing.sm,
-  },
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 1,
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: 'rgba(255,255,255,0.94)',
-    marginRight: spacing.sm,
-    ...colors.shadow.sm,
-  },
-  chipSelected: {
-    borderWidth: 1,
-  },
-  icon: {
-    marginRight: spacing.xs,
-  },
-  chipText: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    fontWeight: typography.medium,
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    container: {
+      paddingVertical: spacing.sm,
+      paddingHorizontal: 0,
+      gap: spacing.sm,
+    },
+    chip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm + 1,
+      borderRadius: borderRadius.full,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: isDark ? 'rgba(15,23,42,0.9)' : 'rgba(255,255,255,0.94)',
+      marginRight: spacing.sm,
+      ...colors.shadow.sm,
+    },
+    chipSelected: {
+      borderWidth: 1,
+    },
+    icon: {
+      marginRight: spacing.xs,
+    },
+    chipText: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      fontWeight: typography.medium,
+    },
+  });

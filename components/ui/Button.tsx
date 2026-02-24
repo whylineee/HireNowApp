@@ -1,4 +1,6 @@
-import { borderRadius, colors, spacing, typography } from '@/constants/theme';
+import { borderRadius, spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
+import { useMemo } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type Variant = 'primary' | 'secondary' | 'outline' | 'ghost';
@@ -20,16 +22,13 @@ export function Button({
   loading = false,
   fullWidth,
 }: ButtonProps) {
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
   const isDisabled = disabled || loading;
 
   return (
     <TouchableOpacity
-      style={[
-        styles.base,
-        styles[variant],
-        fullWidth && styles.fullWidth,
-        isDisabled && styles.disabled,
-      ]}
+      style={[styles.base, styles[variant], fullWidth && styles.fullWidth, isDisabled && styles.disabled]}
       onPress={onPress}
       disabled={isDisabled}
       activeOpacity={0.8}
@@ -43,57 +42,58 @@ export function Button({
   );
 }
 
-const styles = StyleSheet.create({
-  base: {
-    paddingVertical: spacing.sm + 3,
-    paddingHorizontal: spacing.lg,
-    borderRadius: borderRadius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 46,
-  },
-  fullWidth: { width: '100%' },
-  disabled: { opacity: 0.5 },
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    base: {
+      paddingVertical: spacing.sm + 3,
+      paddingHorizontal: spacing.lg,
+      borderRadius: borderRadius.full,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 46,
+    },
+    fullWidth: { width: '100%' },
+    disabled: { opacity: 0.5 },
 
-  primary: { 
-    backgroundColor: colors.primary,
-    borderWidth: 1,
-    borderColor: 'rgba(37,99,235,0.85)',
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    elevation: 5,
-  },
-  secondary: { 
-    backgroundColor: colors.primaryDark,
-    borderWidth: 1,
-    borderColor: 'rgba(79,70,229,0.75)',
-  },
-  outline: { 
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: 'rgba(148,163,184,0.35)',
-  },
-  ghost: { 
-    backgroundColor: 'transparent',
-  },
+    primary: {
+      backgroundColor: colors.primary,
+      borderWidth: 1,
+      borderColor: isDark ? 'rgba(96,165,250,0.9)' : 'rgba(37,99,235,0.85)',
+      shadowColor: colors.primary,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: isDark ? 0.38 : 0.25,
+      shadowRadius: 16,
+      elevation: 5,
+    },
+    secondary: {
+      backgroundColor: colors.primaryDark,
+      borderWidth: 1,
+      borderColor: isDark ? 'rgba(147,197,253,0.55)' : 'rgba(79,70,229,0.75)',
+    },
+    outline: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    ghost: {
+      backgroundColor: 'transparent',
+    },
 
-  text: { 
-    fontSize: typography.sm,
-    fontWeight: typography.bold,
-    letterSpacing: 0.1,
-  },
-  text_primary: { 
-    color: '#fff',
-  },
-  text_secondary: { 
-    color: '#fff',
-  },
-  text_outline: { 
-    color: colors.textSecondary,
-  },
-  text_ghost: { 
-    color: colors.primary,
-  },
-});
+    text: {
+      fontSize: typography.sm,
+      fontWeight: typography.bold,
+      letterSpacing: 0.1,
+    },
+    text_primary: {
+      color: '#fff',
+    },
+    text_secondary: {
+      color: '#fff',
+    },
+    text_outline: {
+      color: colors.textSecondary,
+    },
+    text_ghost: {
+      color: colors.primary,
+    },
+  });

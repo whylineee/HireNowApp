@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { colors, spacing, typography } from '@/constants/theme';
+import { spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { UserRole } from '@/types/user';
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface RegistrationScreenProps {
@@ -14,6 +15,9 @@ interface RegistrationScreenProps {
 
 export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
   const { t } = useTranslation();
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -182,151 +186,152 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.xxl,
-  },
-  hero: {
-    alignItems: 'center',
-    marginBottom: spacing.lg,
-  },
-  badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 3,
-    borderRadius: 16,
-    backgroundColor: 'rgba(219,234,254,0.9)',
-    borderWidth: 1,
-    borderColor: 'rgba(59,130,246,0.2)',
-    marginBottom: spacing.md,
-  },
-  badgeText: {
-    fontSize: typography.xs,
-    color: colors.primary,
-    fontWeight: typography.semibold,
-  },
-  title: {
-    fontSize: 36,
-    lineHeight: 40,
-    letterSpacing: -1,
-    fontWeight: typography.bold,
-    color: colors.text,
-    textAlign: 'center',
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  formCard: {
-    borderRadius: 28,
-    padding: spacing.md,
-  },
-  roleTitle: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    marginBottom: spacing.sm,
-    fontWeight: typography.medium,
-  },
-  rolesRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  roleChip: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.xs,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 14,
-    paddingVertical: spacing.sm,
-    backgroundColor: 'rgba(255,255,255,0.96)',
-  },
-  roleChipActive: {
-    borderColor: 'rgba(37,99,235,0.4)',
-    backgroundColor: 'rgba(37,99,235,0.1)',
-  },
-  roleChipText: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    fontWeight: typography.medium,
-    textAlign: 'center',
-  },
-  roleChipTextActive: {
-    color: colors.primary,
-  },
-  passwordWrapper: {
-    position: 'relative',
-  },
-  passwordInputContainer: {
-    marginBottom: spacing.md,
-  },
-  eyeIcon: {
-    position: 'absolute',
-    right: spacing.md,
-    top: 36,
-  },
-  errorText: {
-    fontSize: typography.sm,
-    color: colors.error,
-    marginBottom: spacing.sm,
-  },
-  termsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  checkbox: {
-    width: 18,
-    height: 18,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.sm,
-    backgroundColor: 'rgba(255,255,255,0.95)',
-  },
-  checkboxActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  termsText: {
-    flex: 1,
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-  },
-  termsLink: {
-    color: colors.primary,
-    fontWeight: typography.semibold,
-  },
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: spacing.md,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.border,
-  },
-  dividerText: {
-    marginHorizontal: spacing.sm,
-    fontSize: typography.xs,
-    color: colors.textMuted,
-    fontWeight: typography.medium,
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    content: {
+      paddingHorizontal: spacing.md,
+      paddingTop: spacing.md,
+      paddingBottom: spacing.xxl,
+    },
+    hero: {
+      alignItems: 'center',
+      marginBottom: spacing.lg,
+    },
+    badge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs + 3,
+      borderRadius: 16,
+      backgroundColor: isDark ? 'rgba(96,165,250,0.2)' : 'rgba(219,234,254,0.9)',
+      borderWidth: 1,
+      borderColor: isDark ? 'rgba(96,165,250,0.4)' : 'rgba(59,130,246,0.2)',
+      marginBottom: spacing.md,
+    },
+    badgeText: {
+      fontSize: typography.xs,
+      color: colors.primary,
+      fontWeight: typography.semibold,
+    },
+    title: {
+      fontSize: 36,
+      lineHeight: 40,
+      letterSpacing: -1,
+      fontWeight: typography.bold,
+      color: colors.text,
+      textAlign: 'center',
+      marginBottom: spacing.xs,
+    },
+    subtitle: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      textAlign: 'center',
+    },
+    formCard: {
+      borderRadius: 28,
+      padding: spacing.md,
+    },
+    roleTitle: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      marginBottom: spacing.sm,
+      fontWeight: typography.medium,
+    },
+    rolesRow: {
+      flexDirection: 'row',
+      gap: spacing.sm,
+      marginBottom: spacing.md,
+    },
+    roleChip: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: spacing.xs,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 14,
+      paddingVertical: spacing.sm,
+      backgroundColor: colors.surface,
+    },
+    roleChipActive: {
+      borderColor: isDark ? 'rgba(96,165,250,0.55)' : 'rgba(37,99,235,0.4)',
+      backgroundColor: isDark ? 'rgba(96,165,250,0.2)' : 'rgba(37,99,235,0.1)',
+    },
+    roleChipText: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      fontWeight: typography.medium,
+      textAlign: 'center',
+    },
+    roleChipTextActive: {
+      color: colors.primary,
+    },
+    passwordWrapper: {
+      position: 'relative',
+    },
+    passwordInputContainer: {
+      marginBottom: spacing.md,
+    },
+    eyeIcon: {
+      position: 'absolute',
+      right: spacing.md,
+      top: 36,
+    },
+    errorText: {
+      fontSize: typography.sm,
+      color: colors.error,
+      marginBottom: spacing.sm,
+    },
+    termsRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: spacing.md,
+    },
+    checkbox: {
+      width: 18,
+      height: 18,
+      borderRadius: 6,
+      borderWidth: 1,
+      borderColor: colors.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: spacing.sm,
+      backgroundColor: colors.surface,
+    },
+    checkboxActive: {
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+    },
+    termsText: {
+      flex: 1,
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+    },
+    termsLink: {
+      color: colors.primary,
+      fontWeight: typography.semibold,
+    },
+    dividerRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: spacing.md,
+    },
+    divider: {
+      flex: 1,
+      height: 1,
+      backgroundColor: colors.border,
+    },
+    dividerText: {
+      marginHorizontal: spacing.sm,
+      fontSize: typography.xs,
+      color: colors.textMuted,
+      fontWeight: typography.medium,
+    },
+  });
 
 export default RegistrationScreen;

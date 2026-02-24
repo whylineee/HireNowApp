@@ -1,8 +1,10 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, borderRadius, typography } from '@/constants/theme';
 import type { RecentSearch } from '@/hooks/useRecentSearches';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
+import { borderRadius, spacing, typography } from '@/constants/theme';
+import { Ionicons } from '@expo/vector-icons';
+import { useMemo } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface RecentSearchesProps {
   items: RecentSearch[];
@@ -12,6 +14,8 @@ interface RecentSearchesProps {
 
 export function RecentSearches({ items, onSelect, onClear }: RecentSearchesProps) {
   const { t } = useTranslation();
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
   if (items.length === 0) return null;
 
@@ -47,29 +51,30 @@ export function RecentSearches({ items, onSelect, onClear }: RecentSearchesProps
   );
 }
 
-const styles = StyleSheet.create({
-  container: { marginBottom: spacing.md },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  title: { fontSize: typography.base, fontWeight: typography.semibold, color: colors.text },
-  clear: { fontSize: typography.sm, color: colors.primary, fontWeight: typography.medium },
-  list: { paddingHorizontal: spacing.md, gap: spacing.sm },
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 1,
-    borderRadius: borderRadius.full,
-    backgroundColor: 'rgba(255,255,255,0.94)',
-    borderWidth: 1,
-    borderColor: colors.border,
-    ...colors.shadow.sm,
-  },
-  chipText: { fontSize: typography.sm, color: colors.textSecondary, maxWidth: 220 },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    container: { marginBottom: spacing.md },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    title: { fontSize: typography.base, fontWeight: typography.semibold, color: colors.text },
+    clear: { fontSize: typography.sm, color: colors.primary, fontWeight: typography.medium },
+    list: { paddingHorizontal: spacing.md, gap: spacing.sm },
+    chip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm + 1,
+      borderRadius: borderRadius.full,
+      backgroundColor: isDark ? 'rgba(15,23,42,0.9)' : 'rgba(255,255,255,0.94)',
+      borderWidth: 1,
+      borderColor: colors.border,
+      ...colors.shadow.sm,
+    },
+    chipText: { fontSize: typography.sm, color: colors.textSecondary, maxWidth: 220 },
+  });

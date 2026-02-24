@@ -3,15 +3,19 @@ import { JobCard } from '@/components/job/JobCard';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { colors, spacing, typography } from '@/constants/theme';
+import { spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { createEmployerJob, getEmployerJobs } from '@/services/jobs';
 import type { Job, JobType } from '@/types/job';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
 function EmployerHome() {
   const { t } = useTranslation();
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+
   const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -86,31 +90,21 @@ function EmployerHome() {
               <Text style={styles.loadingText}>{t('jobs.loadingJobs')}</Text>
             </View>
           ) : jobs.length === 0 ? (
-            <EmptyState
-              title={t('jobs.noVacanciesYet')}
-              subtitle={t('jobs.noVacanciesSubtitle')}
-              icon="briefcase-outline"
-            />
+            <EmptyState title={t('jobs.noVacanciesYet')} subtitle={t('jobs.noVacanciesSubtitle')} icon="briefcase-outline" />
           ) : (
             <FlatList
               data={jobs}
               keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <JobCard job={item} isFavorite={false} isApplied={false} showFavorite={false} />
-              )}
+              renderItem={({ item }) => <JobCard job={item} isFavorite={false} isApplied={false} showFavorite={false} />}
               contentContainerStyle={styles.listContent}
+              showsVerticalScrollIndicator={false}
             />
           )}
         </>
       ) : (
         <Card style={styles.profileWrapper}>
           <Text style={styles.sectionTitle}>{t('jobs.newVacancy')}</Text>
-          <Input
-            label={t('jobForm.title')}
-            placeholder={t('jobForm.titlePlaceholder')}
-            value={title}
-            onChangeText={setTitle}
-          />
+          <Input label={t('jobForm.title')} placeholder={t('jobForm.titlePlaceholder')} value={title} onChangeText={setTitle} />
           <Input
             label={t('jobForm.company')}
             placeholder={t('jobForm.companyPlaceholder')}
@@ -123,12 +117,7 @@ function EmployerHome() {
             value={location}
             onChangeText={setLocation}
           />
-          <Input
-            label={t('jobForm.salary')}
-            placeholder={t('jobForm.salaryPlaceholder')}
-            value={salary}
-            onChangeText={setSalary}
-          />
+          <Input label={t('jobForm.salary')} placeholder={t('jobForm.salaryPlaceholder')} value={salary} onChangeText={setSalary} />
           <Input
             label={t('jobForm.employmentType')}
             placeholder={t('jobForm.employmentTypePlaceholder')}
@@ -161,67 +150,68 @@ function EmployerHome() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  heroIntro: {
-    marginBottom: spacing.md,
-  },
-  heroBadge: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 3,
-    borderRadius: 16,
-    backgroundColor: 'rgba(219,234,254,0.9)',
-    borderWidth: 1,
-    borderColor: 'rgba(59,130,246,0.2)',
-    marginBottom: spacing.sm,
-  },
-  heroBadgeText: {
-    fontSize: typography.xs,
-    fontWeight: typography.semibold,
-    color: colors.primary,
-  },
-  heroTitle: {
-    fontSize: 28,
-    lineHeight: 31,
-    letterSpacing: -0.6,
-    fontWeight: typography.bold,
-    color: colors.text,
-  },
-  heroSubtitle: {
-    marginTop: spacing.xs,
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    lineHeight: 21,
-  },
-  searchActions: {
-    marginBottom: spacing.md,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing.xl,
-  },
-  loadingText: {
-    marginTop: spacing.sm,
-    fontSize: typography.base,
-    color: colors.textSecondary,
-  },
-  listContent: {
-    paddingBottom: spacing.xl,
-  },
-  profileWrapper: {
-    marginTop: spacing.xs,
-  },
-  sectionTitle: {
-    fontSize: typography.base,
-    fontWeight: typography.bold,
-    color: colors.text,
-    marginBottom: spacing.md,
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    heroIntro: {
+      marginBottom: spacing.md,
+    },
+    heroBadge: {
+      alignSelf: 'flex-start',
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs + 3,
+      borderRadius: 16,
+      backgroundColor: isDark ? 'rgba(96,165,250,0.18)' : 'rgba(219,234,254,0.9)',
+      borderWidth: 1,
+      borderColor: isDark ? 'rgba(96,165,250,0.35)' : 'rgba(59,130,246,0.2)',
+      marginBottom: spacing.sm,
+    },
+    heroBadgeText: {
+      fontSize: typography.xs,
+      fontWeight: typography.semibold,
+      color: colors.primary,
+    },
+    heroTitle: {
+      fontSize: 28,
+      lineHeight: 31,
+      letterSpacing: -0.6,
+      fontWeight: typography.bold,
+      color: colors.text,
+    },
+    heroSubtitle: {
+      marginTop: spacing.xs,
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      lineHeight: 21,
+    },
+    searchActions: {
+      marginBottom: spacing.md,
+    },
+    centered: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: spacing.xl,
+    },
+    loadingText: {
+      marginTop: spacing.sm,
+      fontSize: typography.base,
+      color: colors.textSecondary,
+    },
+    listContent: {
+      paddingBottom: spacing.xl,
+    },
+    profileWrapper: {
+      marginTop: spacing.xs,
+    },
+    sectionTitle: {
+      fontSize: typography.base,
+      fontWeight: typography.bold,
+      color: colors.text,
+      marginBottom: spacing.md,
+    },
+  });
 
 export default EmployerHome;

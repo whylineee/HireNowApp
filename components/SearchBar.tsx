@@ -1,6 +1,8 @@
-import { borderRadius, colors, spacing, typography } from '@/constants/theme';
+import { borderRadius, spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
+import { useMemo } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface SearchBarProps {
@@ -23,6 +25,8 @@ export function SearchBar({
   onLocationChange,
 }: SearchBarProps) {
   const { t } = useTranslation();
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
   const searchPlaceholder = placeholder ?? `${t('jobs.searchJobs')}...`;
 
   return (
@@ -61,46 +65,47 @@ export function SearchBar({
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: {
-    paddingVertical: spacing.xs,
-    marginBottom: spacing.md,
-  },
-  searchRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.96)',
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-    borderColor: colors.border,
-    paddingHorizontal: spacing.md,
-    minHeight: 48,
-    ...colors.shadow.sm,
-  },
-  searchIcon: { marginRight: spacing.sm },
-  input: {
-    flex: 1,
-    fontSize: typography.sm,
-    color: colors.text,
-    paddingVertical: spacing.xs + 6,
-  },
-  locationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: spacing.sm,
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    borderRadius: borderRadius.full,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-    paddingHorizontal: spacing.md,
-    minHeight: 44,
-    ...colors.shadow.sm,
-  },
-  locationInput: {
-    flex: 1,
-    marginLeft: spacing.sm,
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    paddingVertical: spacing.xs + 4,
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    wrapper: {
+      paddingVertical: spacing.xs,
+      marginBottom: spacing.md,
+    },
+    searchRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: isDark ? 'rgba(15,23,42,0.9)' : 'rgba(255,255,255,0.96)',
+      borderRadius: borderRadius.full,
+      borderWidth: 1,
+      borderColor: colors.border,
+      paddingHorizontal: spacing.md,
+      minHeight: 48,
+      ...colors.shadow.sm,
+    },
+    searchIcon: { marginRight: spacing.sm },
+    input: {
+      flex: 1,
+      fontSize: typography.sm,
+      color: colors.text,
+      paddingVertical: spacing.xs + 6,
+    },
+    locationRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: spacing.sm,
+      backgroundColor: isDark ? 'rgba(15,23,42,0.82)' : 'rgba(255,255,255,0.92)',
+      borderRadius: borderRadius.full,
+      borderWidth: 1,
+      borderColor: colors.borderLight,
+      paddingHorizontal: spacing.md,
+      minHeight: 44,
+      ...colors.shadow.sm,
+    },
+    locationInput: {
+      flex: 1,
+      marginLeft: spacing.sm,
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      paddingVertical: spacing.xs + 4,
+    },
+  });

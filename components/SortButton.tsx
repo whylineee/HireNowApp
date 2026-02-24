@@ -1,6 +1,8 @@
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { borderRadius, spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, borderRadius, typography } from '@/constants/theme';
+import { useMemo } from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 export type SortOption = 'recent' | 'salary-high' | 'salary-low' | 'title';
 
@@ -17,6 +19,9 @@ interface SortButtonProps {
 }
 
 export function SortButton({ currentSort, onPress }: SortButtonProps) {
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
       <Ionicons name="swap-vertical" size={18} color={colors.primary} />
@@ -25,24 +30,25 @@ export function SortButton({ currentSort, onPress }: SortButtonProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 1,
-    borderRadius: borderRadius.full,
-    backgroundColor: 'rgba(255,255,255,0.94)',
-    borderWidth: 1,
-    borderColor: colors.border,
-    ...colors.shadow.sm,
-  },
-  text: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    fontWeight: typography.medium,
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    button: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm + 1,
+      borderRadius: borderRadius.full,
+      backgroundColor: isDark ? 'rgba(15,23,42,0.9)' : 'rgba(255,255,255,0.94)',
+      borderWidth: 1,
+      borderColor: colors.border,
+      ...colors.shadow.sm,
+    },
+    text: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      fontWeight: typography.medium,
+    },
+  });
 
 export { SORT_LABELS };

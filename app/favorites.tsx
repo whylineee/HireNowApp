@@ -4,10 +4,11 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
-import { colors, spacing, typography } from '@/constants/theme';
+import { spacing, typography } from '@/constants/theme';
 import { useApplications } from '@/hooks/useApplications';
 import { useAuth } from '@/hooks/useAuth';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
@@ -19,6 +20,9 @@ export default function FavoritesScreen() {
   const { user } = useAuth();
   const { favorites, toggleFavorite } = useFavorites();
   const { isApplied } = useApplications();
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,9 +37,7 @@ export default function FavoritesScreen() {
 
     setLoading(true);
     try {
-      const jobsData = await Promise.all(
-        favorites.map((id) => getJobById(id))
-      );
+      const jobsData = await Promise.all(favorites.map((id) => getJobById(id)));
       setJobs(jobsData.filter((job): job is Job => job !== null));
     } catch (error) {
       console.error('Помилка завантаження збережених вакансій:', error);
@@ -61,11 +63,7 @@ export default function FavoritesScreen() {
   return (
     <Screen scroll={false}>
       <View style={{ flex: 1 }}>
-        <Header
-          title={t('favorites.title')}
-          subtitle={t('favorites.subtitleSaved', { count: favorites.length })}
-          showBackButton
-        />
+        <Header title={t('favorites.title')} subtitle={t('favorites.subtitleSaved', { count: favorites.length })} showBackButton />
 
         {loading ? (
           <View style={styles.centered}>
@@ -73,11 +71,7 @@ export default function FavoritesScreen() {
             <Text style={styles.loadingText}>{t('favorites.loading')}</Text>
           </View>
         ) : jobs.length === 0 ? (
-          <EmptyState
-            title={t('favorites.emptyTitle')}
-            subtitle={t('favorites.emptySubtitle')}
-            icon="heart-outline"
-          />
+          <EmptyState title={t('favorites.emptyTitle')} subtitle={t('favorites.emptySubtitle')} icon="heart-outline" />
         ) : (
           <FlatList
             data={jobs}
@@ -86,11 +80,12 @@ export default function FavoritesScreen() {
               <JobCard
                 job={item}
                 isApplied={isApplied(item.id)}
-                isFavorite={true}
+                isFavorite
                 onFavoritePress={() => toggleFavorite(item.id)}
               />
             )}
             contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
           />
         )}
       </View>
@@ -99,30 +94,31 @@ export default function FavoritesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: spacing.xxl,
-  },
-  loadingText: {
-    marginTop: spacing.sm,
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-  },
-  listContent: {
-    paddingBottom: spacing.xxl + 96,
-  },
-  authCard: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  authText: {
-    fontSize: typography.base,
-    color: colors.textSecondary,
-    fontWeight: typography.medium,
-    textAlign: 'center',
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors']) =>
+  StyleSheet.create({
+    centered: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: spacing.xxl,
+    },
+    loadingText: {
+      marginTop: spacing.sm,
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+    },
+    listContent: {
+      paddingBottom: spacing.xxl + 96,
+    },
+    authCard: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    authText: {
+      fontSize: typography.base,
+      color: colors.textSecondary,
+      fontWeight: typography.medium,
+      textAlign: 'center',
+    },
+  });

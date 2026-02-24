@@ -9,11 +9,12 @@ import { SortButton, type SortOption } from '@/components/SortButton';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { colors, spacing, typography } from '@/constants/theme';
+import { spacing, typography } from '@/constants/theme';
 import { useApplications } from '@/hooks/useApplications';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useJobs } from '@/hooks/useJobs';
 import { useRecentSearches } from '@/hooks/useRecentSearches';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { JobType } from '@/types/job';
 import type { User } from '@/types/user';
@@ -42,6 +43,9 @@ interface WorkerHomeProps {
 
 export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: WorkerHomeProps) {
   const { t } = useTranslation();
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+
   const { jobs, loading, error, search, refetch } = useJobs();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { isApplied } = useApplications();
@@ -266,12 +270,22 @@ export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: 
 
             <View style={styles.switchRow}>
               <Text style={styles.switchLabel}>{t('jobs.onlyFavorites')}</Text>
-              <Switch value={onlyFavorites} onValueChange={setOnlyFavorites} />
+              <Switch
+                value={onlyFavorites}
+                onValueChange={setOnlyFavorites}
+                trackColor={{ false: colors.border, true: colors.primaryLight }}
+                thumbColor={onlyFavorites ? colors.primary : colors.surface}
+              />
             </View>
 
             <View style={styles.switchRow}>
               <Text style={styles.switchLabel}>{t('jobs.hideApplied')}</Text>
-              <Switch value={excludeApplied} onValueChange={setExcludeApplied} />
+              <Switch
+                value={excludeApplied}
+                onValueChange={setExcludeApplied}
+                trackColor={{ false: colors.border, true: colors.primaryLight }}
+                thumbColor={excludeApplied ? colors.primary : colors.surface}
+              />
             </View>
 
             <Button title={t('common.clear')} variant="ghost" onPress={clearAdvancedFilters} fullWidth />
@@ -384,170 +398,171 @@ export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: 
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: spacing.md,
-  },
-  modeTabs: {
-    flexDirection: 'row',
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.94)',
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.xs,
-    marginBottom: spacing.md,
-    ...colors.shadow.sm,
-  },
-  modeTab: {
-    flex: 1,
-    paddingVertical: spacing.sm,
-    alignItems: 'center',
-    borderRadius: 999,
-  },
-  modeTabActive: {
-    backgroundColor: 'rgba(37,99,235,0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(37,99,235,0.2)',
-  },
-  modeTabText: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    fontWeight: typography.medium,
-  },
-  modeTabTextActive: {
-    color: colors.primary,
-    fontWeight: typography.semibold,
-  },
-  jobsList: {
-    flex: 1,
-  },
-  listContent: {
-    paddingBottom: 136,
-  },
-  heroIntro: {
-    marginBottom: spacing.md,
-  },
-  userGreeting: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    marginBottom: spacing.xs,
-    fontWeight: typography.medium,
-  },
-  heroBadge: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 3,
-    borderRadius: 16,
-    backgroundColor: 'rgba(219,234,254,0.9)',
-    borderWidth: 1,
-    borderColor: 'rgba(59,130,246,0.2)',
-    marginBottom: spacing.sm,
-  },
-  heroBadgeText: {
-    fontSize: typography.xs,
-    fontWeight: typography.semibold,
-    color: colors.primary,
-  },
-  heroTitle: {
-    fontSize: 28,
-    lineHeight: 31,
-    letterSpacing: -0.6,
-    fontWeight: typography.bold,
-    color: colors.text,
-  },
-  heroSubtitle: {
-    marginTop: spacing.xs,
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    lineHeight: 21,
-  },
-  searchActions: {
-    marginBottom: spacing.md,
-  },
-  advancedFiltersCard: {
-    marginBottom: spacing.md,
-  },
-  advancedFiltersHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: spacing.sm,
-  },
-  advancedFiltersTitle: {
-    fontSize: typography.base,
-    fontWeight: typography.semibold,
-    color: colors.text,
-  },
-  advancedFiltersToggle: {
-    fontSize: typography.sm,
-    color: colors.primary,
-    fontWeight: typography.medium,
-  },
-  advancedFiltersRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-  },
-  advancedInput: {
-    flex: 1,
-  },
-  switchRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: spacing.sm,
-  },
-  switchLabel: {
-    flex: 1,
-    fontSize: typography.sm,
-    color: colors.text,
-    marginRight: spacing.md,
-  },
-  resultsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  sortContainer: {
-    marginLeft: spacing.sm,
-  },
-  compactFilters: {
-    marginBottom: spacing.sm,
-  },
-  errorBox: {
-    marginBottom: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.error,
-    backgroundColor: 'rgba(220,38,38,0.08)',
-    borderRadius: 16,
-    padding: spacing.sm,
-  },
-  errorText: {
-    color: colors.error,
-    fontSize: typography.sm,
-  },
-  centered: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: spacing.xl,
-  },
-  loadingText: {
-    marginTop: spacing.sm,
-    fontSize: typography.base,
-    color: colors.textSecondary,
-  },
-  profileWrapper: {
-    marginTop: spacing.xs,
-  },
-  profileContent: {
-    paddingBottom: 136,
-  },
-  sectionTitle: {
-    fontSize: typography.base,
-    fontWeight: typography.bold,
-    color: colors.text,
-    marginBottom: spacing.md,
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingHorizontal: spacing.md,
+    },
+    modeTabs: {
+      flexDirection: 'row',
+      borderRadius: 999,
+      backgroundColor: colors.surfaceElevated,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: spacing.xs,
+      marginBottom: spacing.md,
+      ...colors.shadow.sm,
+    },
+    modeTab: {
+      flex: 1,
+      paddingVertical: spacing.sm,
+      alignItems: 'center',
+      borderRadius: 999,
+    },
+    modeTabActive: {
+      backgroundColor: isDark ? 'rgba(96,165,250,0.2)' : 'rgba(37,99,235,0.12)',
+      borderWidth: 1,
+      borderColor: isDark ? 'rgba(96,165,250,0.5)' : 'rgba(37,99,235,0.2)',
+    },
+    modeTabText: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      fontWeight: typography.medium,
+    },
+    modeTabTextActive: {
+      color: colors.primary,
+      fontWeight: typography.semibold,
+    },
+    jobsList: {
+      flex: 1,
+    },
+    listContent: {
+      paddingBottom: 136,
+    },
+    heroIntro: {
+      marginBottom: spacing.md,
+    },
+    userGreeting: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      marginBottom: spacing.xs,
+      fontWeight: typography.medium,
+    },
+    heroBadge: {
+      alignSelf: 'flex-start',
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs + 3,
+      borderRadius: 16,
+      backgroundColor: isDark ? 'rgba(96,165,250,0.18)' : 'rgba(219,234,254,0.9)',
+      borderWidth: 1,
+      borderColor: isDark ? 'rgba(96,165,250,0.35)' : 'rgba(59,130,246,0.2)',
+      marginBottom: spacing.sm,
+    },
+    heroBadgeText: {
+      fontSize: typography.xs,
+      fontWeight: typography.semibold,
+      color: colors.primary,
+    },
+    heroTitle: {
+      fontSize: 28,
+      lineHeight: 31,
+      letterSpacing: -0.6,
+      fontWeight: typography.bold,
+      color: colors.text,
+    },
+    heroSubtitle: {
+      marginTop: spacing.xs,
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      lineHeight: 21,
+    },
+    searchActions: {
+      marginBottom: spacing.md,
+    },
+    advancedFiltersCard: {
+      marginBottom: spacing.md,
+    },
+    advancedFiltersHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: spacing.sm,
+    },
+    advancedFiltersTitle: {
+      fontSize: typography.base,
+      fontWeight: typography.semibold,
+      color: colors.text,
+    },
+    advancedFiltersToggle: {
+      fontSize: typography.sm,
+      color: colors.primary,
+      fontWeight: typography.medium,
+    },
+    advancedFiltersRow: {
+      flexDirection: 'row',
+      gap: spacing.sm,
+    },
+    advancedInput: {
+      flex: 1,
+    },
+    switchRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginBottom: spacing.sm,
+    },
+    switchLabel: {
+      flex: 1,
+      fontSize: typography.sm,
+      color: colors.text,
+      marginRight: spacing.md,
+    },
+    resultsRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: spacing.sm,
+    },
+    sortContainer: {
+      marginLeft: spacing.sm,
+    },
+    compactFilters: {
+      marginBottom: spacing.sm,
+    },
+    errorBox: {
+      marginBottom: spacing.md,
+      borderWidth: 1,
+      borderColor: colors.error,
+      backgroundColor: isDark ? 'rgba(248,113,113,0.14)' : 'rgba(220,38,38,0.08)',
+      borderRadius: 16,
+      padding: spacing.sm,
+    },
+    errorText: {
+      color: colors.error,
+      fontSize: typography.sm,
+    },
+    centered: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: spacing.xl,
+    },
+    loadingText: {
+      marginTop: spacing.sm,
+      fontSize: typography.base,
+      color: colors.textSecondary,
+    },
+    profileWrapper: {
+      marginTop: spacing.xs,
+    },
+    profileContent: {
+      paddingBottom: 136,
+    },
+    sectionTitle: {
+      fontSize: typography.base,
+      fontWeight: typography.bold,
+      color: colors.text,
+      marginBottom: spacing.md,
+    },
+  });
 
 export default WorkerHome;

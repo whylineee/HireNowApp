@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { colors, spacing, typography } from '@/constants/theme';
+import { spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { UserRole } from '@/types/user';
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface OnboardingScreenProps {
@@ -32,6 +33,9 @@ const AVATAR_OPTIONS: { key: string; icon: keyof typeof Ionicons.glyphMap; color
 
 export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: OnboardingScreenProps) {
   const { t } = useTranslation();
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+
   const [step, setStep] = useState(1);
   const [headline, setHeadline] = useState('');
   const [about, setAbout] = useState('');
@@ -178,105 +182,106 @@ export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: Onb
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  containerContent: {
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.xxl,
-  },
-  hero: {
-    marginBottom: spacing.md,
-  },
-  greeting: {
-    fontSize: typography.sm,
-    color: colors.primary,
-    fontWeight: typography.semibold,
-    marginBottom: spacing.xs,
-  },
-  title: {
-    fontSize: 32,
-    lineHeight: 36,
-    letterSpacing: -0.8,
-    fontWeight: typography.bold,
-    color: colors.text,
-  },
-  subtitle: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
-  },
-  progressTrack: {
-    height: 8,
-    borderRadius: 999,
-    backgroundColor: 'rgba(148,163,184,0.18)',
-    marginBottom: spacing.md,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: 8,
-    borderRadius: 999,
-    backgroundColor: colors.primary,
-  },
-  stepCard: {
-    borderRadius: 28,
-  },
-  stepHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  stepTitle: {
-    fontSize: typography.base,
-    color: colors.text,
-    fontWeight: typography.bold,
-  },
-  tipText: {
-    fontSize: typography.xs,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
-  },
-  avatarGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-    marginTop: spacing.md,
-  },
-  avatarOption: {
-    width: 62,
-    height: 62,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: 'rgba(255,255,255,0.96)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarOptionActive: {
-    borderColor: 'rgba(37,99,235,0.45)',
-    backgroundColor: 'rgba(37,99,235,0.1)',
-  },
-  actionsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    marginTop: spacing.md,
-  },
-  nextButtonWrap: {
-    flex: 1,
-  },
-  skipButton: {
-    alignItems: 'center',
-    marginTop: spacing.sm,
-    paddingVertical: spacing.xs,
-  },
-  skipText: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    containerContent: {
+      paddingHorizontal: spacing.md,
+      paddingTop: spacing.md,
+      paddingBottom: spacing.xxl,
+    },
+    hero: {
+      marginBottom: spacing.md,
+    },
+    greeting: {
+      fontSize: typography.sm,
+      color: colors.primary,
+      fontWeight: typography.semibold,
+      marginBottom: spacing.xs,
+    },
+    title: {
+      fontSize: 32,
+      lineHeight: 36,
+      letterSpacing: -0.8,
+      fontWeight: typography.bold,
+      color: colors.text,
+    },
+    subtitle: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      marginTop: spacing.xs,
+    },
+    progressTrack: {
+      height: 8,
+      borderRadius: 999,
+      backgroundColor: isDark ? 'rgba(148,163,184,0.28)' : 'rgba(148,163,184,0.18)',
+      marginBottom: spacing.md,
+      overflow: 'hidden',
+    },
+    progressFill: {
+      height: 8,
+      borderRadius: 999,
+      backgroundColor: colors.primary,
+    },
+    stepCard: {
+      borderRadius: 28,
+    },
+    stepHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      marginBottom: spacing.md,
+    },
+    stepTitle: {
+      fontSize: typography.base,
+      color: colors.text,
+      fontWeight: typography.bold,
+    },
+    tipText: {
+      fontSize: typography.xs,
+      color: colors.textSecondary,
+      marginTop: spacing.xs,
+    },
+    avatarGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: spacing.sm,
+      marginTop: spacing.md,
+    },
+    avatarOption: {
+      width: 62,
+      height: 62,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    avatarOptionActive: {
+      borderColor: isDark ? 'rgba(96,165,250,0.6)' : 'rgba(37,99,235,0.45)',
+      backgroundColor: isDark ? 'rgba(96,165,250,0.2)' : 'rgba(37,99,235,0.1)',
+    },
+    actionsRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      marginTop: spacing.md,
+    },
+    nextButtonWrap: {
+      flex: 1,
+    },
+    skipButton: {
+      alignItems: 'center',
+      marginTop: spacing.sm,
+      paddingVertical: spacing.xs,
+    },
+    skipText: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+    },
+  });
 
 export default OnboardingScreen;

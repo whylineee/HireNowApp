@@ -1,7 +1,9 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, borderRadius, typography } from '@/constants/theme';
+import { borderRadius, spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
+import { Ionicons } from '@expo/vector-icons';
+import { useMemo } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface QuickFilter {
   id: string;
@@ -26,24 +28,17 @@ interface QuickFiltersProps {
 
 export function QuickFilters({ onFilterPress }: QuickFiltersProps) {
   const { t } = useTranslation();
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{t('jobs.searchJobs')}</Text>
       </View>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {QUICK_FILTERS.map((filter) => (
-          <TouchableOpacity
-            key={filter.id}
-            onPress={() => onFilterPress(filter)}
-            style={styles.filter}
-            activeOpacity={0.7}
-          >
+          <TouchableOpacity key={filter.id} onPress={() => onFilterPress(filter)} style={styles.filter} activeOpacity={0.7}>
             <View style={styles.filterContent}>
               <Ionicons name={filter.icon} size={18} color={colors.primary} />
               <Text style={styles.filterText}>{filter.label}</Text>
@@ -55,42 +50,43 @@ export function QuickFilters({ onFilterPress }: QuickFiltersProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginBottom: spacing.md,
-  },
-  header: {
-    paddingHorizontal: spacing.md,
-    marginBottom: spacing.sm,
-  },
-  title: {
-    fontSize: typography.sm,
-    fontWeight: typography.semibold,
-    color: colors.textSecondary,
-    letterSpacing: 0.4,
-  },
-  scrollContent: {
-    paddingHorizontal: spacing.md,
-    gap: spacing.sm,
-  },
-  filter: {
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    borderRadius: borderRadius.full,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm + 1,
-    marginRight: spacing.sm,
-    ...colors.shadow.sm,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  filterContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-  },
-  filterText: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    fontWeight: typography.medium,
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    container: {
+      marginBottom: spacing.md,
+    },
+    header: {
+      paddingHorizontal: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    title: {
+      fontSize: typography.sm,
+      fontWeight: typography.semibold,
+      color: colors.textSecondary,
+      letterSpacing: 0.4,
+    },
+    scrollContent: {
+      paddingHorizontal: spacing.md,
+      gap: spacing.sm,
+    },
+    filter: {
+      backgroundColor: isDark ? 'rgba(15,23,42,0.9)' : 'rgba(255,255,255,0.92)',
+      borderRadius: borderRadius.full,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.sm + 1,
+      marginRight: spacing.sm,
+      ...colors.shadow.sm,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    filterContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+    },
+    filterText: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      fontWeight: typography.medium,
+    },
+  });

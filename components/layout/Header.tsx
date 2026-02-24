@@ -1,8 +1,10 @@
-import { colors, spacing, typography } from '@/constants/theme';
+import { spacing, typography } from '@/constants/theme';
+import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface HeaderProps {
@@ -25,6 +27,8 @@ export function Header({
   backLabel,
 }: HeaderProps) {
   const { t } = useTranslation();
+  const { colors, isDark } = useTheme();
+  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
   const handleBack = () => {
     Haptics.selectionAsync().catch(() => undefined);
@@ -55,10 +59,7 @@ export function Header({
     <View style={styles.wrapper}>
       <View style={styles.titleRow}>
         {showBackButton && (
-          <Pressable
-            onPress={handleBack}
-            style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}
-          >
+          <Pressable onPress={handleBack} style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}>
             <Ionicons name="chevron-back" size={18} color={colors.text} />
             <Text style={styles.backLabel}>{backLabel ?? t('common.back')}</Text>
           </Pressable>
@@ -69,18 +70,12 @@ export function Header({
         </View>
         <View style={styles.actions}>
           {showFavoritesButton && (
-            <Pressable
-              onPress={handleOpenFavorites}
-              style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
-            >
+            <Pressable onPress={handleOpenFavorites} style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}>
               <Ionicons name="heart" size={20} color={colors.primary} />
             </Pressable>
           )}
           {showSettingsButton && (
-            <Pressable
-              onPress={handleOpenProfile}
-              style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
-            >
+            <Pressable onPress={handleOpenProfile} style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}>
               <Ionicons name="settings-outline" size={20} color={colors.textSecondary} />
             </Pressable>
           )}
@@ -90,63 +85,64 @@ export function Header({
   );
 }
 
-const styles = StyleSheet.create({
-  wrapper: { marginBottom: spacing.lg },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  titleContainer: {
-    flex: 1,
-  },
-  titleContainerWithBack: {
-    marginLeft: spacing.sm,
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    paddingHorizontal: spacing.sm + 2,
-    paddingVertical: spacing.xs + 4,
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.95)',
-    borderWidth: 1,
-    borderColor: colors.border,
-    ...colors.shadow.sm,
-  },
-  backLabel: {
-    fontSize: typography.sm,
-    color: colors.text,
-    fontWeight: typography.semibold,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: typography.bold,
-    color: colors.text,
-    letterSpacing: -0.4,
-    lineHeight: 28,
-  },
-  subtitle: {
-    fontSize: typography.sm,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
-  },
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconButton: {
-    padding: spacing.sm,
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    borderWidth: 1,
-    borderColor: colors.border,
-    marginLeft: spacing.sm,
-    ...colors.shadow.sm,
-  },
-  pressed: {
-    opacity: 0.75,
-    transform: [{ scale: 0.98 }],
-  },
-});
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+  StyleSheet.create({
+    wrapper: { marginBottom: spacing.lg },
+    titleRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+    },
+    titleContainer: {
+      flex: 1,
+    },
+    titleContainerWithBack: {
+      marginLeft: spacing.sm,
+    },
+    backButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
+      paddingHorizontal: spacing.sm + 2,
+      paddingVertical: spacing.xs + 4,
+      borderRadius: 999,
+      backgroundColor: colors.surfaceElevated,
+      borderWidth: 1,
+      borderColor: colors.border,
+      ...colors.shadow.sm,
+    },
+    backLabel: {
+      fontSize: typography.sm,
+      color: colors.text,
+      fontWeight: typography.semibold,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: typography.bold,
+      color: colors.text,
+      letterSpacing: -0.4,
+      lineHeight: 28,
+    },
+    subtitle: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      marginTop: spacing.xs,
+    },
+    actions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    iconButton: {
+      padding: spacing.sm,
+      borderRadius: 999,
+      backgroundColor: colors.surfaceElevated,
+      borderWidth: 1,
+      borderColor: colors.border,
+      marginLeft: spacing.sm,
+      ...colors.shadow.sm,
+    },
+    pressed: {
+      opacity: isDark ? 0.9 : 0.75,
+      transform: [{ scale: 0.98 }],
+    },
+  });
