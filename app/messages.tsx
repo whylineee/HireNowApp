@@ -1,3 +1,4 @@
+import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -5,6 +6,7 @@ import { colors, spacing, typography } from '@/constants/theme';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -182,7 +184,7 @@ export default function MessagesScreen() {
   return (
     <Screen scroll={false}>
       <View style={{ flex: 1 }}>
-        <Header title={t('messages.title')} showSettingsButton />
+        <Header title={t('messages.title')} showBackButton onBackPress={() => router.replace('/')} showSettingsButton />
         
         {conversations.length === 0 ? (
           <View style={styles.emptyContainer}>
@@ -217,6 +219,7 @@ export default function MessagesScreen() {
           />
         )}
       </View>
+      <BottomNav />
     </Screen>
   );
 }

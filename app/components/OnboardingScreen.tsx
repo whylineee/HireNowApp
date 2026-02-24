@@ -6,7 +6,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import type { UserRole } from '@/types/user';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface OnboardingScreenProps {
   userRole: UserRole;
@@ -57,7 +57,12 @@ export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: Onb
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.containerContent}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.hero}>
         <Text style={styles.greeting}>{t('onboarding.welcome', { name: userName })}</Text>
         <Text style={styles.title}>{t('onboarding.title')}</Text>
@@ -152,16 +157,18 @@ export function OnboardingScreen({ userRole, userName, onComplete, onSkip }: Onb
       <TouchableOpacity style={styles.skipButton} onPress={onSkip}>
         <Text style={styles.skipText}>{t('onboarding.skip')}</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  containerContent: {
     paddingHorizontal: spacing.md,
     paddingTop: spacing.md,
-    paddingBottom: spacing.lg,
+    paddingBottom: spacing.xxl,
   },
   hero: {
     marginBottom: spacing.md,
@@ -197,7 +204,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   stepCard: {
-    flex: 1,
     borderRadius: 28,
   },
   stepHeader: {

@@ -14,12 +14,16 @@ export default function Layout() {
             headerShadowVisible: false,
             headerStyle: { backgroundColor: colors.background },
             contentStyle: { backgroundColor: colors.background },
+            animation: 'slide_from_right',
+            gestureEnabled: true,
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="favorites" options={{ title: 'Збережені' }} />
-          <Stack.Screen name="messages" options={{ title: 'Повідомлення' }} />
-          <Stack.Screen name="settings" options={{ title: 'Налаштування' }} />
+          <Stack.Screen name="favorites" options={{ headerShown: false }} />
+          <Stack.Screen name="messages" options={{ headerShown: false }} />
+          <Stack.Screen name="settings" options={{ headerShown: false }} />
+          <Stack.Screen name="profile" options={{ headerShown: false }} />
+          <Stack.Screen name="job/[id]" options={{ headerShown: false }} />
         </Stack>
       </TranslationProvider>
     </ThemeProvider>

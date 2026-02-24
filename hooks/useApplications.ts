@@ -1,3 +1,4 @@
+import { getStoredJson, setStoredJson } from '@/utils/storage';
 import { useCallback, useEffect, useState } from 'react';
 
 export interface Application {
@@ -5,24 +6,40 @@ export interface Application {
   appliedAt: number;
 }
 
-let memoryApplications: Application[] = [];
+const APPLICATIONS_STORAGE_KEY = 'applications';
+
+type ApplicationsListener = (applications: Application[]) => void;
+
+let applicationsStore = getStoredJson<Application[]>(APPLICATIONS_STORAGE_KEY, []);
+const listeners = new Set<ApplicationsListener>();
+
+function emitApplications() {
+  setStoredJson(APPLICATIONS_STORAGE_KEY, applicationsStore);
+  listeners.forEach((listener) => listener([...applicationsStore]));
+}
+
+function subscribe(listener: ApplicationsListener) {
+  listeners.add(listener);
+  listener([...applicationsStore]);
+  return () => {
+    listeners.delete(listener);
+  };
+}
 
 export function useApplications() {
-  const [applications, setApplications] = useState<Application[]>(memoryApplications);
+  const [applications, setApplications] = useState<Application[]>(applicationsStore);
 
-  useEffect(() => {
-    setApplications(memoryApplications);
-  }, []);
+  useEffect(() => subscribe(setApplications), []);
 
   const applyToJob = useCallback((jobId: string) => {
-    if (memoryApplications.some((item) => item.jobId === jobId)) return;
-    memoryApplications = [{ jobId, appliedAt: Date.now() }, ...memoryApplications];
-    setApplications(memoryApplications);
+    if (applicationsStore.some((item) => item.jobId === jobId)) return;
+    applicationsStore = [{ jobId, appliedAt: Date.now() }, ...applicationsStore];
+    emitApplications();
   }, []);
 
   const removeApplication = useCallback((jobId: string) => {
-    memoryApplications = memoryApplications.filter((item) => item.jobId !== jobId);
-    setApplications(memoryApplications);
+    applicationsStore = applicationsStore.filter((item) => item.jobId !== jobId);
+    emitApplications();
   }, []);
 
   const isApplied = useCallback(

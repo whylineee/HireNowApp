@@ -1,5 +1,6 @@
 import { EmptyState } from '@/components/EmptyState';
 import { JobCard } from '@/components/job/JobCard';
+import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -10,7 +11,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
-import { Stack } from 'expo-router';
+import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
@@ -61,13 +62,12 @@ export default function FavoritesScreen() {
   return (
     <Screen scroll={false}>
       <View style={{ flex: 1 }}>
-        <Stack.Screen
-          options={{
-            title: 'Збережені',
-            headerBackTitle: 'Назад',
-          }}
+        <Header
+          title={t('favorites.title')}
+          subtitle={t('favorites.subtitleSaved', { count: favorites.length })}
+          showBackButton
+          onBackPress={() => router.replace('/')}
         />
-        <Header title={t('favorites.title')} subtitle={t('favorites.subtitleSaved', { count: favorites.length })} showSettingsButton />
 
         {loading ? (
           <View style={styles.centered}>
@@ -96,6 +96,7 @@ export default function FavoritesScreen() {
           />
         )}
       </View>
+      <BottomNav />
     </Screen>
   );
 }
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   listContent: {
-    paddingBottom: spacing.xxl,
+    paddingBottom: spacing.xxl + 96,
   },
   authCard: {
     flex: 1,

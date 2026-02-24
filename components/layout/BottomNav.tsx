@@ -2,7 +2,8 @@ import { borderRadius, colors, spacing, typography } from '@/constants/theme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import { router, usePathname } from 'expo-router';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 type AppPath = '/' | '/favorites' | '/messages' | '/settings';
 
@@ -23,13 +24,13 @@ export function BottomNav() {
         {tabs.map((tab) => {
           const isActive = tab.href === '/' ? pathname === '/' : pathname.startsWith(tab.href);
           return (
-            <TouchableOpacity
+            <Pressable
               key={tab.key}
-              style={styles.tab}
-              activeOpacity={0.85}
+              style={({ pressed }) => [styles.tab, pressed && styles.pressed]}
               onPress={() => {
                 if (!isActive) {
-                  router.push(tab.href);
+                  Haptics.selectionAsync().catch(() => undefined);
+                  router.replace(tab.href);
                 }
               }}
             >
@@ -43,7 +44,7 @@ export function BottomNav() {
               <Text style={[styles.label, isActive && styles.labelActive]}>
                 {tab.label}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           );
         })}
       </View>
@@ -98,5 +99,8 @@ const styles = StyleSheet.create({
   labelActive: {
     color: colors.primary,
     fontWeight: typography.semibold,
+  },
+  pressed: {
+    opacity: 0.82,
   },
 });

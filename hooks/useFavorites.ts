@@ -1,46 +1,56 @@
-import { useState, useEffect, useCallback } from 'react';
+import { getStoredJson, setStoredJson } from '@/utils/storage';
+import { useCallback, useEffect, useState } from 'react';
 
-// Тимчасове збереження в пам'яті (без AsyncStorage)
-// Після встановлення @react-native-async-storage/async-storage можна додати постійне збереження
-let memoryStorage: string[] = [];
+const FAVORITES_STORAGE_KEY = 'favorites';
+
+type FavoritesListener = (favorites: string[]) => void;
+
+let favoritesStore = getStoredJson<string[]>(FAVORITES_STORAGE_KEY, []);
+const listeners = new Set<FavoritesListener>();
+
+function emitFavorites() {
+  setStoredJson(FAVORITES_STORAGE_KEY, favoritesStore);
+  listeners.forEach((listener) => listener([...favoritesStore]));
+}
+
+function subscribe(listener: FavoritesListener) {
+  listeners.add(listener);
+  listener([...favoritesStore]);
+  return () => {
+    listeners.delete(listener);
+  };
+}
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<string[]>(memoryStorage);
-  const [loading, setLoading] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>(favoritesStore);
+  const [loading] = useState(false);
 
-  // Завантажити збережені ID при монтуванні
-  useEffect(() => {
-    setFavorites(memoryStorage);
-    setLoading(false);
-  }, []);
+  useEffect(() => subscribe(setFavorites), []);
 
   const addFavorite = useCallback((jobId: string) => {
-    if (!memoryStorage.includes(jobId)) {
-      memoryStorage = [...memoryStorage, jobId];
-      setFavorites(memoryStorage);
-    }
+    if (favoritesStore.includes(jobId)) return;
+    favoritesStore = [...favoritesStore, jobId];
+    emitFavorites();
   }, []);
 
   const removeFavorite = useCallback((jobId: string) => {
-    memoryStorage = memoryStorage.filter((id) => id !== jobId);
-    setFavorites(memoryStorage);
+    favoritesStore = favoritesStore.filter((id) => id !== jobId);
+    emitFavorites();
   }, []);
 
   const toggleFavorite = useCallback((jobId: string) => {
-    if (favorites.includes(jobId)) {
+    if (favoritesStore.includes(jobId)) {
       removeFavorite(jobId);
-    } else {
-      addFavorite(jobId);
+      return;
     }
-  }, [favorites, addFavorite, removeFavorite]);
+    addFavorite(jobId);
+  }, [addFavorite, removeFavorite]);
 
-  const isFavorite = useCallback((jobId: string) => {
-    return favorites.includes(jobId);
-  }, [favorites]);
+  const isFavorite = useCallback((jobId: string) => favorites.includes(jobId), [favorites]);
 
   const clearFavorites = useCallback(() => {
-    memoryStorage = [];
-    setFavorites([]);
+    favoritesStore = [];
+    emitFavorites();
   }, []);
 
   return {

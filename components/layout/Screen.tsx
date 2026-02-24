@@ -20,7 +20,12 @@ export function Screen({ children, scroll = false, style, edges = ['top'] }: Scr
         <View style={styles.glowSoft} />
       </View>
       {scroll ? (
-        <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           {children}
         </ScrollView>
       ) : (
@@ -80,5 +85,5 @@ const styles = StyleSheet.create({
   },
   content: { flex: 1, padding: spacing.md },
   scroll: { flex: 1 },
-  scrollContent: { padding: spacing.md, paddingBottom: spacing.xxl },
+  scrollContent: { flexGrow: 1, padding: spacing.md, paddingBottom: spacing.xxl + spacing.lg },
 });

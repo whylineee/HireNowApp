@@ -28,3 +28,18 @@ export function getStoredValue(key: string): string | null {
 
   return memoryStore.get(key) ?? null;
 }
+
+export function setStoredJson<T>(key: string, value: T): void {
+  setStoredValue(key, JSON.stringify(value));
+}
+
+export function getStoredJson<T>(key: string, fallback: T): T {
+  const raw = getStoredValue(key);
+  if (!raw) return fallback;
+
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}

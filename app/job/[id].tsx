@@ -1,4 +1,5 @@
 import { FavoriteButton } from '@/components/job/FavoriteButton';
+import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -9,7 +10,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { useTranslation } from '@/hooks/useTranslation';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Share, StyleSheet, Text, View } from 'react-native';
 
@@ -86,7 +87,7 @@ export default function JobDetailScreen() {
   if (loading) {
     return (
       <Screen>
-        <Stack.Screen options={{ title: t('jobs.searchJobs') }} />
+        <Header title={t('jobs.searchJobs')} showBackButton onBackPress={() => router.back()} />
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors.primary} />
           <Text style={styles.loadingText}>{t('jobDetails.loading')}</Text>
@@ -98,7 +99,7 @@ export default function JobDetailScreen() {
   if (error || !job) {
     return (
       <Screen>
-        <Stack.Screen options={{ title: 'Помилка' }} />
+        <Header title={t('common.error')} showBackButton onBackPress={() => router.back()} />
         <Text style={styles.errorText}>{error || 'Вакансію не знайдено'}</Text>
         <Button title={t('jobDetails.back')} onPress={() => router.back()} />
       </Screen>
@@ -107,21 +108,21 @@ export default function JobDetailScreen() {
 
   return (
     <Screen scroll>
-      <Stack.Screen
-        options={{
-          title: job.title,
-          headerBackTitle: 'Назад',
-          headerRight: () => (
-            <View style={styles.headerActions}>
-              <FavoriteButton
-                isFavorite={isFavorite(job.id)}
-                onPress={() => toggleFavorite(job.id)}
-                size={24}
-              />
-            </View>
-          ),
-        }}
+      <Header
+        title={job.title}
+        subtitle={job.company}
+        showBackButton
+        onBackPress={() => router.back()}
       />
+
+      <View style={styles.actionRowTop}>
+        <FavoriteButton
+          isFavorite={isFavorite(job.id)}
+          onPress={() => toggleFavorite(job.id)}
+          size={20}
+        />
+        <Button title={t('jobDetails.share')} onPress={handleShare} variant="outline" />
+      </View>
 
       <Card style={styles.headerCard}>
         <View style={styles.titleRow}>
@@ -174,14 +175,6 @@ export default function JobDetailScreen() {
           fullWidth
           disabled={isApplied(job.id)}
         />
-        <View style={styles.shareButton}>
-          <Button
-            title={t('jobDetails.share')}
-            onPress={handleShare}
-            fullWidth
-            variant="outline"
-          />
-        </View>
       </View>
     </Screen>
   );
@@ -213,8 +206,12 @@ const styles = StyleSheet.create({
   bullet: { marginRight: 8, color: colors.primary, fontSize: typography.sm },
   requirement: { flex: 1, fontSize: typography.sm, color: colors.textSecondary, lineHeight: 21 },
   actions: { marginTop: spacing.sm },
-  shareButton: { marginTop: spacing.sm },
-  headerActions: { marginRight: spacing.sm },
+  actionRowTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: spacing.xxl },
   loadingText: { marginTop: spacing.sm, fontSize: typography.sm, color: colors.textSecondary },
   errorText: { fontSize: typography.base, color: colors.error, marginBottom: spacing.md },

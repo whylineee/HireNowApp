@@ -1,7 +1,9 @@
 import { colors, spacing, typography } from '@/constants/theme';
+import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface HeaderProps {
   title: string;
@@ -10,20 +12,56 @@ interface HeaderProps {
   showSettingsButton?: boolean;
   showBackButton?: boolean;
   onBackPress?: () => void;
+  backLabel?: string;
 }
 
-export function Header({ title, subtitle, showFavoritesButton, showSettingsButton, showBackButton, onBackPress }: HeaderProps) {
+export function Header({
+  title,
+  subtitle,
+  showFavoritesButton,
+  showSettingsButton,
+  showBackButton,
+  onBackPress,
+  backLabel,
+}: HeaderProps) {
+  const { t } = useTranslation();
+
+  const handleBack = () => {
+    Haptics.selectionAsync().catch(() => undefined);
+    if (onBackPress) {
+      onBackPress();
+      return;
+    }
+
+    if (router.canGoBack()) {
+      router.back();
+      return;
+    }
+
+    router.replace('/');
+  };
+
+  const handleOpenFavorites = () => {
+    Haptics.selectionAsync().catch(() => undefined);
+    router.push('/favorites');
+  };
+
+  const handleOpenProfile = () => {
+    Haptics.selectionAsync().catch(() => undefined);
+    router.push('/profile');
+  };
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.titleRow}>
         {showBackButton && (
-          <TouchableOpacity
-            onPress={onBackPress || router.back}
-            style={styles.iconButton}
-            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          <Pressable
+            onPress={handleBack}
+            style={({ pressed }) => [styles.backButton, pressed && styles.pressed]}
           >
-            <Ionicons name="chevron-back" size={20} color={colors.text} />
-          </TouchableOpacity>
+            <Ionicons name="chevron-back" size={18} color={colors.text} />
+            <Text style={styles.backLabel}>{backLabel ?? t('common.back')}</Text>
+          </Pressable>
         )}
         <View style={[styles.titleContainer, showBackButton && styles.titleContainerWithBack]}>
           <Text style={styles.title}>{title}</Text>
@@ -31,22 +69,20 @@ export function Header({ title, subtitle, showFavoritesButton, showSettingsButto
         </View>
         <View style={styles.actions}>
           {showFavoritesButton && (
-            <TouchableOpacity
-              onPress={() => router.push('/favorites')}
-              style={styles.iconButton}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            <Pressable
+              onPress={handleOpenFavorites}
+              style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
             >
               <Ionicons name="heart" size={20} color={colors.primary} />
-            </TouchableOpacity>
+            </Pressable>
           )}
           {showSettingsButton && (
-            <TouchableOpacity
-              onPress={() => router.push('/profile')}
-              style={styles.iconButton}
-              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            <Pressable
+              onPress={handleOpenProfile}
+              style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}
             >
               <Ionicons name="settings-outline" size={20} color={colors.textSecondary} />
-            </TouchableOpacity>
+            </Pressable>
           )}
         </View>
       </View>
@@ -66,6 +102,23 @@ const styles = StyleSheet.create({
   },
   titleContainerWithBack: {
     marginLeft: spacing.sm,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    paddingHorizontal: spacing.sm + 2,
+    paddingVertical: spacing.xs + 4,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderWidth: 1,
+    borderColor: colors.border,
+    ...colors.shadow.sm,
+  },
+  backLabel: {
+    fontSize: typography.sm,
+    color: colors.text,
+    fontWeight: typography.semibold,
   },
   title: {
     fontSize: 24,
@@ -91,5 +144,9 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     marginLeft: spacing.sm,
     ...colors.shadow.sm,
+  },
+  pressed: {
+    opacity: 0.75,
+    transform: [{ scale: 0.98 }],
   },
 });

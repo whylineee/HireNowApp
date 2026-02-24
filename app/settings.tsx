@@ -1,3 +1,4 @@
+import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
 import { Card } from '@/components/ui/Card';
@@ -7,7 +8,8 @@ import type { ThemeMode } from '@/hooks/useTheme';
 import { useTheme } from '@/hooks/useTheme';
 import type { Language } from '@/hooks/useTranslation';
 import { useTranslation } from '@/hooks/useTranslation';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function SettingsScreen() {
   const { user } = useAuth();
@@ -37,10 +39,12 @@ export default function SettingsScreen() {
       <View style={{ flex: 1 }}>
         <Header
           title={t('settings.title')}
+          showBackButton
+          onBackPress={() => router.replace('/')}
           showSettingsButton={false}
         />
 
-        <View style={styles.content}>
+        <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{t('settings.language')}</Text>
             <View style={styles.optionGroup}>
@@ -100,8 +104,9 @@ export default function SettingsScreen() {
               <Text style={styles.infoValue}>1.0.0</Text>
             </View>
           </View>
-        </View>
+        </ScrollView>
       </View>
+      <BottomNav />
     </Screen>
   );
 }
@@ -110,6 +115,9 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: spacing.md,
+  },
+  contentContainer: {
+    paddingBottom: spacing.xxl + 96,
   },
   section: {
     marginBottom: spacing.xl,
