@@ -3,6 +3,7 @@ import { JobCard } from '@/components/job/JobCard';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { JOB_TYPE_LABELS } from '@/constants/job';
 import { spacing, typography } from '@/constants/theme';
 import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
@@ -11,11 +12,19 @@ import type { Job, JobType } from '@/types/job';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
 
+const VALID_JOB_TYPES: JobType[] = ['full-time', 'part-time', 'contract', 'remote', 'hybrid'];
+
+function parseJobType(value: string): JobType {
+  const normalized = value.trim().toLowerCase();
+  return VALID_JOB_TYPES.includes(normalized as JobType) ? (normalized as JobType) : 'full-time';
+}
+
 function EmployerHome() {
   const { t } = useTranslation();
   const { colors, isDark } = useTheme();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [creating, setCreating] = useState(false);
   const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -24,7 +33,7 @@ function EmployerHome() {
   const [company, setCompany] = useState('');
   const [location, setLocation] = useState('');
   const [salary, setSalary] = useState('');
-  const [type, setType] = useState<JobType>('full-time');
+  const [typeInput, setTypeInput] = useState('full-time');
   const [description, setDescription] = useState('');
   const [requirements, setRequirements] = useState('');
 
@@ -43,30 +52,39 @@ function EmployerHome() {
   }, [loadJobs]);
 
   const handleCreate = async () => {
-    if (!title.trim() || !company.trim() || !location.trim()) {
+    if (!title.trim() || !company.trim() || !location.trim() || isSubmitting) {
       return;
     }
-    const reqs = requirements
-      .split('\n')
-      .map((r) => r.trim())
-      .filter(Boolean);
-    const job = await createEmployerJob({
-      title: title.trim(),
-      company: company.trim(),
-      location: location.trim(),
-      salary: salary.trim() || undefined,
-      type,
-      description: description.trim() || 'Опис не вказано',
-      requirements: reqs.length ? reqs : ['Вимоги не вказані'],
-    });
-    setJobs((prev) => [job, ...prev]);
-    setCreating(false);
-    setTitle('');
-    setCompany('');
-    setLocation('');
-    setSalary('');
-    setDescription('');
-    setRequirements('');
+
+    setIsSubmitting(true);
+    try {
+      const reqs = requirements
+        .split('\n')
+        .map((r) => r.trim())
+        .filter(Boolean);
+
+      const job = await createEmployerJob({
+        title: title.trim(),
+        company: company.trim(),
+        location: location.trim(),
+        salary: salary.trim() || undefined,
+        type: parseJobType(typeInput),
+        description: description.trim() || 'Опис не вказано',
+        requirements: reqs.length ? reqs : ['Вимоги не вказані'],
+      });
+
+      setJobs((prev) => [job, ...prev]);
+      setCreating(false);
+      setTitle('');
+      setCompany('');
+      setLocation('');
+      setSalary('');
+      setTypeInput('full-time');
+      setDescription('');
+      setRequirements('');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -121,9 +139,10 @@ function EmployerHome() {
           <Input
             label={t('jobForm.employmentType')}
             placeholder={t('jobForm.employmentTypePlaceholder')}
-            value={type}
-            onChangeText={(text) => setType(text as JobType)}
+            value={typeInput}
+            onChangeText={setTypeInput}
           />
+          <Text style={styles.helperText}>{`${t('jobForm.employmentType')}: ${JOB_TYPE_LABELS[parseJobType(typeInput)]}`}</Text>
           <Input
             label={t('jobForm.description')}
             placeholder={t('jobForm.descriptionPlaceholder')}
@@ -141,7 +160,7 @@ function EmployerHome() {
             numberOfLines={4}
           />
           <View style={styles.searchActions}>
-            <Button title={t('jobForm.createVacancy')} onPress={handleCreate} fullWidth />
+            <Button title={t('jobForm.createVacancy')} onPress={handleCreate} loading={isSubmitting} fullWidth />
           </View>
           <Button title={t('common.cancel')} onPress={() => setCreating(false)} variant="ghost" fullWidth />
         </Card>
@@ -211,6 +230,12 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
       fontWeight: typography.bold,
       color: colors.text,
       marginBottom: spacing.md,
+    },
+    helperText: {
+      marginTop: -spacing.xs,
+      marginBottom: spacing.sm,
+      fontSize: typography.xs,
+      color: colors.textMuted,
     },
   });
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { searchJobs } from '@/services/jobs';
 import type { Job, JobSearchParams } from '@/types/job';
 
@@ -15,6 +15,7 @@ export function useJobs(initialParams?: JobSearchParams): UseJobsResult {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [params, setParams] = useState<JobSearchParams>(initialParams ?? {});
+  const paramsRef = useRef<JobSearchParams>(initialParams ?? {});
 
   const fetchJobs = useCallback(async (searchParams: JobSearchParams) => {
     setLoading(true);
@@ -32,17 +33,22 @@ export function useJobs(initialParams?: JobSearchParams): UseJobsResult {
 
   const search = useCallback(
     async (newParams: JobSearchParams) => {
-      const merged = { ...params, ...newParams };
+      const merged = { ...paramsRef.current, ...newParams };
+      paramsRef.current = merged;
       setParams(merged);
       await fetchJobs(merged);
     },
-    [params, fetchJobs]
+    [fetchJobs]
   );
 
-  const refetch = useCallback(() => fetchJobs(params), [fetchJobs, params]);
+  const refetch = useCallback(() => fetchJobs(paramsRef.current), [fetchJobs]);
 
   useEffect(() => {
-    fetchJobs(params);
+    paramsRef.current = params;
+  }, [params]);
+
+  useEffect(() => {
+    fetchJobs(paramsRef.current);
   }, []); // тільки при монтуванні
 
   return { jobs, loading, error, search, refetch };
