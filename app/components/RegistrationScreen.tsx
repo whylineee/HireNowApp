@@ -6,8 +6,17 @@ import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import type { UserRole } from '@/types/user';
 import { Ionicons } from '@expo/vector-icons';
-import { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Animated,
+  Easing,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  type LayoutChangeEvent,
+} from 'react-native';
 
 interface RegistrationScreenProps {
   onRegister: (params: { name: string; role: UserRole }) => void;
@@ -25,6 +34,110 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [roleSwitchWidth, setRoleSwitchWidth] = useState(0);
+
+  const heroAnim = useRef(new Animated.Value(0)).current;
+  const cardAnim = useRef(new Animated.Value(0)).current;
+  const badgePulse = useRef(new Animated.Value(0)).current;
+  const roleAnim = useRef(new Animated.Value(selectedRole === 'worker' ? 0 : 1)).current;
+  const agreeAnim = useRef(new Animated.Value(0)).current;
+  const errorShake = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.stagger(90, [
+      Animated.timing(heroAnim, {
+        toValue: 1,
+        duration: 460,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      Animated.timing(cardAnim, {
+        toValue: 1,
+        duration: 520,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    const pulseLoop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(badgePulse, {
+          toValue: 1,
+          duration: 1800,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(badgePulse, {
+          toValue: 0,
+          duration: 1800,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    pulseLoop.start();
+
+    return () => {
+      pulseLoop.stop();
+    };
+  }, [badgePulse, cardAnim, heroAnim]);
+
+  useEffect(() => {
+    Animated.timing(roleAnim, {
+      toValue: selectedRole === 'worker' ? 0 : 1,
+      duration: 220,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [roleAnim, selectedRole]);
+
+  useEffect(() => {
+    Animated.spring(agreeAnim, {
+      toValue: agreeToTerms ? 1 : 0,
+      friction: 6,
+      tension: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [agreeAnim, agreeToTerms]);
+
+  useEffect(() => {
+    if (!error) {
+      return;
+    }
+
+    Animated.sequence([
+      Animated.timing(errorShake, { toValue: 1, duration: 50, useNativeDriver: true }),
+      Animated.timing(errorShake, { toValue: 0, duration: 50, useNativeDriver: true }),
+      Animated.timing(errorShake, { toValue: 1, duration: 40, useNativeDriver: true }),
+      Animated.timing(errorShake, { toValue: 0, duration: 40, useNativeDriver: true }),
+    ]).start();
+  }, [error, errorShake]);
+
+  const heroOpacity = heroAnim;
+  const heroTranslateY = heroAnim.interpolate({ inputRange: [0, 1], outputRange: [18, 0] });
+  const cardOpacity = cardAnim;
+  const cardTranslateY = cardAnim.interpolate({ inputRange: [0, 1], outputRange: [26, 0] });
+  const cardScale = cardAnim.interpolate({ inputRange: [0, 1], outputRange: [0.985, 1] });
+  const badgeScale = badgePulse.interpolate({ inputRange: [0, 1], outputRange: [1, 1.03] });
+  const badgeOpacity = badgePulse.interpolate({ inputRange: [0, 1], outputRange: [0.92, 1] });
+  const rolePillWidth = roleSwitchWidth > 0 ? (roleSwitchWidth - spacing.sm - 4) / 2 : 0;
+  const rolePillTranslateX = roleAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [2, roleSwitchWidth > 0 ? 2 + rolePillWidth + spacing.sm : 2],
+  });
+  const checkboxScale = agreeAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.08] });
+  const errorTranslateX = errorShake.interpolate({
+    inputRange: [0, 0.25, 0.5, 0.75, 1],
+    outputRange: [0, -4, 4, -2, 0],
+  });
+
+  const setFormError = (message: string) => {
+    setError(message);
+  };
+
+  const handleRoleSwitchLayout = (event: LayoutChangeEvent) => {
+    setRoleSwitchWidth(event.nativeEvent.layout.width);
+  };
 
   const clearError = () => {
     if (error) {
@@ -34,7 +147,7 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
 
   const validateBeforeAuth = () => {
     if (!agreeToTerms) {
-      setError(t('registration.acceptTermsError'));
+      setFormError(t('registration.acceptTermsError'));
       return false;
     }
 
@@ -43,7 +156,7 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
 
   const handleSubmit = () => {
     if (!email.trim() || !phone.trim() || !password.trim()) {
-      setError(t('registration.fillAllFieldsError'));
+      setFormError(t('registration.fillAllFieldsError'));
       return;
     }
 
@@ -67,121 +180,158 @@ export function RegistrationScreen({ onRegister }: RegistrationScreenProps) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      <View style={styles.hero}>
-        <View style={styles.badge}>
+      <View pointerEvents="none" style={styles.localBackdrop}>
+        <View style={styles.glowTopRight} />
+        <View style={styles.glowLeft} />
+        <View style={styles.glowBottom} />
+      </View>
+
+      <Animated.View style={[styles.hero, { opacity: heroOpacity, transform: [{ translateY: heroTranslateY }] }]}>
+        <Animated.View style={[styles.badge, { transform: [{ scale: badgeScale }], opacity: badgeOpacity }]}>
           <Ionicons name="sparkles-outline" size={14} color={colors.primary} />
           <Text style={styles.badgeText}>{t('registration.badge')}</Text>
-        </View>
+        </Animated.View>
 
         <Text style={styles.title}>{t('registration.title')}</Text>
         <Text style={styles.subtitle}>{t('registration.subtitle')}</Text>
-      </View>
+      </Animated.View>
 
-      <Card style={styles.formCard}>
-        <Text style={styles.roleTitle}>{t('registration.roleTitle')}</Text>
-        <View style={styles.rolesRow}>
-          <TouchableOpacity
-            style={[styles.roleChip, selectedRole === 'worker' && styles.roleChipActive]}
-            activeOpacity={0.85}
-            onPress={() => {
-              setSelectedRole('worker');
-              clearError();
-            }}
-          >
-            <Ionicons
-              name="person-outline"
-              size={16}
-              color={selectedRole === 'worker' ? colors.primary : colors.textSecondary}
-            />
-            <Text style={[styles.roleChipText, selectedRole === 'worker' && styles.roleChipTextActive]}>
-              {t('auth.iAmJobSeeker')}
-            </Text>
-          </TouchableOpacity>
+      <Animated.View style={{ opacity: cardOpacity, transform: [{ translateY: cardTranslateY }, { scale: cardScale }] }}>
+        <Card style={styles.formCard}>
+          <Text style={styles.roleTitle}>{t('registration.roleTitle')}</Text>
+          <View style={styles.rolesRow} onLayout={handleRoleSwitchLayout}>
+            {rolePillWidth > 0 ? (
+              <Animated.View
+                pointerEvents="none"
+                style={[
+                  styles.roleChipPill,
+                  {
+                    width: rolePillWidth,
+                    transform: [{ translateX: rolePillTranslateX }],
+                  },
+                ]}
+              />
+            ) : null}
 
-          <TouchableOpacity
-            style={[styles.roleChip, selectedRole === 'employer' && styles.roleChipActive]}
-            activeOpacity={0.85}
-            onPress={() => {
-              setSelectedRole('employer');
-              clearError();
-            }}
-          >
-            <Ionicons
-              name="briefcase-outline"
-              size={16}
-              color={selectedRole === 'employer' ? colors.primary : colors.textSecondary}
-            />
-            <Text style={[styles.roleChipText, selectedRole === 'employer' && styles.roleChipTextActive]}>
-              {t('auth.iAmEmployer')}
-            </Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={[styles.roleChip, selectedRole === 'worker' && styles.roleChipActive]}
+              activeOpacity={0.85}
+              onPress={() => {
+                setSelectedRole('worker');
+                clearError();
+              }}
+            >
+              <Ionicons
+                name="person-outline"
+                size={16}
+                color={selectedRole === 'worker' ? colors.primary : colors.textSecondary}
+              />
+              <Text style={[styles.roleChipText, selectedRole === 'worker' && styles.roleChipTextActive]}>
+                {t('auth.iAmJobSeeker')}
+              </Text>
+            </TouchableOpacity>
 
-        <Input
-          label={t('registration.email')}
-          placeholder={t('registration.emailPlaceholder')}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={(text) => {
-            setEmail(text);
-            clearError();
-          }}
-        />
-
-        <Input
-          label={t('registration.phone')}
-          placeholder={t('registration.phonePlaceholder')}
-          keyboardType="phone-pad"
-          value={phone}
-          onChangeText={(text) => {
-            setPhone(text);
-            clearError();
-          }}
-        />
-
-        <View style={styles.passwordWrapper}>
-          <Input
-            label={t('registration.password')}
-            placeholder={t('registration.passwordPlaceholder')}
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              clearError();
-            }}
-            containerStyle={styles.passwordInputContainer}
-          />
-          <TouchableOpacity
-            style={styles.eyeIcon}
-            onPress={() => setShowPassword((prev) => !prev)}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={colors.textSecondary} />
-          </TouchableOpacity>
-        </View>
-
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-        <TouchableOpacity style={styles.termsRow} onPress={() => setAgreeToTerms((prev) => !prev)} activeOpacity={0.8}>
-          <View style={[styles.checkbox, agreeToTerms && styles.checkboxActive]}>
-            {agreeToTerms ? <Ionicons name="checkmark" size={12} color="#fff" /> : null}
+            <TouchableOpacity
+              style={[styles.roleChip, selectedRole === 'employer' && styles.roleChipActive]}
+              activeOpacity={0.85}
+              onPress={() => {
+                setSelectedRole('employer');
+                clearError();
+              }}
+            >
+              <Ionicons
+                name="briefcase-outline"
+                size={16}
+                color={selectedRole === 'employer' ? colors.primary : colors.textSecondary}
+              />
+              <Text style={[styles.roleChipText, selectedRole === 'employer' && styles.roleChipTextActive]}>
+                {t('auth.iAmEmployer')}
+              </Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.termsText}>
-            {t('registration.termsPrefix')} <Text style={styles.termsLink}>{t('registration.termsLink')}</Text>
-          </Text>
-        </TouchableOpacity>
 
-        <Button title={t('registration.createAccount')} onPress={handleSubmit} fullWidth />
+          <Input
+            label={t('registration.email')}
+            placeholder={t('registration.emailPlaceholder')}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              clearError();
+            }}
+          />
 
-        <View style={styles.dividerRow}>
-          <View style={styles.divider} />
-          <Text style={styles.dividerText}>{t('common.or')}</Text>
-          <View style={styles.divider} />
-        </View>
+          <Input
+            label={t('registration.phone')}
+            placeholder={t('registration.phonePlaceholder')}
+            keyboardType="phone-pad"
+            value={phone}
+            onChangeText={(text) => {
+              setPhone(text);
+              clearError();
+            }}
+          />
 
-        <Button title={t('registration.continueGoogle')} onPress={handleGoogleAuth} variant="outline" fullWidth />
-      </Card>
+          <View style={styles.passwordWrapper}>
+            <Input
+              label={t('registration.password')}
+              placeholder={t('registration.passwordPlaceholder')}
+              secureTextEntry={!showPassword}
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                clearError();
+              }}
+              containerStyle={styles.passwordInputContainer}
+            />
+            <TouchableOpacity
+              style={styles.eyeIcon}
+              onPress={() => setShowPassword((prev) => !prev)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Ionicons
+                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                size={18}
+                color={colors.textSecondary}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {error ? (
+            <Animated.Text style={[styles.errorText, { transform: [{ translateX: errorTranslateX }] }]}>
+              {error}
+            </Animated.Text>
+          ) : null}
+
+          <TouchableOpacity style={styles.termsRow} onPress={() => setAgreeToTerms((prev) => !prev)} activeOpacity={0.8}>
+            <Animated.View
+              style={[
+                styles.checkbox,
+                agreeToTerms && styles.checkboxActive,
+                {
+                  transform: [{ scale: checkboxScale }],
+                },
+              ]}
+            >
+              {agreeToTerms ? <Ionicons name="checkmark" size={12} color="#fff" /> : null}
+            </Animated.View>
+            <Text style={styles.termsText}>
+              {t('registration.termsPrefix')} <Text style={styles.termsLink}>{t('registration.termsLink')}</Text>
+            </Text>
+          </TouchableOpacity>
+
+          <Button title={t('registration.createAccount')} onPress={handleSubmit} fullWidth />
+
+          <View style={styles.dividerRow}>
+            <View style={styles.divider} />
+            <Text style={styles.dividerText}>{t('common.or')}</Text>
+            <View style={styles.divider} />
+          </View>
+
+          <Button title={t('registration.continueGoogle')} onPress={handleGoogleAuth} variant="outline" fullWidth />
+        </Card>
+      </Animated.View>
     </ScrollView>
   );
 }
@@ -195,6 +345,38 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
       paddingHorizontal: spacing.md,
       paddingTop: spacing.md,
       paddingBottom: spacing.xxl,
+      position: 'relative',
+    },
+    localBackdrop: {
+      ...StyleSheet.absoluteFillObject,
+      top: -20,
+    },
+    glowTopRight: {
+      position: 'absolute',
+      top: -130,
+      right: -80,
+      width: 280,
+      height: 280,
+      borderRadius: 999,
+      backgroundColor: isDark ? 'rgba(96,165,250,0.24)' : 'rgba(96,165,250,0.14)',
+    },
+    glowLeft: {
+      position: 'absolute',
+      top: 120,
+      left: -130,
+      width: 250,
+      height: 250,
+      borderRadius: 999,
+      backgroundColor: isDark ? 'rgba(167,139,250,0.18)' : 'rgba(167,139,250,0.1)',
+    },
+    glowBottom: {
+      position: 'absolute',
+      top: 500,
+      right: -110,
+      width: 240,
+      height: 240,
+      borderRadius: 999,
+      backgroundColor: isDark ? 'rgba(148,163,184,0.12)' : 'rgba(148,163,184,0.07)',
     },
     hero: {
       alignItems: 'center',
@@ -234,6 +416,9 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
     formCard: {
       borderRadius: 28,
       padding: spacing.md,
+      backgroundColor: isDark ? 'rgba(15,23,42,0.92)' : 'rgba(255,255,255,0.93)',
+      borderColor: isDark ? 'rgba(148,163,184,0.3)' : 'rgba(148,163,184,0.2)',
+      ...colors.shadow.md,
     },
     roleTitle: {
       fontSize: typography.sm,
@@ -243,8 +428,24 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
     },
     rolesRow: {
       flexDirection: 'row',
+      position: 'relative',
       gap: spacing.sm,
       marginBottom: spacing.md,
+      borderRadius: 16,
+      padding: 2,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: isDark ? 'rgba(15,23,42,0.64)' : 'rgba(248,250,252,0.8)',
+    },
+    roleChipPill: {
+      position: 'absolute',
+      left: 0,
+      top: 2,
+      bottom: 2,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: isDark ? 'rgba(147,197,253,0.65)' : 'rgba(37,99,235,0.25)',
+      backgroundColor: isDark ? 'rgba(96,165,250,0.2)' : 'rgba(239,246,255,0.95)',
     },
     roleChip: {
       flex: 1,
@@ -253,14 +454,13 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
       justifyContent: 'center',
       gap: spacing.xs,
       borderWidth: 1,
-      borderColor: colors.border,
+      borderColor: 'transparent',
       borderRadius: 14,
       paddingVertical: spacing.sm,
-      backgroundColor: colors.surface,
+      backgroundColor: 'transparent',
     },
     roleChipActive: {
-      borderColor: isDark ? 'rgba(96,165,250,0.55)' : 'rgba(37,99,235,0.4)',
-      backgroundColor: isDark ? 'rgba(96,165,250,0.2)' : 'rgba(37,99,235,0.1)',
+      borderColor: 'transparent',
     },
     roleChipText: {
       fontSize: typography.sm,
