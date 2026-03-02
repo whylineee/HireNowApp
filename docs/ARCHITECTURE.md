@@ -7,6 +7,7 @@
 - `services/`: data access and API-like adapters.
 - `types/`: domain contracts (`User`, `Job`, shared payloads).
 - `utils/`: cross-cutting helpers (`storage`).
+- `backend/`: Django server layer with admin panel and persistent `Job` data model.
 
 ## State Strategy
 - UI state remains local per screen.

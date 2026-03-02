@@ -29,6 +29,11 @@ HireNowApp/
 │   ├── Hooks.md           # Custom React hooks
 │   ├── Types.md           # TypeScript типи та інтерфейси
 │   └── Development.md     # Гайдлайни розробки
+├── backend/                # Django backend + admin panel
+│   ├── backend/            # Django project settings/urls
+│   ├── jobs/               # Job domain models + admin
+│   ├── requirements.txt    # Python dependencies
+│   └── README.md           # Backend setup instructions
 ├── app/                    # Екрани (Expo Router)
 │   ├── _layout.tsx         # Головний layout
 │   ├── index.tsx           # Головний екран пошуку
@@ -94,6 +99,20 @@ HireNowApp/
 - **Expo** - платформа для розробки
 - **TypeScript** - типізація
 - **Expo Router** - навігація
+- **Django** - серверна частина та адмін-панель
+
+## 🖥 Backend (Django Admin)
+
+```bash
+cd backend
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+- Admin panel: `http://127.0.0.1:8000/admin/`
+- Healthcheck: `http://127.0.0.1:8000/health/`
 
 ## � Документація
 
