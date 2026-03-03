@@ -13,7 +13,9 @@ function AppStack() {
         headerShadowVisible: false,
         headerStyle: { backgroundColor: colors.background },
         contentStyle: { backgroundColor: colors.background },
-        animation: 'slide_from_right',
+        animation: 'fade',
+        animationDuration: 90,
+        animationTypeForReplace: 'push',
         gestureEnabled: true,
       }}
     >

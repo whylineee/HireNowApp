@@ -31,6 +31,7 @@ export default function ProfileScreen() {
   const [about, setAbout] = useState('');
   const [skills, setSkills] = useState('');
   const [experience, setExperience] = useState('');
+  const isEmployer = user?.role === 'employer';
 
   useEffect(() => {
     if (!user) return;
@@ -41,10 +42,13 @@ export default function ProfileScreen() {
   }, [user]);
 
   const completion = useMemo(() => {
+    if (isEmployer) {
+      return 0;
+    }
     const fields = [headline.trim(), about.trim(), skills.trim(), experience.trim(), user?.photoUri ?? ''];
     const filled = fields.filter(Boolean).length;
     return Math.round((filled / fields.length) * 100);
-  }, [about, experience, headline, skills, user?.photoUri]);
+  }, [about, experience, headline, isEmployer, skills, user?.photoUri]);
 
   const stats = useMemo(
     () => [
@@ -134,13 +138,17 @@ export default function ProfileScreen() {
             </View>
 
             <View style={styles.progressWrap}>
-              <View style={styles.progressRow}>
-                <Text style={styles.progressLabel}>{t('profilePage.profileCompletion')}</Text>
-                <Text style={styles.progressValue}>{completion}%</Text>
-              </View>
-              <View style={styles.progressTrack}>
-                <View style={[styles.progressFill, { width: `${completion}%` }]} />
-              </View>
+              {!isEmployer && (
+                <>
+                  <View style={styles.progressRow}>
+                    <Text style={styles.progressLabel}>{t('profilePage.profileCompletion')}</Text>
+                    <Text style={styles.progressValue}>{completion}%</Text>
+                  </View>
+                  <View style={styles.progressTrack}>
+                    <View style={[styles.progressFill, { width: `${completion}%` }]} />
+                  </View>
+                </>
+              )}
             </View>
           </Card>
 
@@ -156,45 +164,60 @@ export default function ProfileScreen() {
             </View>
           </Card>
 
-          <Card style={styles.card}>
-            <Text style={styles.cardTitle}>{t('profilePage.editProfileTitle')}</Text>
-            <Input
-              label={t('profilePage.headline')}
-              placeholder={t('jobs.positionPlaceholder')}
-              value={headline}
-              onChangeText={setHeadline}
-            />
-            <Input
-              label={t('profilePage.about')}
-              placeholder={t('jobs.aboutPlaceholder')}
-              value={about}
-              onChangeText={setAbout}
-              multiline
-              numberOfLines={4}
-            />
-            <Input
-              label={t('profilePage.skills')}
-              placeholder={t('jobs.skillsPlaceholder')}
-              value={skills}
-              onChangeText={setSkills}
-            />
-            <Input
-              label={t('profilePage.experience')}
-              placeholder={t('jobs.experiencePlaceholder')}
-              value={experience}
-              onChangeText={setExperience}
-              multiline
-              numberOfLines={4}
-            />
-            <Button title={t('profilePage.saveProfile')} onPress={saveProfile} fullWidth />
-          </Card>
+          {!isEmployer ? (
+            <Card style={styles.card}>
+              <Text style={styles.cardTitle}>{t('profilePage.editProfileTitle')}</Text>
+              <Input
+                label={t('profilePage.headline')}
+                placeholder={t('jobs.positionPlaceholder')}
+                value={headline}
+                onChangeText={setHeadline}
+              />
+              <Input
+                label={t('profilePage.about')}
+                placeholder={t('jobs.aboutPlaceholder')}
+                value={about}
+                onChangeText={setAbout}
+                multiline
+                numberOfLines={4}
+              />
+              <Input
+                label={t('profilePage.skills')}
+                placeholder={t('jobs.skillsPlaceholder')}
+                value={skills}
+                onChangeText={setSkills}
+              />
+              <Input
+                label={t('profilePage.experience')}
+                placeholder={t('jobs.experiencePlaceholder')}
+                value={experience}
+                onChangeText={setExperience}
+                multiline
+                numberOfLines={4}
+              />
+              <Button title={t('profilePage.saveProfile')} onPress={saveProfile} fullWidth />
+            </Card>
+          ) : (
+            <Card style={styles.card}>
+              <Text style={styles.cardTitle}>{t('jobs.newVacancy')}</Text>
+              <Text style={styles.quickActionHint}>{t('home.employerHeroSubtitle')}</Text>
+              <Button title={t('jobs.newVacancy')} onPress={() => router.replace('/')} fullWidth />
+            </Card>
+          )}
 
           <Card style={styles.card}>
             <Text style={styles.cardTitle}>{t('profilePage.quickActions')}</Text>
             <View style={styles.quickActionsRow}>
-              <TouchableOpacity style={styles.quickAction} onPress={() => router.push('/favorites')}>
-                <Text style={styles.quickActionText}>{t('profilePage.goFavorites')}</Text>
-              </TouchableOpacity>
+              {!isEmployer && (
+                <TouchableOpacity style={styles.quickAction} onPress={() => router.push('/favorites')}>
+                  <Text style={styles.quickActionText}>{t('profilePage.goFavorites')}</Text>
+                </TouchableOpacity>
+              )}
+              {isEmployer && (
+                <TouchableOpacity style={styles.quickAction} onPress={() => router.replace('/')}>
+                  <Text style={styles.quickActionText}>{t('jobs.newVacancy')}</Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity style={styles.quickAction} onPress={() => router.push('/messages')}>
                 <Text style={styles.quickActionText}>{t('profilePage.goMessages')}</Text>
               </TouchableOpacity>
@@ -219,17 +242,19 @@ export default function ProfileScreen() {
               />
             </View>
 
-            <View style={styles.settingRow}>
-              <View style={styles.settingText}>
-                <Text style={styles.settingTitle}>{t('profilePage.openToWorkTitle')}</Text>
+            {!isEmployer && (
+              <View style={styles.settingRow}>
+                <View style={styles.settingText}>
+                  <Text style={styles.settingTitle}>{t('profilePage.openToWorkTitle')}</Text>
+                </View>
+                <Switch
+                  value={preferences.openToWork}
+                  onValueChange={(value) => setPreference('openToWork', value)}
+                  trackColor={{ false: colors.border, true: colors.primaryLight }}
+                  thumbColor={preferences.openToWork ? colors.primary : colors.surface}
+                />
               </View>
-              <Switch
-                value={preferences.openToWork}
-                onValueChange={(value) => setPreference('openToWork', value)}
-                trackColor={{ false: colors.border, true: colors.primaryLight }}
-                thumbColor={preferences.openToWork ? colors.primary : colors.surface}
-              />
-            </View>
+            )}
 
             <View style={styles.settingRow}>
               <View style={styles.settingText}>
@@ -243,29 +268,33 @@ export default function ProfileScreen() {
               />
             </View>
 
-            <View style={styles.settingRow}>
-              <View style={styles.settingText}>
-                <Text style={styles.settingTitle}>{t('profilePage.remoteOnlySearchTitle')}</Text>
+            {!isEmployer && (
+              <View style={styles.settingRow}>
+                <View style={styles.settingText}>
+                  <Text style={styles.settingTitle}>{t('profilePage.remoteOnlySearchTitle')}</Text>
+                </View>
+                <Switch
+                  value={preferences.remoteOnlySearch}
+                  onValueChange={(value) => setPreference('remoteOnlySearch', value)}
+                  trackColor={{ false: colors.border, true: colors.primaryLight }}
+                  thumbColor={preferences.remoteOnlySearch ? colors.primary : colors.surface}
+                />
               </View>
-              <Switch
-                value={preferences.remoteOnlySearch}
-                onValueChange={(value) => setPreference('remoteOnlySearch', value)}
-                trackColor={{ false: colors.border, true: colors.primaryLight }}
-                thumbColor={preferences.remoteOnlySearch ? colors.primary : colors.surface}
-              />
-            </View>
+            )}
 
-            <View style={styles.settingRow}>
-              <View style={styles.settingText}>
-                <Text style={styles.settingTitle}>{t('profilePage.hideAppliedJobsTitle')}</Text>
+            {!isEmployer && (
+              <View style={styles.settingRow}>
+                <View style={styles.settingText}>
+                  <Text style={styles.settingTitle}>{t('profilePage.hideAppliedJobsTitle')}</Text>
+                </View>
+                <Switch
+                  value={preferences.hideAppliedJobs}
+                  onValueChange={(value) => setPreference('hideAppliedJobs', value)}
+                  trackColor={{ false: colors.border, true: colors.primaryLight }}
+                  thumbColor={preferences.hideAppliedJobs ? colors.primary : colors.surface}
+                />
               </View>
-              <Switch
-                value={preferences.hideAppliedJobs}
-                onValueChange={(value) => setPreference('hideAppliedJobs', value)}
-                trackColor={{ false: colors.border, true: colors.primaryLight }}
-                thumbColor={preferences.hideAppliedJobs ? colors.primary : colors.surface}
-              />
-            </View>
+            )}
 
             <View style={styles.settingRow}>
               <View style={styles.settingText}>
@@ -283,13 +312,22 @@ export default function ProfileScreen() {
           <Card style={styles.card}>
             <Text style={styles.cardTitle}>{t('profilePage.manageDataTitle')}</Text>
             <View style={styles.quickActionsRow}>
-              <Button title={t('profilePage.clearFavorites')} variant="outline" onPress={() => confirmClear(t('profilePage.clearFavorites'), clearFavorites)} fullWidth />
-              <Button
-                title={t('profilePage.clearApplications')}
-                variant="outline"
-                onPress={() => confirmClear(t('profilePage.clearApplications'), clearApplications)}
-                fullWidth
-              />
+              {!isEmployer && (
+                <Button
+                  title={t('profilePage.clearFavorites')}
+                  variant="outline"
+                  onPress={() => confirmClear(t('profilePage.clearFavorites'), clearFavorites)}
+                  fullWidth
+                />
+              )}
+              {!isEmployer && (
+                <Button
+                  title={t('profilePage.clearApplications')}
+                  variant="outline"
+                  onPress={() => confirmClear(t('profilePage.clearApplications'), clearApplications)}
+                  fullWidth
+                />
+              )}
               <Button title={t('profilePage.clearSearches')} variant="outline" onPress={() => confirmClear(t('profilePage.clearSearches'), clearSearches)} fullWidth />
             </View>
           </Card>
@@ -423,6 +461,12 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
       fontSize: typography.sm,
       color: colors.text,
       fontWeight: typography.semibold,
+    },
+    quickActionHint: {
+      fontSize: typography.sm,
+      color: colors.textSecondary,
+      marginBottom: spacing.md,
+      lineHeight: 20,
     },
     settingRow: {
       flexDirection: 'row',
