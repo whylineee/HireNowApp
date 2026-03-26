@@ -16,18 +16,29 @@ export function useJobs(initialParams?: JobSearchParams): UseJobsResult {
   const [error, setError] = useState<string | null>(null);
   const [params, setParams] = useState<JobSearchParams>(initialParams ?? {});
   const paramsRef = useRef<JobSearchParams>(initialParams ?? {});
+  const requestIdRef = useRef(0);
+  const isMountedRef = useRef(true);
 
   const fetchJobs = useCallback(async (searchParams: JobSearchParams) => {
+    const requestId = ++requestIdRef.current;
     setLoading(true);
     setError(null);
     try {
       const data = await searchJobs(searchParams);
+      if (!isMountedRef.current || requestId !== requestIdRef.current) {
+        return;
+      }
       setJobs(data);
     } catch (e) {
+      if (!isMountedRef.current || requestId !== requestIdRef.current) {
+        return;
+      }
       setError(e instanceof Error ? e.message : 'Помилка завантаження');
       setJobs([]);
     } finally {
-      setLoading(false);
+      if (isMountedRef.current && requestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
   }, []);
 
@@ -49,6 +60,10 @@ export function useJobs(initialParams?: JobSearchParams): UseJobsResult {
 
   useEffect(() => {
     fetchJobs(paramsRef.current);
+    return () => {
+      isMountedRef.current = false;
+      requestIdRef.current += 1;
+    };
   }, []); // тільки при монтуванні
 
   return { jobs, loading, error, search, refetch };

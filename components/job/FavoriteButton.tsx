@@ -1,7 +1,7 @@
 import { useTheme } from '@/hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { GestureResponderEvent, StyleSheet, TouchableOpacity } from 'react-native';
 
 interface FavoriteButtonProps {
   isFavorite: boolean;
@@ -13,8 +13,13 @@ export function FavoriteButton({ isFavorite, onPress, size = 24 }: FavoriteButto
   const { colors, isDark } = useTheme();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
+  const handlePress = (event: GestureResponderEvent) => {
+    event.stopPropagation();
+    onPress();
+  };
+
   return (
-    <TouchableOpacity onPress={onPress} style={styles.button} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+    <TouchableOpacity onPress={handlePress} style={styles.button} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
       <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={size} color={isFavorite ? colors.error : colors.textMuted} />
     </TouchableOpacity>
   );
