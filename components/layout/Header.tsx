@@ -1,9 +1,9 @@
 import { spacing, typography } from '@/constants/theme';
 import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
+import { triggerSelectionHaptic } from '@/utils/haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -31,7 +31,7 @@ export function Header({
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
   const handleBack = () => {
-    Haptics.selectionAsync().catch(() => undefined);
+    triggerSelectionHaptic();
     if (onBackPress) {
       onBackPress();
       return;
@@ -46,12 +46,12 @@ export function Header({
   };
 
   const handleOpenFavorites = () => {
-    Haptics.selectionAsync().catch(() => undefined);
+    triggerSelectionHaptic();
     router.push('/favorites');
   };
 
   const handleOpenProfile = () => {
-    Haptics.selectionAsync().catch(() => undefined);
+    triggerSelectionHaptic();
     router.push('/profile');
   };
 

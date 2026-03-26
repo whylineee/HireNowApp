@@ -1,9 +1,9 @@
 import { borderRadius, spacing, typography } from '@/constants/theme';
 import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
+import { triggerSelectionHaptic } from '@/utils/haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { router, usePathname } from 'expo-router';
-import * as Haptics from 'expo-haptics';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, PanResponder, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -211,7 +211,7 @@ export function BottomNav() {
     if (isActive) return;
     router.navigate(href);
     requestAnimationFrame(() => {
-      Haptics.selectionAsync().catch(() => undefined);
+      triggerSelectionHaptic();
     });
   };
 
