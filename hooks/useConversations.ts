@@ -6,74 +6,78 @@ const CONVERSATIONS_STORAGE_KEY = 'conversationsState';
 
 type ConversationsListener = (state: ConversationsState) => void;
 
-const initialState: ConversationsState = {
-  conversations: [
-    {
-      id: '1',
-      participantName: 'IT Company',
-      participantRole: 'Роботодавець',
-      lastMessage: 'Чудово, чекаємо на вас на співбесіду!',
-      timestamp: Date.now() - 1000 * 60 * 5,
-      unread: 2,
-      pinned: true,
-    },
-    {
-      id: '2',
-      participantName: 'John Doe',
-      participantRole: 'Кандидат',
-      lastMessage: 'Дякую за можливість!',
-      timestamp: Date.now() - 1000 * 60 * 60,
-      unread: 0,
-      pinned: false,
-    },
-  ],
-  messagesByConversation: {
-    '1': [
+function createInitialConversationsState(): ConversationsState {
+  const now = Date.now();
+
+  return {
+    conversations: [
       {
         id: '1',
-        conversationId: '1',
-        text: 'Доброго дня! Зацікавила ваша вакансія React Native розробника.',
-        sender: 'me',
-        timestamp: Date.now() - 1000 * 60 * 30,
-        senderName: 'Я',
+        participantName: 'IT Company',
+        participantRole: 'Роботодавець',
+        lastMessage: 'Чудово, чекаємо на вас на співбесіду!',
+        timestamp: now - 1000 * 60 * 5,
+        unread: 2,
+        pinned: true,
       },
       {
         id: '2',
-        conversationId: '1',
-        text: 'Привіт! Раді це чути. Розкажіть, будь ласка, про ваш досвід.',
-        sender: 'other',
-        timestamp: Date.now() - 1000 * 60 * 25,
-        senderName: 'IT Company',
-      },
-      {
-        id: '3',
-        conversationId: '1',
-        text: 'Я маю 3 роки досвіду з React Native та 2 роки з React.',
-        sender: 'me',
-        timestamp: Date.now() - 1000 * 60 * 20,
-        senderName: 'Я',
-      },
-      {
-        id: '4',
-        conversationId: '1',
-        text: 'Чудово, чекаємо на вас на співбесіду!',
-        sender: 'other',
-        timestamp: Date.now() - 1000 * 60 * 5,
-        senderName: 'IT Company',
+        participantName: 'John Doe',
+        participantRole: 'Кандидат',
+        lastMessage: 'Дякую за можливість!',
+        timestamp: now - 1000 * 60 * 60,
+        unread: 0,
+        pinned: false,
       },
     ],
-    '2': [
-      {
-        id: '5',
-        conversationId: '2',
-        text: 'Дякую за можливість!',
-        sender: 'other',
-        timestamp: Date.now() - 1000 * 60 * 60,
-        senderName: 'John Doe',
-      },
-    ],
-  },
-};
+    messagesByConversation: {
+      '1': [
+        {
+          id: '1',
+          conversationId: '1',
+          text: 'Доброго дня! Зацікавила ваша вакансія React Native розробника.',
+          sender: 'me',
+          timestamp: now - 1000 * 60 * 30,
+          senderName: 'Я',
+        },
+        {
+          id: '2',
+          conversationId: '1',
+          text: 'Привіт! Раді це чути. Розкажіть, будь ласка, про ваш досвід.',
+          sender: 'other',
+          timestamp: now - 1000 * 60 * 25,
+          senderName: 'IT Company',
+        },
+        {
+          id: '3',
+          conversationId: '1',
+          text: 'Я маю 3 роки досвіду з React Native та 2 роки з React.',
+          sender: 'me',
+          timestamp: now - 1000 * 60 * 20,
+          senderName: 'Я',
+        },
+        {
+          id: '4',
+          conversationId: '1',
+          text: 'Чудово, чекаємо на вас на співбесіду!',
+          sender: 'other',
+          timestamp: now - 1000 * 60 * 5,
+          senderName: 'IT Company',
+        },
+      ],
+      '2': [
+        {
+          id: '5',
+          conversationId: '2',
+          text: 'Дякую за можливість!',
+          sender: 'other',
+          timestamp: now - 1000 * 60 * 60,
+          senderName: 'John Doe',
+        },
+      ],
+    },
+  };
+}
 
 function sortConversations(conversations: Conversation[]): Conversation[] {
   return [...conversations].sort((a, b) => {
@@ -85,7 +89,7 @@ function sortConversations(conversations: Conversation[]): Conversation[] {
   });
 }
 
-let conversationsStore = getStoredJson<ConversationsState>(CONVERSATIONS_STORAGE_KEY, initialState);
+let conversationsStore = getStoredJson<ConversationsState>(CONVERSATIONS_STORAGE_KEY, createInitialConversationsState());
 conversationsStore = {
   conversations: sortConversations(conversationsStore.conversations),
   messagesByConversation: conversationsStore.messagesByConversation,
@@ -100,6 +104,11 @@ function emitConversations() {
   };
   setStoredJson(CONVERSATIONS_STORAGE_KEY, conversationsStore);
   listeners.forEach((listener) => listener(conversationsStore));
+}
+
+export function resetConversationsStore() {
+  conversationsStore = createInitialConversationsState();
+  emitConversations();
 }
 
 function subscribe(listener: ConversationsListener) {

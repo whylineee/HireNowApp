@@ -18,6 +18,11 @@ function emitApplications() {
   listeners.forEach((listener) => listener([...applicationsStore]));
 }
 
+export function clearApplicationsStore() {
+  applicationsStore = [];
+  emitApplications();
+}
+
 function subscribe(listener: ApplicationsListener) {
   listeners.add(listener);
   listener([...applicationsStore]);
@@ -43,8 +48,7 @@ export function useApplications() {
   }, []);
 
   const clearApplications = useCallback(() => {
-    applicationsStore = [];
-    emitApplications();
+    clearApplicationsStore();
   }, []);
 
   const isApplied = useCallback(

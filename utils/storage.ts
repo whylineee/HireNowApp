@@ -29,6 +29,18 @@ export function getStoredValue(key: string): string | null {
   return memoryStore.get(key) ?? null;
 }
 
+export function removeStoredValue(key: string): void {
+  if (hasLocalStorage()) {
+    try {
+      globalThis.localStorage.removeItem(key);
+    } catch {
+      // Fall back to in-memory storage on storage access issues.
+    }
+  }
+
+  memoryStore.delete(key);
+}
+
 export function setStoredJson<T>(key: string, value: T): void {
   setStoredValue(key, JSON.stringify(value));
 }

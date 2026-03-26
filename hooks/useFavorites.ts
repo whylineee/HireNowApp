@@ -13,6 +13,11 @@ function emitFavorites() {
   listeners.forEach((listener) => listener([...favoritesStore]));
 }
 
+export function clearFavoritesStore() {
+  favoritesStore = [];
+  emitFavorites();
+}
+
 function subscribe(listener: FavoritesListener) {
   listeners.add(listener);
   listener([...favoritesStore]);
@@ -49,8 +54,7 @@ export function useFavorites() {
   const isFavorite = useCallback((jobId: string) => favorites.includes(jobId), [favorites]);
 
   const clearFavorites = useCallback(() => {
-    favoritesStore = [];
-    emitFavorites();
+    clearFavoritesStore();
   }, []);
 
   return {

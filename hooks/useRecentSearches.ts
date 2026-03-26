@@ -23,6 +23,11 @@ function emitRecentSearches() {
   listeners.forEach((listener) => listener([...recentSearchesStore]));
 }
 
+export function clearRecentSearchesStore() {
+  recentSearchesStore = [];
+  emitRecentSearches();
+}
+
 function subscribe(listener: RecentSearchesListener) {
   listeners.add(listener);
   listener([...recentSearchesStore]);
@@ -56,8 +61,7 @@ export function useRecentSearches(limit = 6) {
   );
 
   const clearSearches = useCallback(() => {
-    recentSearchesStore = [];
-    emitRecentSearches();
+    clearRecentSearchesStore();
   }, []);
 
   return { recentSearches, addSearch, clearSearches };

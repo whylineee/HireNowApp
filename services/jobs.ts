@@ -1,4 +1,5 @@
 import type { Job, JobSearchParams } from '@/types/job';
+import { getStoredJson, removeStoredValue, setStoredJson } from '@/utils/storage';
 
 /**
  * Мок-дані вакансій для демонстрації.
@@ -73,8 +74,19 @@ const MOCK_JOBS: Job[] = [
   },
 ];
 
-// Вакансії, створені роботодавцем під час роботи додатку (зберігаються в памʼяті)
-let employerJobs: Job[] = [];
+const EMPLOYER_JOBS_STORAGE_KEY = 'employerJobs';
+
+// Вакансії, створені роботодавцем під час роботи додатку
+let employerJobs = getStoredJson<Job[]>(EMPLOYER_JOBS_STORAGE_KEY, []);
+
+function persistEmployerJobs() {
+  if (employerJobs.length === 0) {
+    removeStoredValue(EMPLOYER_JOBS_STORAGE_KEY);
+    return;
+  }
+
+  setStoredJson(EMPLOYER_JOBS_STORAGE_KEY, employerJobs);
+}
 
 /**
  * Імітація затримки мережі
@@ -137,6 +149,7 @@ export async function createEmployerJob(input: Omit<Job, 'id' | 'postedAt'> & { 
     postedAt: input.postedAt ?? 'щойно',
   };
   employerJobs = [job, ...employerJobs];
+  persistEmployerJobs();
   return job;
 }
 
@@ -145,6 +158,10 @@ export async function createEmployerJob(input: Omit<Job, 'id' | 'postedAt'> & { 
  */
 export async function getEmployerJobs(): Promise<Job[]> {
   await delay(100);
-  return employerJobs;
+  return [...employerJobs];
 }
 
+export function resetEmployerJobs() {
+  employerJobs = [];
+  persistEmployerJobs();
+}
