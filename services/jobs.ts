@@ -14,6 +14,8 @@ type JobPayload = {
   logo?: string | null;
 };
 
+const REQUEST_TIMEOUT_MS = 12000;
+
 function buildUrl(path: string, params?: Record<string, string | undefined>) {
   const url = new URL(path, `${API_BASE_URL}/`);
 
@@ -26,6 +28,22 @@ function buildUrl(path: string, params?: Record<string, string | undefined>) {
   }
 
   return url.toString();
+}
+
+function createTimeoutController(timeoutMs: number): { signal: AbortSignal; cancel: () => void } {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  const cancel = () => {
+    clearTimeout(timer);
+  };
+
+  controller.signal.addEventListener('abort', cancel);
+
+  return {
+    signal: controller.signal,
+    cancel,
+  };
 }
 
 function normalizeJob(payload: JobPayload): Job {
@@ -44,12 +62,17 @@ function normalizeJob(payload: JobPayload): Job {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const timeoutController = init?.signal ? null : createTimeoutController(REQUEST_TIMEOUT_MS);
+
   const response = await fetch(buildUrl(path), {
     ...init,
+    signal: init?.signal ?? timeoutController?.signal,
     headers: {
       'Content-Type': 'application/json',
       ...(init?.headers ?? {}),
     },
+  }).finally(() => {
+    timeoutController?.cancel();
   });
 
   if (!response.ok) {
@@ -69,30 +92,26 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export async function searchJobs(params: JobSearchParams): Promise<Job[]> {
-  const response = await fetch(
-    buildUrl('/api/jobs/', {
-      query: params.query,
-      location: params.location,
-      type: params.type,
-    })
-  );
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
+  const queryPath = buildUrl('/api/jobs/', {
+    query: params.query,
+    location: params.location,
+    type: params.type,
+  });
 
-  return ((await response.json()) as JobPayload[]).map(normalizeJob);
+  const payload = await request<JobPayload[]>(queryPath);
+  return payload.map(normalizeJob);
 }
 
 export async function getJobById(id: string): Promise<Job | null> {
-  const response = await fetch(buildUrl(`/api/jobs/${id}/`));
-  if (response.status === 404) {
-    return null;
+  try {
+    const payload = await request<JobPayload>(`/api/jobs/${id}/`);
+    return normalizeJob(payload);
+  } catch (error) {
+    if (error instanceof Error && error.message === 'HTTP 404') {
+      return null;
+    }
+    throw error;
   }
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-
-  return normalizeJob((await response.json()) as JobPayload);
 }
 
 export async function createEmployerJob(input: Omit<Job, 'id' | 'postedAt'> & { postedAt?: string }): Promise<Job> {
