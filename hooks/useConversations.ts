@@ -1,10 +1,8 @@
 import type { Conversation, ConversationMessage, ConversationsState } from '@/types/message';
-import { getStoredJson, setStoredJson } from '@/utils/storage';
+import { createPersistentStore } from '@/utils/persistentStore';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const CONVERSATIONS_STORAGE_KEY = 'conversationsState';
-
-type ConversationsListener = (state: ConversationsState) => void;
 
 function createInitialConversationsState(): ConversationsState {
   const now = Date.now();
@@ -89,59 +87,60 @@ function sortConversations(conversations: Conversation[]): Conversation[] {
   });
 }
 
-let conversationsStore = getStoredJson<ConversationsState>(CONVERSATIONS_STORAGE_KEY, createInitialConversationsState());
-conversationsStore = {
-  conversations: sortConversations(conversationsStore.conversations),
-  messagesByConversation: conversationsStore.messagesByConversation,
-};
-
-const listeners = new Set<ConversationsListener>();
-
-function emitConversations() {
-  conversationsStore = {
-    conversations: sortConversations(conversationsStore.conversations),
-    messagesByConversation: conversationsStore.messagesByConversation,
-  };
-  setStoredJson(CONVERSATIONS_STORAGE_KEY, conversationsStore);
-  listeners.forEach((listener) => listener(conversationsStore));
-}
+const conversationsStore = createPersistentStore<ConversationsState>({
+  key: CONVERSATIONS_STORAGE_KEY,
+  initialState: createInitialConversationsState(),
+  mergeHydratedState: (_, persisted) => ({
+    conversations: sortConversations(persisted.conversations),
+    messagesByConversation: persisted.messagesByConversation,
+  }),
+});
 
 export function resetConversationsStore() {
-  conversationsStore = createInitialConversationsState();
-  emitConversations();
-}
-
-function subscribe(listener: ConversationsListener) {
-  listeners.add(listener);
-  listener(conversationsStore);
-  return () => {
-    listeners.delete(listener);
-  };
+  return conversationsStore.setState(createInitialConversationsState());
 }
 
 export function useConversations() {
-  const [state, setState] = useState<ConversationsState>(conversationsStore);
+  const [state, setState] = useState<ConversationsState>(conversationsStore.getSnapshot());
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => subscribe(setState), []);
+  useEffect(() => {
+    const unsubscribe = conversationsStore.subscribe((nextState) => {
+      setState({
+        conversations: sortConversations(nextState.conversations),
+        messagesByConversation: nextState.messagesByConversation,
+      });
+    });
+
+    let active = true;
+    void conversationsStore.hydrate().finally(() => {
+      if (active) {
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      active = false;
+      unsubscribe();
+    };
+  }, []);
 
   const openConversation = useCallback((conversationId: string) => {
-    conversationsStore = {
-      ...conversationsStore,
-      conversations: conversationsStore.conversations.map((conversation) =>
+    void conversationsStore.updateState((prevState) => ({
+      ...prevState,
+      conversations: prevState.conversations.map((conversation) =>
         conversation.id === conversationId ? { ...conversation, unread: 0 } : conversation
       ),
-    };
-    emitConversations();
+    }));
   }, []);
 
   const togglePinConversation = useCallback((conversationId: string) => {
-    conversationsStore = {
-      ...conversationsStore,
-      conversations: conversationsStore.conversations.map((conversation) =>
+    void conversationsStore.updateState((prevState) => ({
+      ...prevState,
+      conversations: prevState.conversations.map((conversation) =>
         conversation.id === conversationId ? { ...conversation, pinned: !conversation.pinned } : conversation
       ),
-    };
-    emitConversations();
+    }));
   }, []);
 
   const sendMessage = useCallback((conversationId: string, text: string) => {
@@ -157,32 +156,32 @@ export function useConversations() {
       senderName: 'Я',
     };
 
-    const existingMessages = conversationsStore.messagesByConversation[conversationId] ?? [];
+    void conversationsStore.updateState((prevState) => {
+      const existingMessages = prevState.messagesByConversation[conversationId] ?? [];
 
-    conversationsStore = {
-      conversations: conversationsStore.conversations.map((conversation) =>
-        conversation.id === conversationId
-          ? {
-              ...conversation,
-              lastMessage: trimmed,
-              timestamp: nextMessage.timestamp,
-              unread: 0,
-            }
-          : conversation
-      ),
-      messagesByConversation: {
-        ...conversationsStore.messagesByConversation,
-        [conversationId]: [...existingMessages, nextMessage],
-      },
-    };
-
-    emitConversations();
+      return {
+        conversations: prevState.conversations.map((conversation) =>
+          conversation.id === conversationId
+            ? {
+                ...conversation,
+                lastMessage: trimmed,
+                timestamp: nextMessage.timestamp,
+                unread: 0,
+              }
+            : conversation
+        ),
+        messagesByConversation: {
+          ...prevState.messagesByConversation,
+          [conversationId]: [...existingMessages, nextMessage],
+        },
+      };
+    });
   }, []);
 
   const markConversationUnread = useCallback((conversationId: string) => {
-    conversationsStore = {
-      ...conversationsStore,
-      conversations: conversationsStore.conversations.map((conversation) =>
+    void conversationsStore.updateState((prevState) => ({
+      ...prevState,
+      conversations: prevState.conversations.map((conversation) =>
         conversation.id === conversationId
           ? {
               ...conversation,
@@ -190,8 +189,7 @@ export function useConversations() {
             }
           : conversation
       ),
-    };
-    emitConversations();
+    }));
   }, []);
 
   const messagesFor = useCallback(
@@ -206,6 +204,7 @@ export function useConversations() {
 
   return {
     conversations: state.conversations,
+    loading,
     messagesFor,
     openConversation,
     sendMessage,

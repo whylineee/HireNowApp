@@ -1,5 +1,5 @@
-import { getStoredJson, setStoredJson } from '@/utils/storage';
-import { useCallback, useEffect, useState } from 'react';
+import { createPersistentStore } from '@/utils/persistentStore';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export interface RecentSearch {
   query?: string;
@@ -8,38 +8,40 @@ export interface RecentSearch {
 }
 
 const RECENT_SEARCHES_STORAGE_KEY = 'recentSearches';
+const MAX_RECENT_SEARCHES = 20;
 
-type RecentSearchesListener = (recentSearches: RecentSearch[]) => void;
-
-let recentSearchesStore = getStoredJson<RecentSearch[]>(RECENT_SEARCHES_STORAGE_KEY, []);
-const listeners = new Set<RecentSearchesListener>();
+const recentSearchesStore = createPersistentStore<RecentSearch[]>({
+  key: RECENT_SEARCHES_STORAGE_KEY,
+  initialState: [],
+});
 
 function sameSearch(a: RecentSearch, b: RecentSearch) {
   return (a.query ?? '') === (b.query ?? '') && (a.location ?? '') === (b.location ?? '');
 }
 
-function emitRecentSearches() {
-  setStoredJson(RECENT_SEARCHES_STORAGE_KEY, recentSearchesStore);
-  listeners.forEach((listener) => listener([...recentSearchesStore]));
-}
-
 export function clearRecentSearchesStore() {
-  recentSearchesStore = [];
-  emitRecentSearches();
-}
-
-function subscribe(listener: RecentSearchesListener) {
-  listeners.add(listener);
-  listener([...recentSearchesStore]);
-  return () => {
-    listeners.delete(listener);
-  };
+  return recentSearchesStore.resetState();
 }
 
 export function useRecentSearches(limit = 6) {
-  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>(recentSearchesStore);
+  const [allRecentSearches, setAllRecentSearches] = useState<RecentSearch[]>(recentSearchesStore.getSnapshot());
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => subscribe(setRecentSearches), []);
+  useEffect(() => {
+    const unsubscribe = recentSearchesStore.subscribe((state) => setAllRecentSearches([...state]));
+
+    let active = true;
+    void recentSearchesStore.hydrate().finally(() => {
+      if (active) {
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      active = false;
+      unsubscribe();
+    };
+  }, []);
 
   const addSearch = useCallback(
     (entry: Omit<RecentSearch, 'createdAt'>) => {
@@ -53,16 +55,19 @@ export function useRecentSearches(limit = 6) {
         createdAt: Date.now(),
       };
 
-      const withoutDuplicate = recentSearchesStore.filter((item) => !sameSearch(item, nextEntry));
-      recentSearchesStore = [nextEntry, ...withoutDuplicate].slice(0, limit);
-      emitRecentSearches();
+      void recentSearchesStore.updateState((prevState) => {
+        const withoutDuplicate = prevState.filter((item) => !sameSearch(item, nextEntry));
+        return [nextEntry, ...withoutDuplicate].slice(0, MAX_RECENT_SEARCHES);
+      });
     },
-    [limit]
+    []
   );
 
   const clearSearches = useCallback(() => {
-    clearRecentSearchesStore();
+    void clearRecentSearchesStore();
   }, []);
 
-  return { recentSearches, addSearch, clearSearches };
+  const recentSearches = useMemo(() => allRecentSearches.slice(0, limit), [allRecentSearches, limit]);
+
+  return { recentSearches, loading, addSearch, clearSearches };
 }

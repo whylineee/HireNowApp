@@ -25,7 +25,7 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    setStoredValue('language', lang);
+    void setStoredValue('language', lang);
   };
 
   const t = (key: string, params?: Record<string, string | number>): string => {
@@ -53,10 +53,17 @@ export function TranslationProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    const saved = getStoredValue('language');
-    if (saved && (saved === 'uk' || saved === 'en')) {
-      setLanguageState(saved);
-    }
+    let active = true;
+    void getStoredValue('language').then((saved) => {
+      if (!active) return;
+      if (saved && (saved === 'uk' || saved === 'en')) {
+        setLanguageState(saved);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (

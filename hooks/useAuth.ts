@@ -4,40 +4,21 @@ import { clearFavoritesStore } from '@/hooks/useFavorites';
 import { clearRecentSearchesStore } from '@/hooks/useRecentSearches';
 import { resetEmployerJobs } from '@/services/jobs';
 import type { User, UserRole } from '@/types/user';
-import { getStoredJson, removeStoredValue, setStoredJson } from '@/utils/storage';
+import { createPersistentStore } from '@/utils/persistentStore';
 import { useCallback, useEffect, useState } from 'react';
 
 const AUTH_STORAGE_KEY = 'authUser';
 
-type AuthListener = (user: User | null) => void;
-
-let authUserStore = getStoredJson<User | null>(AUTH_STORAGE_KEY, null);
-const listeners = new Set<AuthListener>();
-
-function emitAuth() {
-  if (authUserStore) {
-    setStoredJson(AUTH_STORAGE_KEY, authUserStore);
-  } else {
-    removeStoredValue(AUTH_STORAGE_KEY);
-  }
-
-  listeners.forEach((listener) => listener(authUserStore ? { ...authUserStore } : null));
-}
-
-function subscribe(listener: AuthListener) {
-  listeners.add(listener);
-  listener(authUserStore ? { ...authUserStore } : null);
-
-  return () => {
-    listeners.delete(listener);
-  };
-}
+const authStore = createPersistentStore<User | null>({
+  key: AUTH_STORAGE_KEY,
+  initialState: null,
+});
 
 function clearSessionData() {
-  clearFavoritesStore();
-  clearApplicationsStore();
-  clearRecentSearchesStore();
-  resetConversationsStore();
+  void clearFavoritesStore();
+  void clearApplicationsStore();
+  void clearRecentSearchesStore();
+  void resetConversationsStore();
   resetEmployerJobs();
 }
 
@@ -49,9 +30,13 @@ interface UseAuthResult {
 }
 
 export function useAuth(): UseAuthResult {
-  const [user, setUser] = useState<User | null>(authUserStore);
+  const [user, setUser] = useState<User | null>(authStore.getSnapshot());
 
-  useEffect(() => subscribe(setUser), []);
+  useEffect(() => {
+    const unsubscribe = authStore.subscribe((state) => setUser(state ? { ...state } : null));
+    void authStore.hydrate();
+    return unsubscribe;
+  }, []);
 
   const register = useCallback((params: { name: string; role: UserRole }) => {
     const next: User = {
@@ -60,20 +45,17 @@ export function useAuth(): UseAuthResult {
       role: params.role,
     };
 
-    authUserStore = next;
-    emitAuth();
+    void authStore.setState(next);
   }, []);
 
   const updateUser = useCallback((patch: Partial<User>) => {
-    if (!authUserStore) return;
-
-    authUserStore = { ...authUserStore, ...patch };
-    emitAuth();
+    const currentUser = authStore.getSnapshot();
+    if (!currentUser) return;
+    void authStore.setState({ ...currentUser, ...patch });
   }, []);
 
   const logout = useCallback(() => {
-    authUserStore = null;
-    emitAuth();
+    void authStore.setState(null);
     clearSessionData();
   }, []);
 

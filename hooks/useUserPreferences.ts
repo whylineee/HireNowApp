@@ -1,4 +1,4 @@
-import { getStoredJson, setStoredJson } from '@/utils/storage';
+import { createPersistentStore } from '@/utils/persistentStore';
 import { useCallback, useEffect, useState } from 'react';
 
 export interface UserPreferences {
@@ -21,40 +21,41 @@ const defaultPreferences: UserPreferences = {
   pinImportantChats: true,
 };
 
-type PreferencesListener = (preferences: UserPreferences) => void;
-
-const storedPreferences = getStoredJson<Partial<UserPreferences>>(USER_PREFERENCES_STORAGE_KEY, {});
-let preferencesStore: UserPreferences = {
-  ...defaultPreferences,
-  ...storedPreferences,
-};
-const listeners = new Set<PreferencesListener>();
-
-function emitPreferences() {
-  setStoredJson(USER_PREFERENCES_STORAGE_KEY, preferencesStore);
-  listeners.forEach((listener) => listener({ ...preferencesStore }));
-}
-
-function subscribe(listener: PreferencesListener) {
-  listeners.add(listener);
-  listener({ ...preferencesStore });
-  return () => {
-    listeners.delete(listener);
-  };
-}
+const preferencesStore = createPersistentStore<UserPreferences>({
+  key: USER_PREFERENCES_STORAGE_KEY,
+  initialState: defaultPreferences,
+  mergeHydratedState: (current, persisted) => ({
+    ...current,
+    ...persisted,
+  }),
+});
 
 export function useUserPreferences() {
-  const [preferences, setPreferences] = useState<UserPreferences>(preferencesStore);
+  const [preferences, setPreferences] = useState<UserPreferences>(preferencesStore.getSnapshot());
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => subscribe(setPreferences), []);
+  useEffect(() => {
+    const unsubscribe = preferencesStore.subscribe((state) => setPreferences({ ...state }));
 
-  const setPreference = useCallback(<K extends keyof UserPreferences>(key: K, value: UserPreferences[K]) => {
-    preferencesStore = {
-      ...preferencesStore,
-      [key]: value,
+    let active = true;
+    void preferencesStore.hydrate().finally(() => {
+      if (active) {
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      active = false;
+      unsubscribe();
     };
-    emitPreferences();
   }, []);
 
-  return { preferences, setPreference };
+  const setPreference = useCallback(<K extends keyof UserPreferences>(key: K, value: UserPreferences[K]) => {
+    void preferencesStore.updateState((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  }, []);
+
+  return { preferences, loading, setPreference };
 }

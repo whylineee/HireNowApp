@@ -1,4 +1,4 @@
-import { getStoredJson, setStoredJson } from '@/utils/storage';
+import { createPersistentStore } from '@/utils/persistentStore';
 import { useCallback, useEffect, useState } from 'react';
 
 export interface Application {
@@ -8,47 +8,46 @@ export interface Application {
 
 const APPLICATIONS_STORAGE_KEY = 'applications';
 
-type ApplicationsListener = (applications: Application[]) => void;
-
-let applicationsStore = getStoredJson<Application[]>(APPLICATIONS_STORAGE_KEY, []);
-const listeners = new Set<ApplicationsListener>();
-
-function emitApplications() {
-  setStoredJson(APPLICATIONS_STORAGE_KEY, applicationsStore);
-  listeners.forEach((listener) => listener([...applicationsStore]));
-}
+const applicationsStore = createPersistentStore<Application[]>({
+  key: APPLICATIONS_STORAGE_KEY,
+  initialState: [],
+});
 
 export function clearApplicationsStore() {
-  applicationsStore = [];
-  emitApplications();
-}
-
-function subscribe(listener: ApplicationsListener) {
-  listeners.add(listener);
-  listener([...applicationsStore]);
-  return () => {
-    listeners.delete(listener);
-  };
+  return applicationsStore.resetState();
 }
 
 export function useApplications() {
-  const [applications, setApplications] = useState<Application[]>(applicationsStore);
+  const [applications, setApplications] = useState<Application[]>(applicationsStore.getSnapshot());
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => subscribe(setApplications), []);
+  useEffect(() => {
+    const unsubscribe = applicationsStore.subscribe((state) => setApplications([...state]));
+
+    let active = true;
+    void applicationsStore.hydrate().finally(() => {
+      if (active) {
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      active = false;
+      unsubscribe();
+    };
+  }, []);
 
   const applyToJob = useCallback((jobId: string) => {
-    if (applicationsStore.some((item) => item.jobId === jobId)) return;
-    applicationsStore = [{ jobId, appliedAt: Date.now() }, ...applicationsStore];
-    emitApplications();
+    if (applicationsStore.getSnapshot().some((item) => item.jobId === jobId)) return;
+    void applicationsStore.updateState((prevState) => [{ jobId, appliedAt: Date.now() }, ...prevState]);
   }, []);
 
   const removeApplication = useCallback((jobId: string) => {
-    applicationsStore = applicationsStore.filter((item) => item.jobId !== jobId);
-    emitApplications();
+    void applicationsStore.updateState((prevState) => prevState.filter((item) => item.jobId !== jobId));
   }, []);
 
   const clearApplications = useCallback(() => {
-    clearApplicationsStore();
+    void clearApplicationsStore();
   }, []);
 
   const isApplied = useCallback(
@@ -61,5 +60,5 @@ export function useApplications() {
     [applications]
   );
 
-  return { applications, applyToJob, removeApplication, clearApplications, isApplied, appliedAt };
+  return { applications, loading, applyToJob, removeApplication, clearApplications, isApplied, appliedAt };
 }

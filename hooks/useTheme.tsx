@@ -20,14 +20,21 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const setThemeMode = (mode: ThemeMode) => {
     setThemeModeState(mode);
-    setStoredValue('themeMode', mode);
+    void setStoredValue('themeMode', mode);
   };
 
   useEffect(() => {
-    const saved = getStoredValue('themeMode');
-    if (saved && (saved === 'light' || saved === 'dark' || saved === 'system')) {
-      setThemeModeState(saved);
-    }
+    let active = true;
+    void getStoredValue('themeMode').then((saved) => {
+      if (!active) return;
+      if (saved && (saved === 'light' || saved === 'dark' || saved === 'system')) {
+        setThemeModeState(saved);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const isDark = useMemo(() => {

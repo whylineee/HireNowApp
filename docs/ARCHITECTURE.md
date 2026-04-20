@@ -11,10 +11,17 @@
 
 ## State Strategy
 - UI state remains local per screen.
-- Domain state is module-store based hooks with:
-  - in-memory source of truth,
-  - listener subscriptions for cross-screen sync,
-  - persistence via `utils/storage`.
+- Domain state is hook-driven module stores built with `utils/persistentStore`:
+  - single source of truth per domain store,
+  - typed listener subscriptions for cross-screen sync,
+  - async hydration and persistence via `utils/storage`.
+
+### Persistence Layer
+- `utils/storage` uses platform-aware persistence:
+  - web: `localStorage`,
+  - native: `@react-native-async-storage/async-storage`,
+  - runtime/test fallback: in-memory map.
+- Stores are write-through (memory + persistent target), which keeps UI responsive and avoids data loss on restart.
 
 Current synced domain stores:
 - `useFavorites`
