@@ -31,6 +31,11 @@ class Job(models.Model):
         ordering = ["-posted_at", "-created_at"]
         verbose_name = "вакансія"
         verbose_name_plural = "вакансії"
+        indexes = [
+            models.Index(fields=["is_active", "-posted_at", "-created_at"], name="jobs_active_posted_idx"),
+            models.Index(fields=["type", "is_active"], name="jobs_type_active_idx"),
+            models.Index(fields=["location"], name="jobs_location_idx"),
+        ]
 
     def __str__(self) -> str:
         return f"{self.title} @ {self.company}"

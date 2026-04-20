@@ -12,6 +12,21 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Job
 
 
+def _parse_non_negative_int(value: str, default: int) -> int:
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        return default
+    return max(parsed, 0)
+
+
+def _parse_limit(value: str, default: int = 50, max_limit: int = 200) -> int:
+    limit = _parse_non_negative_int(value, default)
+    if limit == 0:
+        return default
+    return min(limit, max_limit)
+
+
 def _pluralize_days(days: int) -> str:
     if days % 10 == 1 and days % 100 != 11:
         return "день"
@@ -70,14 +85,29 @@ def _filter_jobs(request: HttpRequest):
     if job_type:
         jobs = jobs.filter(type=job_type)
 
-    return jobs.order_by("-posted_at", "-created_at")
+    return jobs.only(
+        "id",
+        "title",
+        "company",
+        "location",
+        "salary",
+        "type",
+        "posted_at",
+        "description",
+        "requirements",
+        "logo",
+    ).order_by("-posted_at", "-created_at")
 
 
 def jobs_list(request: HttpRequest) -> JsonResponse:
     if request.method != "GET":
         return HttpResponseNotAllowed(["GET", "OPTIONS"])
 
-    results = [_serialize_job(job) for job in _filter_jobs(request)]
+    limit = _parse_limit(request.GET.get("limit", "50"))
+    offset = _parse_non_negative_int(request.GET.get("offset", "0"), 0)
+
+    queryset = _filter_jobs(request)
+    results = [_serialize_job(job) for job in queryset[offset : offset + limit]]
     return JsonResponse(results, safe=False)
 
 
