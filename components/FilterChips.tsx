@@ -1,6 +1,7 @@
 import { JOB_TYPE_COLORS, JOB_TYPE_LABELS } from '@/constants/job';
 import { borderRadius, spacing, typography } from '@/constants/theme';
 import { useTheme } from '@/hooks/useTheme';
+import { useTranslation } from '@/hooks/useTranslation';
 import type { JobType } from '@/types/job';
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo } from 'react';
@@ -21,6 +22,7 @@ const TYPE_ICONS: Record<JobType | 'all', keyof typeof Ionicons.glyphMap> = {
 };
 
 export function FilterChips({ selectedType, onTypeChange }: FilterChipsProps) {
+  const { t } = useTranslation();
   const { colors, isDark } = useTheme();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
   const types: (JobType | 'all')[] = ['all', 'full-time', 'part-time', 'contract', 'remote', 'hybrid'];
@@ -29,7 +31,7 @@ export function FilterChips({ selectedType, onTypeChange }: FilterChipsProps) {
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.container}>
       {types.map((type) => {
         const isSelected = type === 'all' ? !selectedType : selectedType === type;
-        const label = type === 'all' ? 'Всі' : JOB_TYPE_LABELS[type];
+        const label = type === 'all' ? t('common.all') : JOB_TYPE_LABELS[type];
         const color = type === 'all' ? colors.primary : JOB_TYPE_COLORS[type];
         const icon = TYPE_ICONS[type];
 

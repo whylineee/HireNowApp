@@ -8,6 +8,9 @@ DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() in {"1", "true", "yes"}
 
 allowed_hosts = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost")
 ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(",") if host.strip()]
+if DEBUG:
+    # Local dev needs LAN access for Expo on physical devices and some simulator setups.
+    ALLOWED_HOSTS = list(dict.fromkeys([*ALLOWED_HOSTS, "0.0.0.0", "*"]))
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -21,6 +24,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "backend.cors.SimpleCorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -34,7 +38,7 @@ ROOT_URLCONF = "backend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -78,5 +82,6 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

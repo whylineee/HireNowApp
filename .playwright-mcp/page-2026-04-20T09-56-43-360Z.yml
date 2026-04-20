@@ -1,0 +1,327 @@
+- generic [active] [ref=e1]:
+  - link "Перейти до основного вмісту" [ref=e2] [cursor=pointer]:
+    - /url: "#content-start"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: HN
+        - generic [ref=e8]:
+          - heading "HireNow Admin" [level=1] [ref=e9]:
+            - link "HireNow Admin" [ref=e10] [cursor=pointer]:
+              - /url: /admin/
+          - paragraph [ref=e11]: Єдина панель керування вакансіями, які бачить застосунок.
+      - generic [ref=e12]:
+        - text: Вітаємо,
+        - strong [ref=e13]: admin
+        - text: .
+        - link "Дивитися сайт" [ref=e14] [cursor=pointer]:
+          - /url: /
+        - text: /
+        - link "Змінити пароль" [ref=e15] [cursor=pointer]:
+          - /url: /admin/password_change/
+        - text: /
+        - button "Вийти" [ref=e17] [cursor=pointer]
+        - 'button "Перемкнути тему (поточна тема: автоматична)" [ref=e18] [cursor=pointer]':
+          - generic [ref=e19]: "Перемкнути тему (поточна тема: автоматична)"
+          - img [ref=e20]
+      - generic [ref=e22]: Django Control Room
+    - navigation "Навігаційний рядок" [ref=e23]:
+      - generic [ref=e24]:
+        - link "Домівка" [ref=e25] [cursor=pointer]:
+          - /url: /admin/
+        - text: ›
+        - link "Jobs" [ref=e26] [cursor=pointer]:
+          - /url: /admin/jobs/
+        - text: › Jobs
+    - generic [ref=e27]:
+      - button "Увімкнути навігацію" [ref=e28] [cursor=pointer]: «
+      - navigation "Бічна панель" [ref=e29]:
+        - searchbox "Фільтрувати навігаційні об'єкти" [ref=e30]
+        - table "Jobs" [ref=e32]:
+          - caption [ref=e33]:
+            - link "Jobs" [ref=e34] [cursor=pointer]:
+              - /url: /admin/jobs/
+          - rowgroup [ref=e35]:
+            - row "Model name Add link Change or view list link" [ref=e36]:
+              - columnheader "Model name" [ref=e37]
+              - columnheader "Add link" [ref=e38]
+              - columnheader "Change or view list link" [ref=e39]
+          - rowgroup [ref=e40]:
+            - row "Jobs Додати" [ref=e41]:
+              - rowheader "Jobs" [ref=e42]:
+                - link "Jobs" [ref=e43] [cursor=pointer]:
+                  - /url: /admin/jobs/job/
+              - cell "Додати" [ref=e44]:
+                - link "Додати" [ref=e45] [cursor=pointer]:
+                  - /url: /admin/jobs/job/add/
+        - table "Аутентифікація та авторизація" [ref=e47]:
+          - caption [ref=e48]:
+            - link "Аутентифікація та авторизація" [ref=e49] [cursor=pointer]:
+              - /url: /admin/auth/
+          - rowgroup [ref=e50]:
+            - row "Model name Add link Change or view list link" [ref=e51]:
+              - columnheader "Model name" [ref=e52]
+              - columnheader "Add link" [ref=e53]
+              - columnheader "Change or view list link" [ref=e54]
+          - rowgroup [ref=e55]:
+            - row "Групи Додати" [ref=e56]:
+              - rowheader "Групи" [ref=e57]:
+                - link "Групи" [ref=e58] [cursor=pointer]:
+                  - /url: /admin/auth/group/
+              - cell "Додати" [ref=e59]:
+                - link "Додати" [ref=e60] [cursor=pointer]:
+                  - /url: /admin/auth/group/add/
+            - row "Користувачі Додати" [ref=e61]:
+              - rowheader "Користувачі" [ref=e62]:
+                - link "Користувачі" [ref=e63] [cursor=pointer]:
+                  - /url: /admin/auth/user/
+              - cell "Додати" [ref=e64]:
+                - link "Додати" [ref=e65] [cursor=pointer]:
+                  - /url: /admin/auth/user/add/
+      - main [ref=e66]:
+        - generic [ref=e67]:
+          - generic [ref=e68]:
+            - paragraph [ref=e69]: Vacancy Catalog
+            - heading "Каталог вакансій" [level=1] [ref=e70]
+            - paragraph [ref=e71]: Редагуй ті самі записи, які віддає Django API фронтенду.
+          - generic [ref=e72]:
+            - generic [ref=e73]:
+              - paragraph [ref=e74]: Jobs Desk
+              - heading "Каталог під контролем" [level=2] [ref=e75]
+              - paragraph [ref=e76]: Тут видно загальний обсяг вакансій, активні записи і те, що зараз домінує в стрічці застосунку.
+            - generic [ref=e77]:
+              - generic [ref=e78]:
+                - generic [ref=e79]: Усього
+                - strong [ref=e80]: "6"
+              - generic [ref=e81]:
+                - generic [ref=e82]: Активні
+                - strong [ref=e83]: "6"
+              - generic [ref=e84]:
+                - generic [ref=e85]: За 7 днів
+                - strong [ref=e86]: "6"
+              - generic [ref=e87]:
+                - generic [ref=e88]: Домінуючий тип
+                - strong [ref=e89]: Віддалено
+          - generic [ref=e90]:
+            - article [ref=e91]:
+              - generic [ref=e93]:
+                - paragraph [ref=e94]: Mix Snapshot
+                - heading "Типи зайнятості в каталозі" [level=3] [ref=e95]
+              - generic [ref=e96]:
+                - generic [ref=e97]:
+                  - generic [ref=e98]:
+                    - strong [ref=e99]: Повна зайнятість
+                    - generic [ref=e100]: 2 записів
+                  - generic [ref=e103]: 33%
+                - generic [ref=e104]:
+                  - generic [ref=e105]:
+                    - strong [ref=e106]: Гібрид
+                    - generic [ref=e107]: 2 записів
+                  - generic [ref=e110]: 33%
+                - generic [ref=e111]:
+                  - generic [ref=e112]:
+                    - strong [ref=e113]: Віддалено
+                    - generic [ref=e114]: 2 записів
+                  - generic [ref=e117]: 33%
+            - article [ref=e118]:
+              - generic [ref=e120]:
+                - paragraph [ref=e121]: Company Pulse
+                - heading "Хто найчастіше в стрічці" [level=3] [ref=e122]
+              - generic [ref=e123]:
+                - generic [ref=e124]:
+                  - generic [ref=e125]:
+                    - strong [ref=e126]: AI Labs
+                    - generic [ref=e127]: 1 вакансій
+                  - generic [ref=e128]: 17%
+                - generic [ref=e129]:
+                  - generic [ref=e130]:
+                    - strong [ref=e131]: CloudTech
+                    - generic [ref=e132]: 1 вакансій
+                  - generic [ref=e133]: 17%
+                - generic [ref=e134]:
+                  - generic [ref=e135]:
+                    - strong [ref=e136]: Creative Studio
+                    - generic [ref=e137]: 1 вакансій
+                  - generic [ref=e138]: 17%
+          - generic [ref=e139]:
+            - list [ref=e140]:
+              - listitem [ref=e141]:
+                - link "Додати job" [ref=e142] [cursor=pointer]:
+                  - /url: /admin/jobs/job/add/
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - search [ref=e146]:
+                  - generic [ref=e147]:
+                    - img "Search" [ref=e149]
+                    - textbox "Search" [ref=e150]
+                    - button "Пошук" [ref=e151] [cursor=pointer]
+                  - generic [ref=e152]: Шукай за назвою вакансії, компанією, локацією або описом.
+                - generic [ref=e153]:
+                  - generic [ref=e154]:
+                    - generic [ref=e155]:
+                      - text: "Дія:"
+                      - combobox "Дія:" [ref=e156]:
+                        - option "---------" [selected]
+                        - option "Видалити обрані jobs"
+                    - button "Вперед" [ref=e157] [cursor=pointer]
+                    - text: Обрано 0 з 6
+                  - table [ref=e159]:
+                    - rowgroup [ref=e160]:
+                      - row "Обрати всі об'єкти на сторінці для дії Title Company Location Тип Статус Сортувати в іншому напрямку Опубліковано" [ref=e161]:
+                        - columnheader "Обрати всі об'єкти на сторінці для дії" [ref=e162]:
+                          - checkbox "Обрати всі об'єкти на сторінці для дії" [ref=e165]
+                        - columnheader "Title" [ref=e166]:
+                          - link "Title" [ref=e168] [cursor=pointer]:
+                            - /url: "?o=1.-6"
+                        - columnheader "Company" [ref=e169]:
+                          - link "Company" [ref=e171] [cursor=pointer]:
+                            - /url: "?o=2.-6"
+                        - columnheader "Location" [ref=e172]:
+                          - link "Location" [ref=e174] [cursor=pointer]:
+                            - /url: "?o=3.-6"
+                        - columnheader "Тип" [ref=e175]:
+                          - generic [ref=e177]: Тип
+                        - columnheader "Статус" [ref=e178]:
+                          - generic [ref=e180]: Статус
+                        - columnheader "Сортувати в іншому напрямку Опубліковано" [ref=e181]:
+                          - link "Сортувати в іншому напрямку" [ref=e183] [cursor=pointer]:
+                            - /url: "?o=6"
+                          - link "Опубліковано" [ref=e185] [cursor=pointer]:
+                            - /url: "?o=6"
+                    - rowgroup [ref=e186]:
+                      - row "Вибрати цей об'єкт для дії – React Native Developer @ MobileFirst React Native Developer MobileFirst Віддалено Віддалено Активна Сьогодні" [ref=e187]:
+                        - cell "Вибрати цей об'єкт для дії – React Native Developer @ MobileFirst" [ref=e188]:
+                          - checkbox "Вибрати цей об'єкт для дії – React Native Developer @ MobileFirst" [ref=e189]
+                        - rowheader "React Native Developer" [ref=e190]:
+                          - link "React Native Developer" [ref=e191] [cursor=pointer]:
+                            - /url: /admin/jobs/job/5/change/
+                        - cell "MobileFirst" [ref=e192]
+                        - cell "Віддалено" [ref=e193]
+                        - cell "Віддалено" [ref=e194]:
+                          - generic [ref=e195]: Віддалено
+                        - cell "Активна" [ref=e196]:
+                          - generic [ref=e197]: Активна
+                        - cell "Сьогодні" [ref=e198]
+                      - row "Вибрати цей об'єкт для дії – DevOps Engineer @ CloudTech DevOps Engineer CloudTech Харків / Віддалено Гібрид Активна 1 день тому" [ref=e199]:
+                        - cell "Вибрати цей об'єкт для дії – DevOps Engineer @ CloudTech" [ref=e200]:
+                          - checkbox "Вибрати цей об'єкт для дії – DevOps Engineer @ CloudTech" [ref=e201]
+                        - rowheader "DevOps Engineer" [ref=e202]:
+                          - link "DevOps Engineer" [ref=e203] [cursor=pointer]:
+                            - /url: /admin/jobs/job/6/change/
+                        - cell "CloudTech" [ref=e204]
+                        - cell "Харків / Віддалено" [ref=e205]
+                        - cell "Гібрид" [ref=e206]:
+                          - generic [ref=e207]: Гібрид
+                        - cell "Активна" [ref=e208]:
+                          - generic [ref=e209]: Активна
+                        - cell "1 день тому" [ref=e210]
+                      - row "Вибрати цей об'єкт для дії – Node.js Backend Engineer @ DataSoft Node.js Backend Engineer DataSoft Львів (віддалено) Віддалено Активна 1 день тому" [ref=e211]:
+                        - cell "Вибрати цей об'єкт для дії – Node.js Backend Engineer @ DataSoft" [ref=e212]:
+                          - checkbox "Вибрати цей об'єкт для дії – Node.js Backend Engineer @ DataSoft" [ref=e213]
+                        - rowheader "Node.js Backend Engineer" [ref=e214]:
+                          - link "Node.js Backend Engineer" [ref=e215] [cursor=pointer]:
+                            - /url: /admin/jobs/job/2/change/
+                        - cell "DataSoft" [ref=e216]
+                        - cell "Львів (віддалено)" [ref=e217]
+                        - cell "Віддалено" [ref=e218]:
+                          - generic [ref=e219]: Віддалено
+                        - cell "Активна" [ref=e220]:
+                          - generic [ref=e221]: Активна
+                        - cell "1 день тому" [ref=e222]
+                      - row "Вибрати цей об'єкт для дії – Frontend React Developer @ TechFlow Ukraine Frontend React Developer TechFlow Ukraine Київ, Україна Повна зайнятість Активна 2 днів тому" [ref=e223]:
+                        - cell "Вибрати цей об'єкт для дії – Frontend React Developer @ TechFlow Ukraine" [ref=e224]:
+                          - checkbox "Вибрати цей об'єкт для дії – Frontend React Developer @ TechFlow Ukraine" [ref=e225]
+                        - rowheader "Frontend React Developer" [ref=e226]:
+                          - link "Frontend React Developer" [ref=e227] [cursor=pointer]:
+                            - /url: /admin/jobs/job/1/change/
+                        - cell "TechFlow Ukraine" [ref=e228]
+                        - cell "Київ, Україна" [ref=e229]
+                        - cell "Повна зайнятість" [ref=e230]:
+                          - generic [ref=e231]: Повна зайнятість
+                        - cell "Активна" [ref=e232]:
+                          - generic [ref=e233]: Активна
+                        - cell "2 днів тому" [ref=e234]
+                      - row "Вибрати цей об'єкт для дії – UI/UX Designer @ Creative Studio UI/UX Designer Creative Studio Одеса / Гібрид Гібрид Активна 3 днів тому" [ref=e235]:
+                        - cell "Вибрати цей об'єкт для дії – UI/UX Designer @ Creative Studio" [ref=e236]:
+                          - checkbox "Вибрати цей об'єкт для дії – UI/UX Designer @ Creative Studio" [ref=e237]
+                        - rowheader "UI/UX Designer" [ref=e238]:
+                          - link "UI/UX Designer" [ref=e239] [cursor=pointer]:
+                            - /url: /admin/jobs/job/3/change/
+                        - cell "Creative Studio" [ref=e240]
+                        - cell "Одеса / Гібрид" [ref=e241]
+                        - cell "Гібрид" [ref=e242]:
+                          - generic [ref=e243]: Гібрид
+                        - cell "Активна" [ref=e244]:
+                          - generic [ref=e245]: Активна
+                        - cell "3 днів тому" [ref=e246]
+                      - row "Вибрати цей об'єкт для дії – Python Developer @ AI Labs Python Developer AI Labs Київ Повна зайнятість Активна 5 днів тому" [ref=e247]:
+                        - cell "Вибрати цей об'єкт для дії – Python Developer @ AI Labs" [ref=e248]:
+                          - checkbox "Вибрати цей об'єкт для дії – Python Developer @ AI Labs" [ref=e249]
+                        - rowheader "Python Developer" [ref=e250]:
+                          - link "Python Developer" [ref=e251] [cursor=pointer]:
+                            - /url: /admin/jobs/job/4/change/
+                        - cell "AI Labs" [ref=e252]
+                        - cell "Київ" [ref=e253]
+                        - cell "Повна зайнятість" [ref=e254]:
+                          - generic [ref=e255]: Повна зайнятість
+                        - cell "Активна" [ref=e256]:
+                          - generic [ref=e257]: Активна
+                        - cell "5 днів тому" [ref=e258]
+                  - paragraph [ref=e259]: 6 jobs
+              - navigation "Відфільтрувати" [ref=e260]:
+                - heading "Відфільтрувати" [level=2] [ref=e261]
+                - heading "Показати кількість" [level=3] [ref=e263]:
+                  - link "Показати кількість" [ref=e264] [cursor=pointer]:
+                    - /url: "?_facets=True"
+                - group [ref=e265]:
+                  - generic "↓ За type" [ref=e266] [cursor=pointer]
+                  - list [ref=e267]:
+                    - listitem [ref=e268]:
+                      - link "Всі" [ref=e269] [cursor=pointer]:
+                        - /url: "?"
+                    - listitem [ref=e270]:
+                      - link "Full time" [ref=e271] [cursor=pointer]:
+                        - /url: "?type__exact=full-time"
+                    - listitem [ref=e272]:
+                      - link "Part time" [ref=e273] [cursor=pointer]:
+                        - /url: "?type__exact=part-time"
+                    - listitem [ref=e274]:
+                      - link "Contract" [ref=e275] [cursor=pointer]:
+                        - /url: "?type__exact=contract"
+                    - listitem [ref=e276]:
+                      - link "Remote" [ref=e277] [cursor=pointer]:
+                        - /url: "?type__exact=remote"
+                    - listitem [ref=e278]:
+                      - link "Hybrid" [ref=e279] [cursor=pointer]:
+                        - /url: "?type__exact=hybrid"
+                - group [ref=e280]:
+                  - generic "↓ За is active" [ref=e281] [cursor=pointer]
+                  - list [ref=e282]:
+                    - listitem [ref=e283]:
+                      - link "Всі" [ref=e284] [cursor=pointer]:
+                        - /url: "?"
+                    - listitem [ref=e285]:
+                      - link "Так" [ref=e286] [cursor=pointer]:
+                        - /url: "?is_active__exact=1"
+                    - listitem [ref=e287]:
+                      - link "Ні" [ref=e288] [cursor=pointer]:
+                        - /url: "?is_active__exact=0"
+                - group [ref=e289]:
+                  - generic "↓ За posted at" [ref=e290] [cursor=pointer]
+                  - list [ref=e291]:
+                    - listitem [ref=e292]:
+                      - link "Будь-яка дата" [ref=e293] [cursor=pointer]:
+                        - /url: "?"
+                    - listitem [ref=e294]:
+                      - link "Сьогодні" [ref=e295] [cursor=pointer]:
+                        - /url: "?posted_at__gte=2026-04-20+00%3A00%3A00%2B03%3A00&posted_at__lt=2026-04-21+00%3A00%3A00%2B03%3A00"
+                    - listitem [ref=e296]:
+                      - link "Останні 7 днів" [ref=e297] [cursor=pointer]:
+                        - /url: "?posted_at__gte=2026-04-13+00%3A00%3A00%2B03%3A00&posted_at__lt=2026-04-21+00%3A00%3A00%2B03%3A00"
+                    - listitem [ref=e298]:
+                      - link "Цього місяця" [ref=e299] [cursor=pointer]:
+                        - /url: "?posted_at__gte=2026-04-01+00%3A00%3A00%2B03%3A00&posted_at__lt=2026-05-01+00%3A00%3A00%2B03%3A00"
+                    - listitem [ref=e300]:
+                      - link "Цього року" [ref=e301] [cursor=pointer]:
+                        - /url: "?posted_at__gte=2026-01-01+00%3A00%3A00%2B02%3A00&posted_at__lt=2027-01-01+00%3A00%3A00%2B02%3A00"
+    - contentinfo

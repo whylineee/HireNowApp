@@ -1,5 +1,6 @@
 import { EmptyState } from '@/components/EmptyState';
 import { JobCard } from '@/components/job/JobCard';
+import { useBottomNavClearance } from '@/components/layout/BottomNav';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { Header } from '@/components/layout/Header';
 import { Screen } from '@/components/layout/Screen';
@@ -10,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useUserPreferences } from '@/hooks/useUserPreferences';
 import { getJobById } from '@/services/jobs';
 import type { Job } from '@/types/job';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -18,8 +20,10 @@ import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-nativ
 export default function FavoritesScreen() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const bottomNavClearance = useBottomNavClearance();
   const { favorites, toggleFavorite } = useFavorites();
   const { isApplied } = useApplications();
+  const { preferences } = useUserPreferences();
   const { colors } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
@@ -62,8 +66,8 @@ export default function FavoritesScreen() {
 
   return (
     <Screen scroll={false}>
-      <View style={{ flex: 1 }}>
-        <Header title={t('favorites.title')} subtitle={t('favorites.subtitleSaved', { count: favorites.length })} showBackButton />
+      <View style={{ flex: 1, paddingBottom: bottomNavClearance }}>
+        <Header title={t('favorites.title')} subtitle={t('favorites.subtitleSaved', { count: favorites.length })} />
 
         {loading ? (
           <View style={styles.centered}>
@@ -82,6 +86,7 @@ export default function FavoritesScreen() {
                 isApplied={isApplied(item.id)}
                 isFavorite
                 onFavoritePress={() => toggleFavorite(item.id)}
+                compact={preferences.compactMode}
               />
             )}
             contentContainerStyle={styles.listContent}

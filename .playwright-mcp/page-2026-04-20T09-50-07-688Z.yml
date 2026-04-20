@@ -1,0 +1,98 @@
+- generic [active] [ref=e1]:
+  - link "Перейти до основного вмісту" [ref=e2] [cursor=pointer]:
+    - /url: "#content-start"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: HN
+        - generic [ref=e8]:
+          - heading "HireNow Admin" [level=1] [ref=e9]:
+            - link "HireNow Admin" [ref=e10] [cursor=pointer]:
+              - /url: /admin/
+          - paragraph [ref=e11]: Єдина панель керування вакансіями, які бачить застосунок.
+      - generic [ref=e12]:
+        - text: Вітаємо,
+        - strong [ref=e13]: admin
+        - text: .
+        - link "Дивитися сайт" [ref=e14] [cursor=pointer]:
+          - /url: /
+        - text: /
+        - link "Змінити пароль" [ref=e15] [cursor=pointer]:
+          - /url: /admin/password_change/
+        - text: /
+        - button "Вийти" [ref=e17] [cursor=pointer]
+        - 'button "Перемкнути тему (поточна тема: автоматична)" [ref=e18] [cursor=pointer]':
+          - generic [ref=e19]: "Перемкнути тему (поточна тема: автоматична)"
+          - img [ref=e20]
+      - generic [ref=e22]: Django Control Room
+    - main [ref=e24]:
+      - generic [ref=e25]:
+        - heading "Керування вакансіями та контентом" [level=1] [ref=e26]
+        - generic [ref=e27]:
+          - generic [ref=e28]:
+            - paragraph [ref=e29]: HireNow Control Room
+            - heading "Оновлюй вакансії тут, і застосунок побачить ті самі дані." [level=2] [ref=e30]
+            - paragraph [ref=e31]: Адмінка працює поверх Django API, тому зміни в каталозі одразу стають джерелом правди для фронтенду.
+          - generic [ref=e32]:
+            - generic [ref=e33]:
+              - generic [ref=e34]: Source of truth
+              - strong [ref=e35]: Django API
+            - generic [ref=e36]:
+              - generic [ref=e37]: Catalog
+              - strong [ref=e38]: Jobs
+        - generic [ref=e39]:
+          - table "Jobs" [ref=e41]:
+            - caption [ref=e42]:
+              - link "Jobs" [ref=e43] [cursor=pointer]:
+                - /url: /admin/jobs/
+            - rowgroup [ref=e44]:
+              - row "Model name Add link Change or view list link" [ref=e45]:
+                - columnheader "Model name" [ref=e46]
+                - columnheader "Add link" [ref=e47]
+                - columnheader "Change or view list link" [ref=e48]
+            - rowgroup [ref=e49]:
+              - row "Jobs Додати Змінити" [ref=e50]:
+                - rowheader "Jobs" [ref=e51]:
+                  - link "Jobs" [ref=e52] [cursor=pointer]:
+                    - /url: /admin/jobs/job/
+                - cell "Додати" [ref=e53]:
+                  - link "Додати" [ref=e54] [cursor=pointer]:
+                    - /url: /admin/jobs/job/add/
+                - cell "Змінити" [ref=e55]:
+                  - link "Змінити" [ref=e56] [cursor=pointer]:
+                    - /url: /admin/jobs/job/
+          - table "Аутентифікація та авторизація" [ref=e58]:
+            - caption [ref=e59]:
+              - link "Аутентифікація та авторизація" [ref=e60] [cursor=pointer]:
+                - /url: /admin/auth/
+            - rowgroup [ref=e61]:
+              - row "Model name Add link Change or view list link" [ref=e62]:
+                - columnheader "Model name" [ref=e63]
+                - columnheader "Add link" [ref=e64]
+                - columnheader "Change or view list link" [ref=e65]
+            - rowgroup [ref=e66]:
+              - row "Групи Додати Змінити" [ref=e67]:
+                - rowheader "Групи" [ref=e68]:
+                  - link "Групи" [ref=e69] [cursor=pointer]:
+                    - /url: /admin/auth/group/
+                - cell "Додати" [ref=e70]:
+                  - link "Додати" [ref=e71] [cursor=pointer]:
+                    - /url: /admin/auth/group/add/
+                - cell "Змінити" [ref=e72]:
+                  - link "Змінити" [ref=e73] [cursor=pointer]:
+                    - /url: /admin/auth/group/
+              - row "Користувачі Додати Змінити" [ref=e74]:
+                - rowheader "Користувачі" [ref=e75]:
+                  - link "Користувачі" [ref=e76] [cursor=pointer]:
+                    - /url: /admin/auth/user/
+                - cell "Додати" [ref=e77]:
+                  - link "Додати" [ref=e78] [cursor=pointer]:
+                    - /url: /admin/auth/user/add/
+                - cell "Змінити" [ref=e79]:
+                  - link "Змінити" [ref=e80] [cursor=pointer]:
+                    - /url: /admin/auth/user/
+        - generic [ref=e82]:
+          - heading "Недавні дії" [level=2] [ref=e83]
+          - heading "Мої дії" [level=3] [ref=e84]
+          - paragraph [ref=e85]: Немає
+    - contentinfo

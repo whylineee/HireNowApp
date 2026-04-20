@@ -1,0 +1,21 @@
+- generic [ref=e1]:
+  - link "Перейти до основного вмісту" [ref=e2] [cursor=pointer]:
+    - /url: "#content-start"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "Django адміністрування" [ref=e7] [cursor=pointer]:
+          - /url: /admin/
+        - 'button "Перемкнути тему (поточна тема: автоматична)" [ref=e8] [cursor=pointer]':
+          - generic [ref=e9]: "Перемкнути тему (поточна тема: автоматична)"
+          - img [ref=e10]
+    - main [ref=e13]:
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]: "Ім'я користувача:"
+          - textbox "Ім'я користувача:" [active] [ref=e19]
+        - generic [ref=e20]:
+          - generic [ref=e21]: "Пароль:"
+          - textbox "Пароль:" [ref=e22]
+        - button "Увійти" [ref=e24] [cursor=pointer]
+    - contentinfo

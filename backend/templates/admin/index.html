@@ -1,0 +1,136 @@
+{% extends "admin/index.html" %}
+{% load jobs_admin_tags %}
+
+{% block content %}
+  {% jobs_dashboard_overview as overview %}
+  {% jobs_type_mix as type_mix %}
+  {% jobs_top_companies 5 as top_companies %}
+  {% jobs_recent_activity 5 as recent_jobs %}
+
+  <section class="hn-admin-hero">
+    <div class="hn-admin-hero-copy">
+      <p class="hn-admin-kicker">HireNow Control Room</p>
+      <h2>Оновлюй вакансії тут, і застосунок побачить ті самі дані.</h2>
+      <p>Адмінка працює поверх Django API, тому зміни в каталозі одразу стають джерелом правди для фронтенду.</p>
+    </div>
+    <div class="hn-admin-hero-metrics">
+      <div class="hn-admin-stat">
+        <span>Активні вакансії</span>
+        <strong>{{ overview.active_jobs }}</strong>
+      </div>
+      <div class="hn-admin-stat">
+        <span>Remote share</span>
+        <strong>{{ overview.remote_share }}%</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="hn-admin-kpi-grid">
+    <article class="hn-admin-kpi-card hn-admin-kpi-card--primary">
+      <span>Усього вакансій</span>
+      <strong>{{ overview.total_jobs }}</strong>
+      <p>Весь каталог, який зараз може бути показаний застосунку через Django API.</p>
+    </article>
+    <article class="hn-admin-kpi-card">
+      <span>Опубліковано за 7 днів</span>
+      <strong>{{ overview.fresh_jobs }}</strong>
+      <p>Свіжий контент, який формує верх стрічки вакансій.</p>
+    </article>
+    <article class="hn-admin-kpi-card">
+      <span>Команда доступу</span>
+      <strong>{{ overview.staff_users }}</strong>
+      <p>{{ overview.superusers }} superuser, решта staff-акаунти для операційної роботи.</p>
+    </article>
+    <article class="hn-admin-kpi-card">
+      <span>Топ-компанія</span>
+      <strong>{{ overview.top_company }}</strong>
+      <p>{{ overview.top_company_total }} вакансій у каталозі на поточний момент.</p>
+    </article>
+  </section>
+
+  <section class="hn-admin-dashboard-grid">
+    <article class="hn-admin-panel">
+      <div class="hn-admin-panel__head">
+        <div>
+          <p class="hn-admin-kicker">Employment Mix</p>
+          <h3>Розподіл по типах зайнятості</h3>
+        </div>
+        <span class="hn-admin-panel__badge">{{ overview.active_share }}% active</span>
+      </div>
+      <div class="hn-admin-bars">
+        {% for item in type_mix %}
+          <div class="hn-admin-bar">
+            <div class="hn-admin-bar__meta">
+              <strong>{{ item.label }}</strong>
+              <span>{{ item.total }} вакансій</span>
+            </div>
+            <div class="hn-admin-bar__track">
+              <span class="hn-admin-bar__fill hn-admin-bar__fill--{{ item.key }}" style="width: {{ item.percent }}%;"></span>
+            </div>
+            <div class="hn-admin-bar__percent">{{ item.percent }}%</div>
+          </div>
+        {% empty %}
+          <p class="hn-admin-empty">Поки немає вакансій для аналітики.</p>
+        {% endfor %}
+      </div>
+    </article>
+
+    <article class="hn-admin-panel">
+      <div class="hn-admin-panel__head">
+        <div>
+          <p class="hn-admin-kicker">Company Radar</p>
+          <h3>Хто формує каталог</h3>
+        </div>
+      </div>
+      <div class="hn-admin-company-list">
+        {% for company in top_companies %}
+          <div class="hn-admin-company-row">
+            <div>
+              <strong>{{ company.company }}</strong>
+              <span>{{ company.total }} вакансій</span>
+            </div>
+            <div class="hn-admin-company-pill">{{ company.percent }}%</div>
+          </div>
+        {% empty %}
+          <p class="hn-admin-empty">Компанії ще не з’явилися.</p>
+        {% endfor %}
+      </div>
+    </article>
+
+    <article class="hn-admin-panel hn-admin-panel--wide">
+      <div class="hn-admin-panel__head">
+        <div>
+          <p class="hn-admin-kicker">Recent Activity</p>
+          <h3>Останні зміни у вакансіях</h3>
+        </div>
+        {% if overview.latest_job %}
+          <span class="hn-admin-panel__badge">Остання: {{ overview.latest_job.title }}</span>
+        {% endif %}
+      </div>
+      <div class="hn-admin-activity-list">
+        {% for job in recent_jobs %}
+          <article class="hn-admin-activity-item">
+            <div class="hn-admin-activity-item__main">
+              <strong>{{ job.title }}</strong>
+              <p>{{ job.company }} • {{ job.location }}</p>
+            </div>
+            <div class="hn-admin-activity-item__meta">
+              <span class="hn-admin-chip hn-admin-chip--type">{{ job.get_type_display }}</span>
+              {% if job.is_active %}
+                <span class="hn-admin-chip hn-admin-chip--live">Активна</span>
+              {% else %}
+                <span class="hn-admin-chip hn-admin-chip--muted">Прихована</span>
+              {% endif %}
+            </div>
+          </article>
+        {% empty %}
+          <p class="hn-admin-empty">Активність з’явиться після додавання вакансій.</p>
+        {% endfor %}
+      </div>
+    </article>
+  </section>
+
+  <div class="hn-admin-system-grid">
+    {{ block.super }}
+  </div>
+{% endblock %}

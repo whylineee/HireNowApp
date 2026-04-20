@@ -1,17 +1,11 @@
 import { borderRadius, spacing, typography } from '@/constants/theme';
 import { useTheme } from '@/hooks/useTheme';
+import { useTranslation } from '@/hooks/useTranslation';
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 export type SortOption = 'recent' | 'salary-high' | 'salary-low' | 'title';
-
-const SORT_LABELS: Record<SortOption, string> = {
-  recent: 'Нещодавні',
-  'salary-high': 'Зарплата ↓',
-  'salary-low': 'Зарплата ↑',
-  title: 'Назва А-Я',
-};
 
 interface SortButtonProps {
   currentSort: SortOption;
@@ -19,13 +13,20 @@ interface SortButtonProps {
 }
 
 export function SortButton({ currentSort, onPress }: SortButtonProps) {
+  const { t } = useTranslation();
   const { colors, isDark } = useTheme();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+  const sortLabels: Record<SortOption, string> = {
+    recent: t('jobs.sortRecent'),
+    'salary-high': t('jobs.sortSalaryHigh'),
+    'salary-low': t('jobs.sortSalaryLow'),
+    title: t('jobs.sortTitle'),
+  };
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
       <Ionicons name="swap-vertical" size={18} color={colors.primary} />
-      <Text style={styles.text}>{SORT_LABELS[currentSort]}</Text>
+      <Text style={styles.text}>{sortLabels[currentSort]}</Text>
     </TouchableOpacity>
   );
 }
@@ -50,5 +51,3 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
       fontWeight: typography.medium,
     },
   });
-
-export { SORT_LABELS };

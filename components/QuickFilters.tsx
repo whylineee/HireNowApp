@@ -13,15 +13,6 @@ interface QuickFilter {
   location?: string;
 }
 
-const QUICK_FILTERS: QuickFilter[] = [
-  { id: 'kyiv', label: 'Київ', icon: 'location', location: 'Київ' },
-  { id: 'lviv', label: 'Львів', icon: 'location', location: 'Львів' },
-  { id: 'remote', label: 'Віддалено', icon: 'laptop', location: 'Віддалено' },
-  { id: 'react', label: 'React', icon: 'code', query: 'React' },
-  { id: 'nodejs', label: 'Node.js', icon: 'server', query: 'Node.js' },
-  { id: 'python', label: 'Python', icon: 'code-slash', query: 'Python' },
-];
-
 interface QuickFiltersProps {
   onFilterPress: (filter: QuickFilter) => void;
 }
@@ -30,14 +21,22 @@ export function QuickFilters({ onFilterPress }: QuickFiltersProps) {
   const { t } = useTranslation();
   const { colors, isDark } = useTheme();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+  const quickFilters: QuickFilter[] = [
+    { id: 'kyiv', label: t('jobs.quickFilterKyiv'), icon: 'location', location: 'Київ' },
+    { id: 'lviv', label: t('jobs.quickFilterLviv'), icon: 'location', location: 'Львів' },
+    { id: 'remote', label: t('jobs.quickFilterRemote'), icon: 'laptop', location: 'Віддалено' },
+    { id: 'react', label: t('jobs.quickFilterReact'), icon: 'code', query: 'React' },
+    { id: 'nodejs', label: t('jobs.quickFilterNode'), icon: 'server', query: 'Node.js' },
+    { id: 'python', label: t('jobs.quickFilterPython'), icon: 'code-slash', query: 'Python' },
+  ];
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>{t('jobs.searchJobs')}</Text>
+        <Text style={styles.title}>{t('jobs.quickFiltersTitle')}</Text>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        {QUICK_FILTERS.map((filter) => (
+        {quickFilters.map((filter) => (
           <TouchableOpacity key={filter.id} onPress={() => onFilterPress(filter)} style={styles.filter} activeOpacity={0.7}>
             <View style={styles.filterContent}>
               <Ionicons name={filter.icon} size={18} color={colors.primary} />

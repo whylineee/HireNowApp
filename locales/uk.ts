@@ -12,6 +12,7 @@ export const ukTranslations = {
     back: "Назад",
     next: "Далі",
     done: "Готово",
+    all: "Всі",
     yes: "Так",
     no: "Ні",
     authRequired: "Будь ласка, зареєструйтесь для доступу",
@@ -64,7 +65,18 @@ export const ukTranslations = {
     salaryTo: "Зарплата до",
     onlyFavorites: "Тільки збережені",
     hideApplied: "Сховати відгукнуті",
-    remoteOnly: "Лише remote"
+    remoteOnly: "Лише remote",
+    quickFiltersTitle: "Швидкі фільтри",
+    quickFilterKyiv: "Київ",
+    quickFilterLviv: "Львів",
+    quickFilterRemote: "Віддалено",
+    quickFilterReact: "React",
+    quickFilterNode: "Node.js",
+    quickFilterPython: "Python",
+    sortRecent: "Нещодавні",
+    sortSalaryHigh: "Зарплата ↓",
+    sortSalaryLow: "Зарплата ↑",
+    sortTitle: "Назва А-Я"
   },
   jobForm: {
     title: "Посада",
@@ -109,7 +121,10 @@ export const ukTranslations = {
     tabPinned: "Закріплені",
     pin: "Закріпити",
     unpin: "Відкріпити",
-    markUnread: "Позначити непрочитаним"
+    markUnread: "Позначити непрочитаним",
+    quickReplyThanks: "Дякую, перегляну.",
+    quickReplyDiscussDetails: "Можемо обговорити деталі?",
+    quickReplyRemote: "Чи є можливість remote?"
   },
   applications: {
     title: "Мої заявки",

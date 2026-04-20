@@ -1,0 +1,210 @@
+- generic [active] [ref=e1]:
+  - link "Перейти до основного вмісту" [ref=e2] [cursor=pointer]:
+    - /url: "#content-start"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: HN
+        - generic [ref=e8]:
+          - heading "HireNow Admin" [level=1] [ref=e9]:
+            - link "HireNow Admin" [ref=e10] [cursor=pointer]:
+              - /url: /admin/
+          - paragraph [ref=e11]: Єдина панель керування вакансіями, які бачить застосунок.
+      - generic [ref=e12]:
+        - text: Вітаємо,
+        - strong [ref=e13]: admin
+        - text: .
+        - link "Дивитися сайт" [ref=e14] [cursor=pointer]:
+          - /url: /
+        - text: /
+        - link "Змінити пароль" [ref=e15] [cursor=pointer]:
+          - /url: /admin/password_change/
+        - text: /
+        - button "Вийти" [ref=e17] [cursor=pointer]
+        - 'button "Перемкнути тему (поточна тема: автоматична)" [ref=e18] [cursor=pointer]':
+          - generic [ref=e19]: "Перемкнути тему (поточна тема: автоматична)"
+          - img [ref=e20]
+      - generic [ref=e22]: Django Control Room
+    - main [ref=e24]:
+      - generic [ref=e25]:
+        - heading "Керування вакансіями та контентом" [level=1] [ref=e26]
+        - generic [ref=e27]:
+          - generic [ref=e28]:
+            - paragraph [ref=e29]: HireNow Control Room
+            - heading "Оновлюй вакансії тут, і застосунок побачить ті самі дані." [level=2] [ref=e30]
+            - paragraph [ref=e31]: Адмінка працює поверх Django API, тому зміни в каталозі одразу стають джерелом правди для фронтенду.
+          - generic [ref=e32]:
+            - generic [ref=e33]:
+              - generic [ref=e34]: Активні вакансії
+              - strong [ref=e35]: "6"
+            - generic [ref=e36]:
+              - generic [ref=e37]: Remote share
+              - strong [ref=e38]: 33%
+        - generic [ref=e39]:
+          - article [ref=e40]:
+            - generic [ref=e41]: Усього вакансій
+            - strong [ref=e42]: "6"
+            - paragraph [ref=e43]: Весь каталог, який зараз може бути показаний застосунку через Django API.
+          - article [ref=e44]:
+            - generic [ref=e45]: Опубліковано за 7 днів
+            - strong [ref=e46]: "6"
+            - paragraph [ref=e47]: Свіжий контент, який формує верх стрічки вакансій.
+          - article [ref=e48]:
+            - generic [ref=e49]: Команда доступу
+            - strong [ref=e50]: "1"
+            - paragraph [ref=e51]: 1 superuser, решта staff-акаунти для операційної роботи.
+          - article [ref=e52]:
+            - generic [ref=e53]: Топ-компанія
+            - strong [ref=e54]: AI Labs
+            - paragraph [ref=e55]: 1 вакансій у каталозі на поточний момент.
+        - generic [ref=e56]:
+          - article [ref=e57]:
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - paragraph [ref=e60]: Employment Mix
+                - heading "Розподіл по типах зайнятості" [level=3] [ref=e61]
+              - generic [ref=e62]: 100% active
+            - generic [ref=e63]:
+              - generic [ref=e64]:
+                - generic:
+                  - strong: Повна зайнятість
+                  - generic: 2 вакансій
+                - generic [ref=e67]: 33%
+              - generic [ref=e68]:
+                - generic:
+                  - strong: Гібрид
+                  - generic: 2 вакансій
+                - generic [ref=e71]: 33%
+              - generic [ref=e72]:
+                - generic:
+                  - strong: Віддалено
+                  - generic: 2 вакансій
+                - generic [ref=e75]: 33%
+          - article [ref=e76]:
+            - generic [ref=e78]:
+              - paragraph [ref=e79]: Company Radar
+              - heading "Хто формує каталог" [level=3] [ref=e80]
+            - generic [ref=e81]:
+              - generic [ref=e82]:
+                - generic [ref=e83]:
+                  - strong [ref=e84]: AI Labs
+                  - generic [ref=e85]: 1 вакансій
+                - generic [ref=e86]: 17%
+              - generic [ref=e87]:
+                - generic [ref=e88]:
+                  - strong [ref=e89]: CloudTech
+                  - generic [ref=e90]: 1 вакансій
+                - generic [ref=e91]: 17%
+              - generic [ref=e92]:
+                - generic [ref=e93]:
+                  - strong [ref=e94]: Creative Studio
+                  - generic [ref=e95]: 1 вакансій
+                - generic [ref=e96]: 17%
+              - generic [ref=e97]:
+                - generic [ref=e98]:
+                  - strong [ref=e99]: DataSoft
+                  - generic [ref=e100]: 1 вакансій
+                - generic [ref=e101]: 17%
+              - generic [ref=e102]:
+                - generic [ref=e103]:
+                  - strong [ref=e104]: MobileFirst
+                  - generic [ref=e105]: 1 вакансій
+                - generic [ref=e106]: 17%
+          - article [ref=e107]:
+            - generic [ref=e108]:
+              - generic [ref=e109]:
+                - paragraph [ref=e110]: Recent Activity
+                - heading "Останні зміни у вакансіях" [level=3] [ref=e111]
+              - generic [ref=e112]: "Остання: React Native Developer"
+            - generic [ref=e113]:
+              - article [ref=e114]:
+                - generic [ref=e115]:
+                  - strong [ref=e116]: DevOps Engineer
+                  - paragraph [ref=e117]: CloudTech • Харків / Віддалено
+                - generic [ref=e118]:
+                  - generic [ref=e119]: Hybrid
+                  - generic [ref=e120]: Активна
+              - article [ref=e121]:
+                - generic [ref=e122]:
+                  - strong [ref=e123]: React Native Developer
+                  - paragraph [ref=e124]: MobileFirst • Віддалено
+                - generic [ref=e125]:
+                  - generic [ref=e126]: Remote
+                  - generic [ref=e127]: Активна
+              - article [ref=e128]:
+                - generic [ref=e129]:
+                  - strong [ref=e130]: Python Developer
+                  - paragraph [ref=e131]: AI Labs • Київ
+                - generic [ref=e132]:
+                  - generic [ref=e133]: Full time
+                  - generic [ref=e134]: Активна
+              - article [ref=e135]:
+                - generic [ref=e136]:
+                  - strong [ref=e137]: UI/UX Designer
+                  - paragraph [ref=e138]: Creative Studio • Одеса / Гібрид
+                - generic [ref=e139]:
+                  - generic [ref=e140]: Hybrid
+                  - generic [ref=e141]: Активна
+              - article [ref=e142]:
+                - generic [ref=e143]:
+                  - strong [ref=e144]: Node.js Backend Engineer
+                  - paragraph [ref=e145]: DataSoft • Львів (віддалено)
+                - generic [ref=e146]:
+                  - generic [ref=e147]: Remote
+                  - generic [ref=e148]: Активна
+        - generic [ref=e149]:
+          - table "Jobs" [ref=e151]:
+            - caption [ref=e152]:
+              - link "Jobs" [ref=e153] [cursor=pointer]:
+                - /url: /admin/jobs/
+            - rowgroup [ref=e154]:
+              - row "Model name Add link Change or view list link" [ref=e155]:
+                - columnheader "Model name" [ref=e156]
+                - columnheader "Add link" [ref=e157]
+                - columnheader "Change or view list link" [ref=e158]
+            - rowgroup [ref=e159]:
+              - row "Jobs Додати Змінити" [ref=e160]:
+                - rowheader "Jobs" [ref=e161]:
+                  - link "Jobs" [ref=e162] [cursor=pointer]:
+                    - /url: /admin/jobs/job/
+                - cell "Додати" [ref=e163]:
+                  - link "Додати" [ref=e164] [cursor=pointer]:
+                    - /url: /admin/jobs/job/add/
+                - cell "Змінити" [ref=e165]:
+                  - link "Змінити" [ref=e166] [cursor=pointer]:
+                    - /url: /admin/jobs/job/
+          - table "Аутентифікація та авторизація" [ref=e168]:
+            - caption [ref=e169]:
+              - link "Аутентифікація та авторизація" [ref=e170] [cursor=pointer]:
+                - /url: /admin/auth/
+            - rowgroup [ref=e171]:
+              - row "Model name Add link Change or view list link" [ref=e172]:
+                - columnheader "Model name" [ref=e173]
+                - columnheader "Add link" [ref=e174]
+                - columnheader "Change or view list link" [ref=e175]
+            - rowgroup [ref=e176]:
+              - row "Групи Додати Змінити" [ref=e177]:
+                - rowheader "Групи" [ref=e178]:
+                  - link "Групи" [ref=e179] [cursor=pointer]:
+                    - /url: /admin/auth/group/
+                - cell "Додати" [ref=e180]:
+                  - link "Додати" [ref=e181] [cursor=pointer]:
+                    - /url: /admin/auth/group/add/
+                - cell "Змінити" [ref=e182]:
+                  - link "Змінити" [ref=e183] [cursor=pointer]:
+                    - /url: /admin/auth/group/
+              - row "Користувачі Додати Змінити" [ref=e184]:
+                - rowheader "Користувачі" [ref=e185]:
+                  - link "Користувачі" [ref=e186] [cursor=pointer]:
+                    - /url: /admin/auth/user/
+                - cell "Додати" [ref=e187]:
+                  - link "Додати" [ref=e188] [cursor=pointer]:
+                    - /url: /admin/auth/user/add/
+                - cell "Змінити" [ref=e189]:
+                  - link "Змінити" [ref=e190] [cursor=pointer]:
+                    - /url: /admin/auth/user/
+        - generic [ref=e192]:
+          - heading "Недавні дії" [level=2] [ref=e193]
+          - heading "Мої дії" [level=3] [ref=e194]
+          - paragraph [ref=e195]: Немає
+    - contentinfo

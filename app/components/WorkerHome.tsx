@@ -1,6 +1,7 @@
 import { EmptyState } from '@/components/EmptyState';
 import { FilterChips } from '@/components/FilterChips';
 import { JobCard } from '@/components/job/JobCard';
+import { useBottomNavClearance } from '@/components/layout/BottomNav';
 import { QuickFilters } from '@/components/QuickFilters';
 import { RecentSearches } from '@/components/RecentSearches';
 import { SearchBar } from '@/components/SearchBar';
@@ -45,6 +46,7 @@ interface WorkerHomeProps {
 export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: WorkerHomeProps) {
   const { t } = useTranslation();
   const { colors, isDark } = useTheme();
+  const bottomNavClearance = useBottomNavClearance();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
   const { jobs, loading, error, search, refetch } = useJobs();
@@ -355,7 +357,7 @@ export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: 
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: bottomNavClearance }]}>
       <View style={styles.modeTabs}>
         <TouchableOpacity onPress={() => handleTabChange('search')} style={[styles.modeTab, tab === 'search' && styles.modeTabActive]}>
           <Text style={[styles.modeTabText, tab === 'search' && styles.modeTabTextActive]}>{t('jobs.searchJobs')}</Text>
@@ -410,6 +412,7 @@ export function WorkerHome({ userName, profile, onUpdateProfile, onTabChange }: 
               isFavorite={isFavorite(item.id)}
               isApplied={isApplied(item.id)}
               onFavoritePress={() => toggleFavorite(item.id)}
+              compact={preferences.compactMode}
             />
           )}
           style={styles.jobsList}

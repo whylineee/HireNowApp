@@ -1,0 +1,2 @@
+[     170ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8000/favicon.ico:0
+[  545750ms] [ERROR] Failed to load resource: the server responded with a status of 405 () @ chrome-error://chromewebdata/:0

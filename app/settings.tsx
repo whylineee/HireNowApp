@@ -8,10 +8,12 @@ import { useTheme, type ThemeMode } from '@/hooks/useTheme';
 import { useTranslation, type Language } from '@/hooks/useTranslation';
 import { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useBottomNavClearance } from '@/components/layout/BottomNav';
 
 export default function SettingsScreen() {
   const { user } = useAuth();
   const { language, setLanguage, t } = useTranslation();
+  const bottomNavClearance = useBottomNavClearance();
   const { themeMode, setThemeMode, colors, isDark } = useTheme();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
@@ -35,8 +37,8 @@ export default function SettingsScreen() {
 
   return (
     <Screen scroll={false}>
-      <View style={{ flex: 1 }}>
-        <Header title={t('settings.title')} showBackButton showSettingsButton={false} />
+      <View style={{ flex: 1, paddingBottom: bottomNavClearance }}>
+        <Header title={t('settings.title')} showSettingsButton={false} />
 
         <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
           <View style={styles.section}>

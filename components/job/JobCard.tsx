@@ -15,6 +15,7 @@ interface JobCardProps {
   isApplied?: boolean;
   onFavoritePress?: () => void;
   showFavorite?: boolean;
+  compact?: boolean;
 }
 
 export function JobCard({
@@ -23,10 +24,11 @@ export function JobCard({
   isApplied = false,
   onFavoritePress,
   showFavorite = true,
+  compact = false,
 }: JobCardProps) {
   const { t } = useTranslation();
   const { colors, isDark } = useTheme();
-  const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+  const styles = useMemo(() => createStyles(colors, isDark, compact), [colors, compact, isDark]);
 
   const handleCardPress = () => {
     router.push(`/job/${job.id}`);
@@ -71,7 +73,7 @@ export function JobCard({
           </Text>
         )}
 
-        <Text style={styles.description} numberOfLines={2}>
+        <Text style={styles.description} numberOfLines={compact ? 1 : 2}>
           {job.description}
         </Text>
         <Text style={styles.posted}>🕒 {job.postedAt}</Text>
@@ -80,24 +82,24 @@ export function JobCard({
   );
 }
 
-const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean) =>
+const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boolean, compact: boolean) =>
   StyleSheet.create({
     card: {
-      marginBottom: spacing.md,
-      borderRadius: 24,
+      marginBottom: compact ? spacing.sm : spacing.md,
+      borderRadius: compact ? 20 : 24,
       borderColor: colors.border,
       backgroundColor: colors.surfaceElevated,
     },
-    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: compact ? 6 : 8 },
     headerText: { flex: 1, marginRight: spacing.sm },
-    title: { fontSize: typography.base, fontWeight: typography.bold, color: colors.text, lineHeight: 21 },
+    title: { fontSize: typography.base, fontWeight: typography.bold, color: colors.text, lineHeight: compact ? 20 : 21 },
     company: { fontSize: typography.sm, color: colors.textSecondary, marginTop: 3, fontWeight: typography.medium },
-    meta: { marginBottom: spacing.xs + 2 },
-    location: { fontSize: typography.sm, color: colors.textSecondary, marginBottom: 7 },
+    meta: { marginBottom: compact ? spacing.xs : spacing.xs + 2 },
+    location: { fontSize: typography.sm, color: colors.textSecondary, marginBottom: compact ? 5 : 7 },
     badgeRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
     badge: {
       paddingHorizontal: 10,
-      paddingVertical: 4,
+      paddingVertical: compact ? 3 : 4,
       borderRadius: 999,
       borderWidth: 1,
       borderColor: isDark ? 'rgba(148,163,184,0.35)' : 'rgba(148,163,184,0.15)',
@@ -110,7 +112,7 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
       backgroundColor: colors.success + '12',
     },
     appliedText: { fontSize: typography.xs, fontWeight: typography.semibold, color: colors.success },
-    salary: { fontSize: typography.sm, color: colors.primaryDark, fontWeight: typography.semibold, marginBottom: 6 },
-    description: { fontSize: typography.sm, color: colors.textSecondary, lineHeight: 20 },
-    posted: { fontSize: typography.xs, color: colors.textMuted, marginTop: spacing.sm },
+    salary: { fontSize: typography.sm, color: colors.primaryDark, fontWeight: typography.semibold, marginBottom: compact ? 4 : 6 },
+    description: { fontSize: typography.sm, color: colors.textSecondary, lineHeight: compact ? 18 : 20 },
+    posted: { fontSize: typography.xs, color: colors.textMuted, marginTop: compact ? spacing.xs : spacing.sm },
   });

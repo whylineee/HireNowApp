@@ -1,167 +1,122 @@
+import { API_BASE_URL } from '@/services/api';
 import type { Job, JobSearchParams } from '@/types/job';
-import { getStoredJson, removeStoredValue, setStoredJson } from '@/utils/storage';
 
-/**
- * Мок-дані вакансій для демонстрації.
- * У production замінити на виклики API (наприклад, jobs.github.com, Adzuna тощо).
- */
-const MOCK_JOBS: Job[] = [
-  {
-    id: '1',
-    title: 'Frontend React Developer',
-    company: 'TechFlow Ukraine',
-    location: 'Київ, Україна',
-    salary: '₴60 000 – ₴90 000',
-    type: 'full-time',
-    postedAt: '2 дні тому',
-    description: 'Шукаємо досвідченого Frontend-розробника для роботи над продуктами для європейських клієнтів. Стек: React, TypeScript, Next.js.',
-    requirements: ['3+ роки досвіду з React', 'TypeScript', 'REST API', 'Git'],
-  },
-  {
-    id: '2',
-    title: 'Node.js Backend Engineer',
-    company: 'DataSoft',
-    location: 'Львів (віддалено)',
-    salary: '₴70 000 – ₴100 000',
-    type: 'remote',
-    postedAt: '1 день тому',
-    description: 'Розробка та підтримка backend-систем на Node.js. Робота з PostgreSQL, Redis, мікросервісна архітектура.',
-    requirements: ['Node.js, Express/NestJS', 'PostgreSQL', 'Docker', '2+ роки досвіду'],
-  },
-  {
-    id: '3',
-    title: 'UI/UX Designer',
-    company: 'Creative Studio',
-    location: 'Одеса / Гібрид',
-    salary: '₴45 000 – ₴65 000',
-    type: 'hybrid',
-    postedAt: '3 дні тому',
-    description: 'Проєктування інтерфейсів для веб і мобільних додатків. Близька співпраця з командою розробки.',
-    requirements: ['Figma', 'Design systems', 'Прототипування', 'Портфоліо'],
-  },
-  {
-    id: '4',
-    title: 'Python Developer',
-    company: 'AI Labs',
-    location: 'Київ',
-    salary: '₴80 000 – ₴120 000',
-    type: 'full-time',
-    postedAt: '5 днів тому',
-    description: 'Розробка ML-пайплайнів та сервісів обробки даних. Python, FastAPI, pandas, scikit-learn.',
-    requirements: ['Python 3+', 'FastAPI/Django', 'SQL', 'Базові знання ML'],
-  },
-  {
-    id: '5',
-    title: 'React Native Developer',
-    company: 'MobileFirst',
-    location: 'Віддалено',
-    salary: '₴65 000 – ₴95 000',
-    type: 'remote',
-    postedAt: 'Сьогодні',
-    description: 'Розробка крос-платформних мобільних додатків на React Native. Участь у повному циклі розробки.',
-    requirements: ['React Native', 'Expo', 'TypeScript', '1+ рік досвіду'],
-  },
-  {
-    id: '6',
-    title: 'DevOps Engineer',
-    company: 'CloudTech',
-    location: 'Харків / Віддалено',
-    salary: '₴90 000 – ₴130 000',
-    type: 'hybrid',
-    postedAt: '1 день тому',
-    description: 'CI/CD, Kubernetes, моніторинг, інфраструктура як код. AWS або GCP.',
-    requirements: ['Kubernetes', 'Docker', 'Terraform/Ansible', 'AWS або GCP'],
-  },
-];
+type JobPayload = {
+  id: string | number;
+  title: string;
+  company: string;
+  location: string;
+  salary?: string | null;
+  type: Job['type'];
+  postedAt: string;
+  description: string;
+  requirements?: string[] | null;
+  logo?: string | null;
+};
 
-const EMPLOYER_JOBS_STORAGE_KEY = 'employerJobs';
+function buildUrl(path: string, params?: Record<string, string | undefined>) {
+  const url = new URL(path, `${API_BASE_URL}/`);
 
-// Вакансії, створені роботодавцем під час роботи додатку
-let employerJobs = getStoredJson<Job[]>(EMPLOYER_JOBS_STORAGE_KEY, []);
-
-function persistEmployerJobs() {
-  if (employerJobs.length === 0) {
-    removeStoredValue(EMPLOYER_JOBS_STORAGE_KEY);
-    return;
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) {
+        url.searchParams.set(key, value);
+      }
+    });
   }
 
-  setStoredJson(EMPLOYER_JOBS_STORAGE_KEY, employerJobs);
+  return url.toString();
 }
 
-/**
- * Імітація затримки мережі
- */
-const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-/**
- * Нормалізація рядка для пошуку (нижній регістр, без зайвих пробілів)
- */
-function normalize(str: string): string {
-  return str.toLowerCase().trim().replace(/\s+/g, ' ');
-}
-
-/**
- * Пошук вакансій за параметрами серед мок-даних та вакансій роботодавця
- */
-export async function searchJobs(params: JobSearchParams): Promise<Job[]> {
-  await delay(400); // імітація API
-
-  let results = [...MOCK_JOBS, ...employerJobs];
-
-  if (params.query) {
-    const q = normalize(params.query);
-    results = results.filter(
-      (j) =>
-        normalize(j.title).includes(q) ||
-        normalize(j.company).includes(q) ||
-        normalize(j.description).includes(q)
-    );
-  }
-
-  if (params.location) {
-    const loc = normalize(params.location);
-    results = results.filter((j) => normalize(j.location).includes(loc));
-  }
-
-  if (params.type) {
-    results = results.filter((j) => j.type === params.type);
-  }
-
-  return results;
-}
-
-/**
- * Отримання вакансії за ID з урахуванням вакансій роботодавця
- */
-export async function getJobById(id: string): Promise<Job | null> {
-  await delay(200);
-  return [...MOCK_JOBS, ...employerJobs].find((j) => j.id === id) ?? null;
-}
-
-/**
- * Створення нової вакансії роботодавцем
- */
-export async function createEmployerJob(input: Omit<Job, 'id' | 'postedAt'> & { postedAt?: string }): Promise<Job> {
-  await delay(200);
-  const job: Job = {
-    ...input,
-    id: String(Date.now()),
-    postedAt: input.postedAt ?? 'щойно',
+function normalizeJob(payload: JobPayload): Job {
+  return {
+    id: String(payload.id),
+    title: payload.title,
+    company: payload.company,
+    location: payload.location,
+    salary: payload.salary ?? undefined,
+    type: payload.type,
+    postedAt: payload.postedAt,
+    description: payload.description,
+    requirements: payload.requirements ?? [],
+    logo: payload.logo ?? undefined,
   };
-  employerJobs = [job, ...employerJobs];
-  persistEmployerJobs();
-  return job;
 }
 
-/**
- * Всі вакансії, створені роботодавцем у поточній сесії
- */
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(buildUrl(path), {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(init?.headers ?? {}),
+    },
+  });
+
+  if (!response.ok) {
+    let message = `HTTP ${response.status}`;
+    try {
+      const payload = (await response.json()) as { detail?: string };
+      if (payload.detail) {
+        message = payload.detail;
+      }
+    } catch {
+      // Ignore invalid JSON responses and keep HTTP status.
+    }
+    throw new Error(message);
+  }
+
+  return (await response.json()) as T;
+}
+
+export async function searchJobs(params: JobSearchParams): Promise<Job[]> {
+  const response = await fetch(
+    buildUrl('/api/jobs/', {
+      query: params.query,
+      location: params.location,
+      type: params.type,
+    })
+  );
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  return ((await response.json()) as JobPayload[]).map(normalizeJob);
+}
+
+export async function getJobById(id: string): Promise<Job | null> {
+  const response = await fetch(buildUrl(`/api/jobs/${id}/`));
+  if (response.status === 404) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  return normalizeJob((await response.json()) as JobPayload);
+}
+
+export async function createEmployerJob(input: Omit<Job, 'id' | 'postedAt'> & { postedAt?: string }): Promise<Job> {
+  const payload = await request<JobPayload>('/api/jobs/', {
+    method: 'POST',
+    body: JSON.stringify({
+      title: input.title,
+      company: input.company,
+      location: input.location,
+      salary: input.salary ?? '',
+      type: input.type,
+      description: input.description,
+      requirements: input.requirements,
+      logo: input.logo ?? '',
+    }),
+  });
+
+  return normalizeJob(payload);
+}
+
 export async function getEmployerJobs(): Promise<Job[]> {
-  await delay(100);
-  return [...employerJobs];
+  return searchJobs({});
 }
 
 export function resetEmployerJobs() {
-  employerJobs = [];
-  persistEmployerJobs();
+  // Jobs are now persisted in Django and managed via the admin panel.
 }

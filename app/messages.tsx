@@ -9,16 +9,21 @@ import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useBottomNavClearance } from '@/components/layout/BottomNav';
 
 type ConversationTab = 'all' | 'unread' | 'pinned';
 
-const QUICK_REPLIES = ['Дякую, перегляну.', 'Можемо обговорити деталі?', 'Чи є можливість remote?'];
-
 export default function MessagesScreen() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { user } = useAuth();
+  const bottomNavClearance = useBottomNavClearance();
   const { colors, isDark } = useTheme();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
+  const quickReplies = [
+    t('messages.quickReplyThanks'),
+    t('messages.quickReplyDiscussDetails'),
+    t('messages.quickReplyRemote'),
+  ];
 
   const { conversations, messagesFor, openConversation, sendMessage, togglePinConversation, markConversationUnread, unreadCount } =
     useConversations();
@@ -72,7 +77,8 @@ export default function MessagesScreen() {
   }
 
   const formatTime = (timestamp: number) => {
-    return new Date(timestamp).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
+    const locale = language === 'en' ? 'en-US' : 'uk-UA';
+    return new Date(timestamp).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
   };
 
   const handleOpenConversation = (conversationId: string) => {
@@ -115,7 +121,7 @@ export default function MessagesScreen() {
           />
 
           <View style={styles.quickRepliesRow}>
-            {QUICK_REPLIES.map((reply) => (
+            {quickReplies.map((reply) => (
               <TouchableOpacity key={reply} style={styles.quickReplyChip} onPress={() => setDraft(reply)}>
                 <Text style={styles.quickReplyText}>{reply}</Text>
               </TouchableOpacity>
@@ -143,7 +149,7 @@ export default function MessagesScreen() {
 
   return (
     <Screen scroll={false}>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingBottom: bottomNavClearance }}>
         <Header title={t('messages.title')} subtitle={`${unreadCount} ${t('messages.unread')}`} showBackButton showSettingsButton />
 
         <View style={styles.searchContainer}>
@@ -189,10 +195,22 @@ export default function MessagesScreen() {
                   </Text>
 
                   <View style={styles.conversationActionsRow}>
-                    <TouchableOpacity style={styles.actionChip} onPress={() => togglePinConversation(item.id)}>
+                    <TouchableOpacity
+                      style={styles.actionChip}
+                      onPress={(event) => {
+                        event.stopPropagation();
+                        togglePinConversation(item.id);
+                      }}
+                    >
                       <Text style={styles.actionChipText}>{item.pinned ? t('messages.unpin') : t('messages.pin')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.actionChip} onPress={() => markConversationUnread(item.id)}>
+                    <TouchableOpacity
+                      style={styles.actionChip}
+                      onPress={(event) => {
+                        event.stopPropagation();
+                        markConversationUnread(item.id);
+                      }}
+                    >
                       <Text style={styles.actionChipText}>{t('messages.markUnread')}</Text>
                     </TouchableOpacity>
                   </View>

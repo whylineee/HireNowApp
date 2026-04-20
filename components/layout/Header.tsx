@@ -76,7 +76,7 @@ export function Header({
           )}
           {showSettingsButton && (
             <Pressable onPress={handleOpenProfile} style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}>
-              <Ionicons name="settings-outline" size={20} color={colors.textSecondary} />
+              <Ionicons name="person-circle-outline" size={22} color={colors.textSecondary} />
             </Pressable>
           )}
         </View>

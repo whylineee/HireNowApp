@@ -1,0 +1,90 @@
+{% extends "admin/change_list.html" %}
+{% load jobs_admin_tags %}
+
+{% block title %}Каталог вакансій | HireNow Admin{% endblock %}
+
+{% block content_title %}
+  <div class="hn-title-stack">
+    <p class="hn-admin-kicker">Vacancy Catalog</p>
+    <h1>Каталог вакансій</h1>
+    <p>Редагуй ті самі записи, які віддає Django API фронтенду.</p>
+  </div>
+{% endblock %}
+
+{% block content %}
+  {% jobs_top_companies 3 as top_companies %}
+  {% jobs_type_mix as type_mix %}
+
+  <section class="hn-jobs-overview">
+    <div class="hn-jobs-overview__copy">
+      <p class="hn-admin-kicker">Jobs Desk</p>
+      <h2>Каталог під контролем</h2>
+      <p>Тут видно загальний обсяг вакансій, активні записи і те, що зараз домінує в стрічці застосунку.</p>
+    </div>
+    <div class="hn-jobs-stats-grid">
+      <div class="hn-jobs-stat-card">
+        <span>Усього</span>
+        <strong>{{ job_admin_stats.total }}</strong>
+      </div>
+      <div class="hn-jobs-stat-card">
+        <span>Активні</span>
+        <strong>{{ job_admin_stats.active }}</strong>
+      </div>
+      <div class="hn-jobs-stat-card">
+        <span>За 7 днів</span>
+        <strong>{{ job_admin_stats.fresh }}</strong>
+      </div>
+      <div class="hn-jobs-stat-card">
+        <span>Домінуючий тип</span>
+        <strong>{{ job_admin_stats.top_type_label }}</strong>
+      </div>
+    </div>
+  </section>
+  <section class="hn-jobs-insights-grid">
+    <article class="hn-admin-panel">
+      <div class="hn-admin-panel__head">
+        <div>
+          <p class="hn-admin-kicker">Mix Snapshot</p>
+          <h3>Типи зайнятості в каталозі</h3>
+        </div>
+      </div>
+      <div class="hn-admin-bars hn-admin-bars--compact">
+        {% for item in type_mix %}
+          <div class="hn-admin-bar">
+            <div class="hn-admin-bar__meta">
+              <strong>{{ item.label }}</strong>
+              <span>{{ item.total }} записів</span>
+            </div>
+            <div class="hn-admin-bar__track">
+              <span class="hn-admin-bar__fill hn-admin-bar__fill--{{ item.key }}" style="width: {{ item.percent }}%;"></span>
+            </div>
+            <div class="hn-admin-bar__percent">{{ item.percent }}%</div>
+          </div>
+        {% endfor %}
+      </div>
+    </article>
+
+    <article class="hn-admin-panel">
+      <div class="hn-admin-panel__head">
+        <div>
+          <p class="hn-admin-kicker">Company Pulse</p>
+          <h3>Хто найчастіше в стрічці</h3>
+        </div>
+      </div>
+      <div class="hn-admin-company-list">
+        {% for company in top_companies %}
+          <div class="hn-admin-company-row">
+            <div>
+              <strong>{{ company.company }}</strong>
+              <span>{{ company.total }} вакансій</span>
+            </div>
+            <div class="hn-admin-company-pill">{{ company.percent }}%</div>
+          </div>
+        {% empty %}
+          <p class="hn-admin-empty">Поки немає даних для компаній.</p>
+        {% endfor %}
+      </div>
+    </article>
+  </section>
+  {{ block.super }}
+{% endblock %}

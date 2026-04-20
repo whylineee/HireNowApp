@@ -29,6 +29,8 @@ class Job(models.Model):
 
     class Meta:
         ordering = ["-posted_at", "-created_at"]
+        verbose_name = "вакансія"
+        verbose_name_plural = "вакансії"
 
     def __str__(self) -> str:
         return f"{self.title} @ {self.company}"

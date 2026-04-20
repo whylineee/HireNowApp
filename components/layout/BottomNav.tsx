@@ -17,7 +17,14 @@ type NavTab = {
   href: AppPath;
 };
 
+export const BOTTOM_NAV_ACTION_SIZE = 64;
+
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+export function useBottomNavClearance() {
+  const insets = useSafeAreaInsets();
+  return BOTTOM_NAV_ACTION_SIZE + Math.max(insets.bottom, spacing.sm) + spacing.lg;
+}
 
 export function BottomNav() {
   const pathname = usePathname();
@@ -42,7 +49,7 @@ export function BottomNav() {
   const isHomeActive = pathname === '/';
   const isFavoritesActive = pathname.startsWith('/favorites');
   const isMessagesActive = pathname.startsWith('/messages');
-  const isSettingsActive = pathname.startsWith('/settings');
+  const isSettingsActive = pathname.startsWith('/settings') || pathname.startsWith('/profile');
 
   const revealAnim = useRef(new Animated.Value(0)).current;
   const primaryIndicatorX = useRef(new Animated.Value(0)).current;
@@ -519,8 +526,8 @@ const createStyles = (colors: ReturnType<typeof useTheme>['colors'], isDark: boo
       borderRadius: borderRadius.full,
     },
     actionButton: {
-      width: 64,
-      height: 64,
+      width: BOTTOM_NAV_ACTION_SIZE,
+      height: BOTTOM_NAV_ACTION_SIZE,
       borderRadius: borderRadius.full,
       alignItems: 'center',
       justifyContent: 'center',

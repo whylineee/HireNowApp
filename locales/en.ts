@@ -12,6 +12,7 @@ export const enTranslations = {
     back: "Back",
     next: "Next",
     done: "Done",
+    all: "All",
     yes: "Yes",
     no: "No",
     authRequired: "Please sign in to continue",
@@ -64,7 +65,18 @@ export const enTranslations = {
     salaryTo: "Salary to",
     onlyFavorites: "Only favorites",
     hideApplied: "Hide applied",
-    remoteOnly: "Remote only"
+    remoteOnly: "Remote only",
+    quickFiltersTitle: "Quick filters",
+    quickFilterKyiv: "Kyiv",
+    quickFilterLviv: "Lviv",
+    quickFilterRemote: "Remote",
+    quickFilterReact: "React",
+    quickFilterNode: "Node.js",
+    quickFilterPython: "Python",
+    sortRecent: "Most recent",
+    sortSalaryHigh: "Salary ↓",
+    sortSalaryLow: "Salary ↑",
+    sortTitle: "Title A-Z"
   },
   jobForm: {
     title: "Position",
@@ -109,7 +121,10 @@ export const enTranslations = {
     tabPinned: "Pinned",
     pin: "Pin",
     unpin: "Unpin",
-    markUnread: "Mark unread"
+    markUnread: "Mark unread",
+    quickReplyThanks: "Thanks, I'll review it.",
+    quickReplyDiscussDetails: "Can we discuss the details?",
+    quickReplyRemote: "Is there a remote option?"
   },
   applications: {
     title: "My applications",

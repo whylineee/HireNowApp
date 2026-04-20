@@ -2,19 +2,19 @@
 
 ## Overview
 
-The HireNow app uses a mock API service for demonstration purposes. All API functions are asynchronous and simulate network delays to provide realistic user experience.
+HireNow now uses the local Django backend as the source of truth for vacancies. The frontend reads from and writes to the backend API, and the Django admin operates on the same records.
 
 ## Services
 
 ### Jobs Service (`/services/jobs.ts`)
 
-The jobs service handles all operations related to job listings, including search, retrieval, and creation.
+The jobs service handles all vacancy operations through Django API endpoints.
 
 #### Functions
 
 ##### `searchJobs(params: JobSearchParams): Promise<Job[]>`
 
-Searches for jobs based on provided parameters.
+Searches for jobs based on provided parameters via `GET /api/jobs/`.
 
 **Parameters:**
 - `params` (JobSearchParams): Search criteria
@@ -22,7 +22,7 @@ Searches for jobs based on provided parameters.
   - `location?: string` - Filter by location
   - `type?: JobType` - Filter by job type
 
-**Returns:** Promise<Job[]> - Array of matching jobs
+**Returns:** Promise<Job[]> - Array of matching jobs from Django
 
 **Example:**
 ```typescript
@@ -35,7 +35,7 @@ const jobs = await searchJobs({
 
 ##### `getJobById(id: string): Promise<Job | null>`
 
-Retrieves a specific job by its ID.
+Retrieves a specific job by its ID via `GET /api/jobs/:id/`.
 
 **Parameters:**
 - `id` (string): Unique job identifier
@@ -52,7 +52,7 @@ if (job) {
 
 ##### `createEmployerJob(input: Omit<Job, 'id' | 'postedAt'> & { postedAt?: string }): Promise<Job>`
 
-Creates a new job posting (employer functionality).
+Creates a new job posting in Django via `POST /api/jobs/`.
 
 **Parameters:**
 - `input`: Job data without id and postedAt (optional)
@@ -66,7 +66,7 @@ Creates a new job posting (employer functionality).
   - `logo?: string`
   - `postedAt?: string` (defaults to 'щойно')
 
-**Returns:** Promise<Job> - Created job with generated ID
+**Returns:** Promise<Job> - Created job returned by backend
 
 **Example:**
 ```typescript
@@ -83,9 +83,9 @@ const newJob = await createEmployerJob({
 
 ##### `getEmployerJobs(): Promise<Job[]>`
 
-Retrieves all jobs created by employers in the current session.
+Retrieves the current backend vacancy list for the employer screen.
 
-**Returns:** Promise<Job[]> - Array of employer-created jobs
+**Returns:** Promise<Job[]> - Array of jobs from Django
 
 **Example:**
 ```typescript
@@ -128,9 +128,9 @@ interface JobSearchParams {
 }
 ```
 
-## Mock Data
+## Seed Data
 
-The service includes 6 pre-defined mock jobs for demonstration:
+The backend migration seeds 6 starter vacancies so the app and Django admin show the same initial data:
 
 1. **Frontend React Developer** - TechFlow Ukraine (Київ)
 2. **Node.js Backend Engineer** - DataSoft (Львів, віддалено)
@@ -139,39 +139,24 @@ The service includes 6 pre-defined mock jobs for demonstration:
 5. **React Native Developer** - MobileFirst (Віддалено)
 6. **DevOps Engineer** - CloudTech (Харків / Віддалено)
 
+## Backend Endpoints
+
+- `GET /api/jobs/`
+  - Query params: `query`, `location`, `type`
+- `GET /api/jobs/<id>/`
+- `POST /api/jobs/`
+  - JSON body: `title`, `company`, `location`, `salary`, `type`, `description`, `requirements`, `logo`
+
 ## Error Handling
 
-All functions include basic error handling:
+- Backend validation errors return `400` with `detail`
+- Missing job detail returns `null` from `getJobById`
+- Non-success HTTP responses throw an error in the frontend service
 
-- Network delays are simulated (200-400ms)
-- Errors are caught and re-thrown with descriptive messages
-- Empty results return empty arrays
-- Invalid IDs return null for `getJobById`
+## Local Development Notes
 
-## Future Implementation
-
-For production, replace mock implementation with real API calls:
-
-```typescript
-// Example: Integration with real API
-export async function searchJobs(params: JobSearchParams): Promise<Job[]> {
-  const queryParams = new URLSearchParams();
-  if (params.query) queryParams.append('q', params.query);
-  if (params.location) queryParams.append('location', params.location);
-  if (params.type) queryParams.append('type', params.type);
-  
-  const response = await fetch(`/api/jobs?${queryParams}`);
-  if (!response.ok) throw new Error('Failed to fetch jobs');
-  return response.json();
-}
-```
-
-## Storage Notes
-
-- Mock jobs are hardcoded in the service
-- Employer jobs are stored in memory (lost on app restart)
-- For production, consider implementing:
-  - Persistent storage (AsyncStorage)
-  - API integration
-  - Caching strategies
-  - Offline support
+- Web builds need backend CORS enabled for the local Expo origin
+- Native simulators can use the default backend URL fallback
+- Real devices should use `EXPO_PUBLIC_API_URL=http://<your-machine-ip>:8000`
+- The Django dev server should be started as `python manage.py runserver 0.0.0.0:8000`
+- In `DEBUG`, the backend now accepts LAN hosts so Expo on the same network can reach it

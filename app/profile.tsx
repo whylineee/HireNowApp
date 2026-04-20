@@ -16,9 +16,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { useBottomNavClearance } from '@/components/layout/BottomNav';
 
 export default function ProfileScreen() {
   const { user, updateUser, logout } = useAuth();
+  const bottomNavClearance = useBottomNavClearance();
   const { favorites, clearFavorites } = useFavorites();
   const { applications, clearApplications } = useApplications();
   const { recentSearches, clearSearches } = useRecentSearches();
@@ -119,7 +121,7 @@ export default function ProfileScreen() {
 
   return (
     <Screen scroll={false}>
-      <View style={styles.page}>
+      <View style={[styles.page, { paddingBottom: bottomNavClearance }]}>
         <Header
           title={t('profilePage.title')}
           subtitle={`${user.name} • ${user.role === 'worker' ? t('profilePage.roleWorker') : t('profilePage.roleEmployer')}`}

@@ -1,5 +1,6 @@
 import { EmptyState } from '@/components/EmptyState';
 import { JobCard } from '@/components/job/JobCard';
+import { useBottomNavClearance } from '@/components/layout/BottomNav';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -7,6 +8,7 @@ import { JOB_TYPE_LABELS } from '@/constants/job';
 import { spacing, typography } from '@/constants/theme';
 import { useTheme } from '@/hooks/useTheme';
 import { useTranslation } from '@/hooks/useTranslation';
+import { useUserPreferences } from '@/hooks/useUserPreferences';
 import { createEmployerJob, getEmployerJobs } from '@/services/jobs';
 import type { Job, JobType } from '@/types/job';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -22,6 +24,8 @@ function parseJobType(value: string): JobType {
 function EmployerHome() {
   const { t } = useTranslation();
   const { colors, isDark } = useTheme();
+  const { preferences } = useUserPreferences();
+  const bottomNavClearance = useBottomNavClearance();
   const styles = useMemo(() => createStyles(colors, isDark), [colors, isDark]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -88,7 +92,7 @@ function EmployerHome() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: bottomNavClearance }]}>
       {!creating ? (
         <>
           <View style={styles.heroIntro}>
@@ -113,7 +117,9 @@ function EmployerHome() {
             <FlatList
               data={jobs}
               keyExtractor={(item) => item.id}
-              renderItem={({ item }) => <JobCard job={item} isFavorite={false} isApplied={false} showFavorite={false} />}
+              renderItem={({ item }) => (
+                <JobCard job={item} isFavorite={false} isApplied={false} showFavorite={false} compact={preferences.compactMode} />
+              )}
               contentContainerStyle={styles.listContent}
               showsVerticalScrollIndicator={false}
             />

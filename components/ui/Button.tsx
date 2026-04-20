@@ -41,6 +41,9 @@ export function Button({
       style={[fullWidth && styles.fullWidth]}
       onPress={onPress}
       disabled={isDisabled}
+      accessibilityRole="button"
+      accessibilityLabel={title}
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
       onPressIn={() => animateTo(0.98)}
       onPressOut={() => animateTo(1)}
     >
